@@ -5,7 +5,7 @@ custom react frontend working with consort clowder instance
 run `npm install`
 
 ## Run Project
-- Set hostname environment variable: `export CLOWDER_REMOTE_HOSTNAME=https://consort.clowderframework.org/clowder`
+- Set hostname environment variable: `export CLOWDER_REMOTE_HOSTNAME=https://consort.clowderframework.org`
 - Set APIKEY: `export APIKEY={your clowder API key}`
 - run `npm start` when in development mode.
 

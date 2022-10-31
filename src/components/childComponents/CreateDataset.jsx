@@ -2,7 +2,6 @@ import React, {useState} from "react";
 
 import {Box, Button, Container} from "@material-ui/core";
 
-import LoadingOverlay from "react-loading-overlay";
 import {makeStyles} from "@material-ui/core/styles";
 
 import Form from "@rjsf/material-ui";
@@ -30,18 +29,12 @@ export default function CreateDataset(props) {
 
 	return (
 		<Container>
-			<LoadingOverlay
-				active={loading}
-				spinner
-				text="Saving..."
-			>
-				<Form schema={datasetSchema["schema"]} uiSchema={datasetSchema["uiSchema"]} // widgets={widgets}
-					  onSubmit={({formData}, e) => {onSave(formData);}}>
-					<Box className="inputGroup">
-						<Button variant="contained" type="submit" className="form-button-block">Create</Button>
-					</Box>
-				</Form>
-			</LoadingOverlay>
+			<Form schema={datasetSchema["schema"]} uiSchema={datasetSchema["uiSchema"]} // widgets={widgets}
+				  onSubmit={({formData}, e) => {onSave(formData);}}>
+				<Box className="inputGroup">
+					<Button variant="contained" type="submit" className="form-button-block">Create</Button>
+				</Box>
+			</Form>
 		</Container>
 	);
 }

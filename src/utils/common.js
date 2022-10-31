@@ -1,17 +1,5 @@
-import Cookies from "universal-cookie";
-import jwt_decode from "jwt-decode";
 import config from "../app.config";
 
-const cookies = new Cookies();
-
-
-//NOTE: This is only checking if a cookie is present, but not validating the cookie.
-export const isAuthorized = () => {
-	const authorization = cookies.get("Authorization");
-	return process.env.DEPLOY_ENV === "local" ||
-			(authorization !== undefined && authorization !== "" && authorization !==
-					null);
-};
 
 // construct header
 export function getHeader() {
