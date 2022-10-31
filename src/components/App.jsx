@@ -9,12 +9,13 @@ import Dataset from "./Dataset";
 import File from "./File";
 import datasetSchema from "../schema/datasetSchema.json";
 import fileSchema from "../schema/fileSchema.json";
+import {deleteFile as deleteFileAction, fetchFileExtractedMetadata, fetchFileMetadataJsonld, fetchFilePreviews} from "../actions/file";
+import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchDatasets, fetchFilesInDataset} from "../actions/dataset";
+import {useSelector, useDispatch} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({}));
 
 export default function App(props) {
-	const classes = useStyles();
-
 	const [selectedFileId, setSelectedFileId] = useState("");
 	const [selectedFilename, setSelectedFilename] = useState("");
 	const [selectedDatasetId, setSelectedDatasetId] = useState("");
@@ -28,22 +29,22 @@ export default function App(props) {
 
 	const [paths, setPaths] = useState([]);
 
-	const {
-		// files
-		listFileExtractedMetadata, fileExtractedMetadata,
-		listFileMetadataJsonld, fileMetadataJsonld,
-		listFilePreviews, filePreviews,
+	const dispatch = useDispatch();
+	const listFileExtractedMetadata = (fileId) => dispatch(fetchFileExtractedMetadata(fileId));
+	const listFileMetadataJsonld = (fileId) => dispatch(fetchFileMetadataJsonld(fileId));
+	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
+	const listFilesInDataset = (datasetId) => dispatch(fetchFilesInDataset(datasetId));
+	const deleteFile = (fileId) => dispatch(deleteFileAction(fileId));
+	const listDatasetAbout = (datasetId) => dispatch(fetchDatasetAbout(datasetId));
+	const listDatasets = (when, date, limit) => dispatch(fetchDatasets(when, date, limit));
+	const deleteDataset = (datasetId) => dispatch(deleteDatasetAction(datasetId));
 
-		//dataset
-		listFilesInDataset, filesInDataset,
-		listDatasetAbout, datasetAbout,
-		deleteFile,
-
-		//dashboard
-		deleteDataset, listDatasets, datasets,
-
-		...other
-	} = props;
+	const fileExtractedMetadata = useSelector((state) => state.file.extractedMetadata);
+	const fileMetadataJsonld = useSelector((state) => state.file.metadataJsonld);
+	const filePreviews = useSelector((state) => state.file.previews);
+	const filesInDataset = useSelector((state) => state.dataset.files);
+	const datasetAbout = useSelector((state) => state.dataset.about);
+	const datasets = useSelector((state) => state.dataset.datasets);
 
 	// component did mount
 	useEffect(() => {
