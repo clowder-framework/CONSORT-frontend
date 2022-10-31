@@ -5,9 +5,10 @@ custom react frontend working with consort clowder instance
 run `npm install`
 
 ## Run Project
-- run `npm run start` when in production mode
-- run `npm run start:dev` when in development mode. The environment variable `CLOWDER_REMOTE_HOSTNAME`
-  is pointing to the consort instance: https://consort.clowderframework.org/clowder
+- Set hostname environment variable: `export CLOWDER_REMOTE_HOSTNAME=https://consort.clowderframework.org/clowder`
+- Set APIKEY: `export APIKEY={your clowder API key}`
+- run `npm start` when in development mode.
+
 ## Codegen
 
 ### Prod
