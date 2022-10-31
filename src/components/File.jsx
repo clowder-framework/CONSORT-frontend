@@ -8,6 +8,7 @@ import Audio from "./previewers/Audio";
 import Video from "./previewers/Video";
 import {downloadResource} from "../utils/common";
 import Thumbnail from "./previewers/Thumbnail";
+import Html from "./previewers/Html";
 
 const useStyles = makeStyles((theme) => ({
 	appBar: {
@@ -84,6 +85,9 @@ export default function File(props) {
 									else if (preview["previewType"] === "thumbnail"){
 										return <Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
 														  imgSrc={preview["resource"]} />;
+									}
+									else if (preview["previewType"] === "html"){
+										return <Html fileId={preview["fileid"]} htmlSrc={preview["url"]} />;
 									}
 								})
 							}
