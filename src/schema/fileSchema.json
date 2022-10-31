@@ -16,8 +16,8 @@
 	}
   },
   "uiSchema": {
-	"ui:options":{
-	  "orderable":false
+	"ui:options": {
+	  "orderable": false
 	}
   }
 }

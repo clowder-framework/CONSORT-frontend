@@ -100,13 +100,13 @@ export default function App(props) {
 
 	// for breadcrumbs
 	useEffect(() => {
-		if (datasetAbout !== undefined && datasetAbout["name"] !== undefined){
+		if (datasetAbout !== undefined && datasetAbout["name"] !== undefined) {
 			setSelectedDatasetName(datasetAbout["name"]);
 			setPaths([
 				{
-					"name":datasetAbout["name"],
+					"name": datasetAbout["name"],
 					"id": selectedDatasetId,
-					"type":"dataset"
+					"type": "dataset"
 				}
 			]);
 		}
@@ -119,14 +119,14 @@ export default function App(props) {
 					setSelectedFilename(fileMetadata["metadata"]["filename"]);
 					setPaths([
 						{
-							"name":selectedDatasetName,
+							"name": selectedDatasetName,
 							"id": selectedDatasetId,
-							"type":"dataset"
+							"type": "dataset"
 						},
 						{
-							"name":fileMetadata["metadata"]["filename"],
+							"name": fileMetadata["metadata"]["filename"],
 							"id": selectedFileId,
-							"type":"file"
+							"type": "file"
 						}
 					]);
 				}
@@ -135,12 +135,12 @@ export default function App(props) {
 	}, [selectedFileId])
 
 	const previous = () => {
-		let date = firstDataset["created"] !== undefined? new Date(firstDataset["created"]) : null;
+		let date = firstDataset["created"] !== undefined ? new Date(firstDataset["created"]) : null;
 		if (date) listDatasets("b", date.toISOString(), limit);
 	}
 
 	const next = () => {
-		let date = lastDataset["created"] !== undefined? new Date(lastDataset["created"]) : null;
+		let date = lastDataset["created"] !== undefined ? new Date(lastDataset["created"]) : null;
 		if (date) listDatasets("a", date.toISOString(), limit);
 	}
 
@@ -164,11 +164,10 @@ export default function App(props) {
 	}
 
 	const goToPath = (pathType, id) => {
-		if (pathType === "dataset"){
+		if (pathType === "dataset") {
 			selectDataset(id);
 			setSelectedFileId("");
-		}
-		else{
+		} else {
 			setSelectedDatasetId("");
 			setSelectedFileId("");
 			setPaths([]);
@@ -197,7 +196,7 @@ export default function App(props) {
 											thumbnails={fileThumbnailList}
 											about={datasetAbout}
 											fileSchema={fileSchema}
-											selectedDatasetId = {selectedDatasetId}
+											selectedDatasetId={selectedDatasetId}
 											selectDataset={selectDataset}
 											deleteDataset={deleteDataset}
 											deleteFile={deleteFile}
@@ -212,15 +211,14 @@ export default function App(props) {
 											  filePreviews={filePreviews}
 											  fileId={selectedFileId}/>
 									)
-								}
-								else{
+								} else {
 									return <></>;
 								}
 							});
 						}
 					})()
 				}
-				</div>
+			</div>
 		</div>
 	);
 }

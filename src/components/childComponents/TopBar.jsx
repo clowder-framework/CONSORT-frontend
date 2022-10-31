@@ -1,22 +1,17 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-	AppBar,
-	Link,
-	Toolbar,
-	Typography,
-} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {AppBar, Link, Toolbar, Typography,} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
 	},
-	appBar:{
+	appBar: {
 		background: "#FFFFFF",
 		boxShadow: "none",
 	},
-	toolBar:{
-		padding:"0 45px"
+	toolBar: {
+		padding: "0 45px"
 	},
 	menuButton: {
 		marginRight: theme.spacing(2),
@@ -24,10 +19,10 @@ const useStyles = makeStyles((theme) => ({
 	// logo:{
 	// 	marginRight:"50px"
 	// },
-	toolBarItem:{
-		margin:"auto 12px auto 12px",
+	toolBarItem: {
+		margin: "auto 12px auto 12px",
 	},
-	toolBarlink:{
+	toolBarlink: {
 		textDecoration: "none",
 		fontSize: "16px",
 		color: "#495057",

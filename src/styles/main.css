@@ -3,19 +3,19 @@ body {
 	font-weight: 300;
 }
 
-.outer-container{
+.outer-container {
 	padding: 45px;
 }
 
-.inner-container{
+.inner-container {
 	padding: 20px 0;
 }
 
-.fileCard{
+.fileCard {
 	border: 1px solid #DFDFDF;
 	box-sizing: border-box;
 	border-radius: 4px;
-	height:140px;
+	height: 140px;
 	margin: 25px auto;
 }
 
@@ -23,17 +23,17 @@ body {
 	padding: 48px 0;
 }
 
-.infoCard .title{
+.infoCard .title {
 	font-weight: 600;
 	font-size: 16px;
 	color: #000000;
 	margin-bottom: 8px;
 }
 
-.infoCard .content{
+.infoCard .content {
 	font-size: 14px;
 	color: #000000;
-	margin-bottom:2px;
+	margin-bottom: 2px;
 }
 
 .actionCard {
@@ -44,20 +44,20 @@ body {
 	border-radius: 4px;
 }
 
-.actionCard .title{
+.actionCard .title {
 	font-weight: 600;
 	font-size: 20px;
 	color: #212529;
 	margin-bottom: 12px;
 }
 
-.actionCard .content{
+.actionCard .content {
 	font-size: 16px;
 	color: #212529;
-	margin-bottom:12px;
+	margin-bottom: 12px;
 }
 
-.actionCard .link{
+.actionCard .link {
 	font-size: 16px;
 	color: #007BFF;
 }
@@ -67,7 +67,7 @@ body {
 	box-shadow: none;
 }
 
-.tab{
+.tab {
 	font-style: normal;
 	font-weight: normal;
 	font-size: 16px;
@@ -75,11 +75,11 @@ body {
 	text-transform: capitalize;
 }
 
-.form-button-block{
+.form-button-block {
 	width: 100%;
 	font-weight: 600;
 }
 
-.inputGroup{
+.inputGroup {
 	margin: 20px auto;
 }

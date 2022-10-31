@@ -8,12 +8,12 @@ import path from "path";
 import TerserPlugin from "terser-webpack-plugin";
 
 // eslint-disable-next-line no-console
-console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${  process.env.CLOWDER_REMOTE_HOSTNAME}`);
+console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${process.env.CLOWDER_REMOTE_HOSTNAME}`);
 
 export default {
-	mode:"production",
+	mode: "production",
 	resolve: {
-		modules:["node_modules", "src"],
+		modules: ["node_modules", "src"],
 		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
 	},
 	devtool: "source-map", // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
@@ -43,14 +43,14 @@ export default {
 				"NODE_ENV": JSON.stringify("production"),
 				// if left not set, it will default to same host/port as frontend
 				"CLOWDER_REMOTE_HOSTNAME": JSON.stringify(process.env.CLOWDER_REMOTE_HOSTNAME),
-				"APIKEY":JSON.stringify(process.env.APIKEY),
+				"APIKEY": JSON.stringify(process.env.APIKEY),
 				"KeycloakBaseURL": JSON.stringify(process.env.KeycloakBaseURL),
 			},
 			__DEV__: false
 		}),
 
 		// Generate an external css file with a hash in the filename
-		new MiniCssExtractPlugin({filename:"[name].[contenthash].css"}),
+		new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),
 
 		// Generate HTML file that contains references to generated bundles. See here for how this works: https://github.com/ampedandwired/html-webpack-plugin#basic-usage
 		new HtmlWebpackPlugin({
@@ -114,7 +114,8 @@ export default {
 				test: /\.(jpe?g|png|gif)$/i,
 				type: "asset/resource"
 			},
-			{	test: /\.ico$/,
+			{
+				test: /\.ico$/,
 				type: "asset/resource"
 			},
 			{
@@ -139,10 +140,10 @@ export default {
 			// }
 		]
 	},
-	optimization:{
+	optimization: {
 		minimizer: [new TerserPlugin({
 			terserOptions: {
-				ecma:8,
+				ecma: 8,
 				compress: {
 					warnings: false
 				}

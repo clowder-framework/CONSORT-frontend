@@ -9,8 +9,8 @@ export const ClowderButton = styled(Button)({
 	// "&:hover": {
 	// 	backgroundColor: "#2C4170"
 	// },
-	color:"#007BFF",
-	border:"1px solid #007BFF",
+	color: "#007BFF",
+	border: "1px solid #007BFF",
 	borderRadius: "4px",
 	textTransform: "capitalize"
 });

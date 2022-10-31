@@ -9,31 +9,29 @@ export function getHeader() {
 
 	return headers;
 
-		// const headers = new Headers({
-		// 	"Authorization": cookies.get("Authorization"),
-		// });
+	// const headers = new Headers({
+	// 	"Authorization": cookies.get("Authorization"),
+	// });
 }
 
-export async function downloadResource(url){
-		let authHeader = getHeader();
-		let response = await fetch(url, {
-			method: "GET",
-			mode: "cors",
-			headers: authHeader,
-		});
+export async function downloadResource(url) {
+	let authHeader = getHeader();
+	let response = await fetch(url, {
+		method: "GET",
+		mode: "cors",
+		headers: authHeader,
+	});
 
-		if (response.status  === 200){
-			let blob = await response.blob();
-			return window.URL.createObjectURL(blob);
-		}
-		else if  (response.status  === 401){
-			// TODO handle error
-			return null;
-		}
-		else {
-			// TODO handle error
-			return null;
-		}
+	if (response.status === 200) {
+		let blob = await response.blob();
+		return window.URL.createObjectURL(blob);
+	} else if (response.status === 401) {
+		// TODO handle error
+		return null;
+	} else {
+		// TODO handle error
+		return null;
+	}
 }
 
 export function dataURItoFile(dataURI) {

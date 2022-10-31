@@ -1,10 +1,13 @@
 # CONSORT
+
 custom react frontend working with consort clowder instance
 
 ## Install Dependencies
+
 run `npm install`
 
 ## Run Project
+
 - Set hostname environment variable: `export CLOWDER_REMOTE_HOSTNAME=https://consort.clowderframework.org`
 - Set APIKEY: `export APIKEY={your clowder API key}`
 - run `npm start` when in development mode.
@@ -12,7 +15,9 @@ run `npm install`
 ## Codegen
 
 ### Prod
+
 run `npm run codegen`
 
 ### Dev
+
 run `npm run codegen:dev`

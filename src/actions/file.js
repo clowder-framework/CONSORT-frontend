@@ -2,7 +2,8 @@ import config from "../app.config";
 import {getHeader} from "../utils/common";
 
 export const RECEIVE_FILE_EXTRACTED_METADATA = "RECEIVE_FILE_EXTRACTED_METADATA";
-export function receiveFileExtractedMetadata(type, json){
+
+export function receiveFileExtractedMetadata(type, json) {
 	return (dispatch) => {
 		dispatch({
 			type: type,
@@ -11,17 +12,17 @@ export function receiveFileExtractedMetadata(type, json){
 		});
 	};
 }
-export function fetchFileExtractedMetadata(id){
+
+export function fetchFileExtractedMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/extracted_metadata?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode:"cors", headers: getHeader()})
+		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
 			if (response.status === 200) {
-				response.json().then(json =>{
+				response.json().then(json => {
 					dispatch(receiveFileExtractedMetadata(RECEIVE_FILE_EXTRACTED_METADATA, json));
 				});
-			}
-			else {
+			} else {
 				dispatch(receiveFileExtractedMetadata(RECEIVE_FILE_EXTRACTED_METADATA, []));
 			}
 		});
@@ -29,7 +30,8 @@ export function fetchFileExtractedMetadata(id){
 }
 
 export const RECEIVE_FILE_METADATA_JSONLD = "RECEIVE_FILE_METADATA_JSONLD";
-export function receiveFileMetadataJsonld(type, json){
+
+export function receiveFileMetadataJsonld(type, json) {
 	return (dispatch) => {
 		dispatch({
 			type: type,
@@ -38,17 +40,17 @@ export function receiveFileMetadataJsonld(type, json){
 		});
 	};
 }
-export function fetchFileMetadataJsonld(id){
+
+export function fetchFileMetadataJsonld(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata.jsonld?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode:"cors", headers: getHeader()})
+		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
 			if (response.status === 200) {
-				response.json().then(json =>{
+				response.json().then(json => {
 					dispatch(receiveFileMetadataJsonld(RECEIVE_FILE_METADATA_JSONLD, json));
 				});
-			}
-			else {
+			} else {
 				dispatch(receiveFileMetadataJsonld(RECEIVE_FILE_METADATA_JSONLD, []));
 			}
 		});
@@ -56,7 +58,8 @@ export function fetchFileMetadataJsonld(id){
 }
 
 export const RECEIVE_PREVIEWS = "RECEIVE_PREVIEWS";
-export function receiveFilePreviews(type, json){
+
+export function receiveFilePreviews(type, json) {
 	return (dispatch) => {
 		dispatch({
 			type: type,
@@ -65,17 +68,17 @@ export function receiveFilePreviews(type, json){
 		});
 	};
 }
-export function fetchFilePreviews(id){
+
+export function fetchFilePreviews(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/getPreviews?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode:"cors", headers: getHeader()})
+		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
 			if (response.status === 200) {
-				response.json().then(json =>{
+				response.json().then(json => {
 					dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, json));
 				});
-			}
-			else {
+			} else {
 				dispatch(receiveFileMetadataJsonld(RECEIVE_PREVIEWS, []));
 			}
 		});
@@ -83,21 +86,21 @@ export function fetchFilePreviews(id){
 }
 
 export const DELETE_FILE = "DELETE_FILE";
-export function deleteFile(fileId){
+
+export function deleteFile(fileId) {
 	let url = `${config.hostname}/clowder/api/files/${fileId}?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode:"cors", method:"DELETE", headers: getHeader()})
+		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
 		.then((response) => {
 			if (response.status === 200) {
-				response.json().then(json =>{
+				response.json().then(json => {
 					dispatch({
 						type: DELETE_FILE,
-						file: {"id": fileId, "status": json["status"]===undefined?json["status"]:"success"},
+						file: {"id": fileId, "status": json["status"] === undefined ? json["status"] : "success"},
 						receivedAt: Date.now(),
 					});
 				});
-			}
-			else {
+			} else {
 				response.json().then(json => {
 					dispatch({
 						type: DELETE_FILE,

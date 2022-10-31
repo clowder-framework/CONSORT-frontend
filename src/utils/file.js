@@ -1,18 +1,16 @@
-import {getHeader, dataURItoFile} from "./common";
+import {dataURItoFile, getHeader} from "./common";
 import config from "../app.config";
 
 
-export async function fetchFileMetadata(id){
+export async function fetchFileMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
-	let response = await fetch(url, {mode:"cors", headers: getHeader()});
-	if (response.status  === 200){
+	let response = await fetch(url, {mode: "cors", headers: getHeader()});
+	if (response.status === 200) {
 		return await response.json();
-	}
-	else if  (response.status  === 401){
+	} else if (response.status === 401) {
 		// TODO handle error
 		return {};
-	}
-	else {
+	} else {
 		// TODO handle error
 		return {};
 	}
@@ -22,8 +20,8 @@ export async function uploadFile(formData, selectedDatasetId) {
 	let endpoint = `${config.hostname}/clowder/api/datasets/${selectedDatasetId}/files?superAdmin=true`;
 	let authHeader = getHeader();
 	let body = new FormData();
-	formData.map((item) =>{
-		if (item["file"] !== undefined){
+	formData.map((item) => {
+		if (item["file"] !== undefined) {
 			body.append("file", dataURItoFile(item["file"]));
 		}
 	});
@@ -48,9 +46,9 @@ export async function uploadFile(formData, selectedDatasetId) {
 	}
 }
 
-export async function downloadFile(fileId, filename=null){
+export async function downloadFile(fileId, filename = null) {
 
-	if (!filename){
+	if (!filename) {
 		filename = `${fileId}.zip`;
 	}
 	let endpoint = `${config.hostname}/clowder/api/files/${fileId}/blob?superAdmin=true`;
@@ -68,12 +66,10 @@ export async function downloadFile(fileId, filename=null){
 			anchor.click();
 			document.body.removeChild(anchor);
 		}
-	}
-	else if (response.status === 401) {
+	} else if (response.status === 401) {
 		// TODO
 		console.log(response.json());
-	}
-	else {
+	} else {
 		console.log(response.json());
 	}
 

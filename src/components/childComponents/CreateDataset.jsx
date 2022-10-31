@@ -20,7 +20,7 @@ export default function CreateDataset(props) {
 	const onSave = async (formData) => {
 		setLoading(true);
 		const response = await createDataset(formData);
-		if (response !== {} && response["id"] !== undefined){
+		if (response !== {} && response["id"] !== undefined) {
 			selectDataset(response["id"]);
 		}
 		setLoading(false);

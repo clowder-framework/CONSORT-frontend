@@ -3,9 +3,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import {
 	AppBar,
 	Box,
-	Button, Dialog,
+	Button,
+	Dialog,
 	DialogTitle,
-	Divider,
 	Grid,
 	ListItem,
 	Menu,
@@ -14,8 +14,6 @@ import {
 	Tabs,
 	Typography
 } from "@material-ui/core";
-import {ClowderInput} from "./styledComponents/ClowderInput";
-import {ClowderButton} from "./styledComponents/ClowderButton";
 import DescriptionIcon from "@material-ui/icons/Description";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import UploadFile from "./childComponents/UploadFile";
@@ -38,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
 		textTransform: "capitalize",
 		maxWidth: "50px",
 	},
-	fileCardOuterBox:{
-		position:"relative"
+	fileCardOuterBox: {
+		position: "relative"
 	},
 	fileCard: {
 		background: "#FFFFFF",
@@ -57,21 +55,21 @@ const useStyles = makeStyles((theme) => ({
 		margin: "40px auto",
 		display: "block"
 	},
-	fileCardText:{
+	fileCardText: {
 		padding: "40px 20px",
-		fontSize:"16px",
-		fontWeight:"normal",
-		color:"#212529"
+		fontSize: "16px",
+		fontWeight: "normal",
+		color: "#212529"
 	},
-	fileCardActionBox:{
-		position:"absolute",
-		right:"5%",
+	fileCardActionBox: {
+		position: "absolute",
+		right: "5%",
 		top: "40px",
 	},
-	fileCardActionItem:{
-		display:"block"
+	fileCardActionItem: {
+		display: "block"
 	},
-	optionButton:{
+	optionButton: {
 		float: "right",
 		padding: "6px 12px",
 		width: "100px",
@@ -80,19 +78,21 @@ const useStyles = makeStyles((theme) => ({
 		color: "white",
 		textTransform: "capitalize"
 	},
-	optionMenuItem:{
+	optionMenuItem: {
 		fontWeight: "normal",
 		fontSize: "14px",
 		color: "#212529",
-		marginTop:"8px",
+		marginTop: "8px",
 	}
 }));
 
 export default function Dataset(props) {
 	const classes = useStyles();
 
-	const {files, deleteFile, thumbnails, about, selectFile, selectedDatasetId, deleteDataset, selectDataset,
-		fileSchema, ...other} = props;
+	const {
+		files, deleteFile, thumbnails, about, selectFile, selectedDatasetId, deleteDataset, selectDataset,
+		fileSchema, ...other
+	} = props;
 	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 	const [open, setOpen] = React.useState(false);
 
@@ -118,49 +118,49 @@ export default function Dataset(props) {
 						{/*Tabs*/}
 						<Tabs value={selectedTabIndex} onChange={handleTabChange} aria-label="dataset tabs">
 							<Tab className={classes.tab} label="Files" {...a11yProps(0)} />
-							<Tab className={classes.tab} label="Metadata" {...a11yProps(1)} />
-							<Tab className={classes.tab} label="Extractions" {...a11yProps(2)} />
-							<Tab className={classes.tab} label="Visualizations" {...a11yProps(3)} />
-							<Tab className={classes.tab} label="Comments" {...a11yProps(4)} />
+							{/*<Tab className={classes.tab} label="Metadata" {...a11yProps(1)} />*/}
+							{/*<Tab className={classes.tab} label="Extractions" {...a11yProps(2)} />*/}
+							{/*<Tab className={classes.tab} label="Visualizations" {...a11yProps(3)} />*/}
+							{/*<Tab className={classes.tab} label="Comments" {...a11yProps(4)} />*/}
 						</Tabs>
 						{/*option menus*/}
 						<Box>
-								<Button aria-haspopup="true" onClick={handleOptionClick}
-										className={classes.optionButton} endIcon={<ArrowDropDownIcon />}>
-									Options
-								</Button>
-								<Menu
-									id="simple-menu"
-									anchorEl={anchorEl}
-									keepMounted
-									open={Boolean(anchorEl)}
-									onClose={handleOptionClose}
-								>
-									<MenuItem className={classes.optionMenuItem}
-											  onClick={()=>{
-											  	setOpen(true);
-											  	handleOptionClose();
-											  }}>
-										Add Files
-									</MenuItem>
-									<MenuItem className={classes.optionMenuItem}
-											  onClick={() => {
-											  	downloadDataset(selectedDatasetId, about["name"]);
-											  	handleOptionClose();
-											  }}>
-										Download All
-									</MenuItem>
-									<MenuItem onClick={()=>{
-										deleteDataset(selectedDatasetId);
-										handleOptionClose();
-										// TODO go to the explore page
-									}
-									} className={classes.optionMenuItem}>Delete</MenuItem>
-									<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Follow</MenuItem>
-									<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Collaborators</MenuItem>
-									<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Extraction</MenuItem>
-								</Menu>
-							</Box>
+							<Button aria-haspopup="true" onClick={handleOptionClick}
+									className={classes.optionButton} endIcon={<ArrowDropDownIcon/>}>
+								Options
+							</Button>
+							<Menu
+								id="simple-menu"
+								anchorEl={anchorEl}
+								keepMounted
+								open={Boolean(anchorEl)}
+								onClose={handleOptionClose}
+							>
+								<MenuItem className={classes.optionMenuItem}
+										  onClick={() => {
+											  setOpen(true);
+											  handleOptionClose();
+										  }}>
+									Add Files
+								</MenuItem>
+								<MenuItem className={classes.optionMenuItem}
+										  onClick={() => {
+											  downloadDataset(selectedDatasetId, about["name"]);
+											  handleOptionClose();
+										  }}>
+									Download All
+								</MenuItem>
+								<MenuItem onClick={() => {
+									deleteDataset(selectedDatasetId);
+									handleOptionClose();
+									// TODO go to the explore page
+								}
+								} className={classes.optionMenuItem}>Delete</MenuItem>
+								{/*<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Follow</MenuItem>*/}
+								{/*<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Collaborators</MenuItem>*/}
+								{/*<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Extraction</MenuItem>*/}
+							</Menu>
+						</Box>
 					</AppBar>
 					<TabPanel value={selectedTabIndex} index={0}>
 
@@ -195,15 +195,16 @@ export default function Dataset(props) {
 											</ListItem>
 											<Box className={classes.fileCardActionBox}>
 												<Box className={classes.fileCardActionItem}>
-													<Button startIcon={<DeleteOutlineIcon />}
-															onClick={()=>{deleteFile(file["id"]);}}>Delete</Button>
+													<Button startIcon={<DeleteOutlineIcon/>}
+															onClick={() => {deleteFile(file["id"]);}}>Delete</Button>
 												</Box>
 												<Box className={classes.fileCardActionItem}>
-													<Button startIcon={<StarBorderIcon />}>Follow</Button>
+													<Button startIcon={<StarBorderIcon/>}
+															disabled={true}>Follow</Button>
 												</Box>
 												<Box className={classes.fileCardActionItem}>
-													<Button startIcon={<CloudDownloadOutlinedIcon />}
-															onClick={()=>{downloadFile(file["id"], file["filename"]);}}>
+													<Button startIcon={<CloudDownloadOutlinedIcon/>}
+															onClick={() => {downloadFile(file["id"], file["filename"]);}}>
 														Download</Button>
 												</Box>
 											</Box>
@@ -214,10 +215,10 @@ export default function Dataset(props) {
 								<></>
 						}
 					</TabPanel>
-					<TabPanel value={selectedTabIndex} index={1}></TabPanel>
-					<TabPanel value={selectedTabIndex} index={2}></TabPanel>
-					<TabPanel value={selectedTabIndex} index={3}></TabPanel>
-					<TabPanel value={selectedTabIndex} index={4}></TabPanel>
+					{/*<TabPanel value={selectedTabIndex} index={1}></TabPanel>*/}
+					{/*<TabPanel value={selectedTabIndex} index={2}></TabPanel>*/}
+					{/*<TabPanel value={selectedTabIndex} index={3}></TabPanel>*/}
+					{/*<TabPanel value={selectedTabIndex} index={4}></TabPanel>*/}
 				</Grid>
 				<Grid item lg={4} md={4} xl={4} sm={4} xs={12}>
 					{
@@ -236,30 +237,30 @@ export default function Dataset(props) {
 								{/*<Typography className="content">Resource type: {about["resource_type"]}</Typography>*/}
 							</Box> : <></>
 					}
-					<Divider light/>
-					<Box className="infoCard">
-						<Typography className="title">Statistics</Typography>
-						<Typography className="content">Views: 10</Typography>
-						<Typography className="content">Last viewed: Jun 07, 2021 21:49:09</Typography>
-						<Typography className="content">Downloads: 0</Typography>
-						<Typography className="content">Last downloaded: Never</Typography>
-					</Box>
-					<Divider light/>
-					<Box className="infoCard">
-						<Typography className="title">Tags</Typography>
-						<Grid container spacing={4}>
-							<Grid item lg={8} sm={8} xl={8} xs={12}>
-								<ClowderInput defaultValue="Tag"/>
-							</Grid>
-							<Grid item lg={4} sm={4} xl={4} xs={12}>
-								<ClowderButton>Search</ClowderButton>
-							</Grid>
-						</Grid>
-					</Box>
-					<Divider light/>
+					{/*<Divider light/>*/}
+					{/*<Box className="infoCard">*/}
+					{/*	<Typography className="title">Statistics</Typography>*/}
+					{/*	<Typography className="content">Views: 10</Typography>*/}
+					{/*	<Typography className="content">Last viewed: Jun 07, 2021 21:49:09</Typography>*/}
+					{/*	<Typography className="content">Downloads: 0</Typography>*/}
+					{/*	<Typography className="content">Last downloaded: Never</Typography>*/}
+					{/*</Box>*/}
+					{/*<Divider light/>*/}
+					{/*<Box className="infoCard">*/}
+					{/*	<Typography className="title">Tags</Typography>*/}
+					{/*	<Grid container spacing={4}>*/}
+					{/*		<Grid item lg={8} sm={8} xl={8} xs={12}>*/}
+					{/*			<ClowderInput defaultValue="Tag"/>*/}
+					{/*		</Grid>*/}
+					{/*		<Grid item lg={4} sm={4} xl={4} xs={12}>*/}
+					{/*			<ClowderButton>Search</ClowderButton>*/}
+					{/*		</Grid>*/}
+					{/*	</Grid>*/}
+					{/*</Box>*/}
+					{/*<Divider light/>*/}
 				</Grid>
 			</Grid>
-			<Dialog open={open} onClose={()=>{setOpen(false);}} fullWidth={true} aria-labelledby="form-dialog">
+			<Dialog open={open} onClose={() => {setOpen(false);}} fullWidth={true} aria-labelledby="form-dialog">
 				<DialogTitle id="form-dialog-title">Add Files</DialogTitle>
 				{/*pass select to uploader so once upload succeeded, can jump to that dataset/file page*/}
 				<UploadFile selectedDatasetId={selectedDatasetId} selectDataset={selectDataset} setOpen={setOpen}/>

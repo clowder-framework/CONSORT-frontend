@@ -7,6 +7,6 @@ export const IncoreInputLabel = styled(InputLabel)({
 	fontWeight: 500,
 	letterSpacing: "0.6px",
 	lineHeight: "19px",
-	marginBottom:"11px",
+	marginBottom: "11px",
 	width: "100%",
 });

@@ -2,7 +2,6 @@
   "compilerOptions": {
 	// Specify ECMAScript target version
 	"target": "es5",
-
 	// Specify where to search for @types
 	"typeRoots": [
 	  "node_modules/@types"

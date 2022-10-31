@@ -1,4 +1,4 @@
 instrumentation:
-  excludes: ['*.test.js', '*.test.jsx']
-  extensions: ['.js', '.jsx']
+  excludes: [ '*.test.js', '*.test.jsx' ]
+  extensions: [ '.js', '.jsx' ]
   include-all-sources: true

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {AppBar, Box, Link, Dialog, DialogTitle, Grid, ListItem, Tab, Tabs, Typography, Button} from "@material-ui/core";
+import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tabs, Typography} from "@material-ui/core";
 import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
@@ -118,7 +118,8 @@ export default function Dashboard(props) {
 														Delete</Button>
 												</Box>
 												<Box className={classes.fileCardActionItem}>
-													<Button startIcon={<StarBorderIcon/>}>Follow</Button>
+													<Button startIcon={<StarBorderIcon/>}
+															disabled={true}>Follow</Button>
 												</Box>
 												<Box className={classes.fileCardActionItem}>
 													<Button startIcon={<CloudDownloadOutlinedIcon/>}
@@ -129,70 +130,70 @@ export default function Dashboard(props) {
 										</Box>
 									);
 								})
-							:
-							<></>
-							}
-							<Button onClick={previous}>Prev</Button>
-							<Button onClick={next}>Next</Button>
-							</TabPanel>
-							<TabPanel value={selectedTabIndex} index={1}></TabPanel>
-							<TabPanel value={selectedTabIndex} index={2}></TabPanel>
-							<TabPanel value={selectedTabIndex} index={3}></TabPanel>
-							<TabPanel value={selectedTabIndex} index={4}></TabPanel>
-							</Grid>
-							<Grid item lg={4} md={4} xl={4} sm={4} xs={12}>
-							<Box className="actionCard">
-							<Typography className="title">Create your dataset</Typography>
-							<Typography className="content">Some quick example text to tell users why they should upload
-							their own data</Typography>
-							<Link className="link" onClick={()=>{setOpen(true);}}>Create Dataset</Link>
-							</Box>
-							<Box className="actionCard">
-							<Typography className="title">Explore more dataset</Typography>
-							<Typography className="content">Some quick example text to tell users why they should follow
-							more people</Typography>
-							<Link href="" className="link">Go to Explore</Link>
-							</Box>
-							<Box className="actionCard">
-							<Typography className="title">Want to learn more about Clowder?</Typography>
-							<Typography className="content">Some quick example text to tell users why they should read
-							the tutorial</Typography>
-							<Link href="" className="link">Show me Tutorial</Link>
-							</Box>
-							</Grid>
-							</Grid>
-							<Dialog open={open} onClose={()=>{setOpen(false);}} fullWidth={true} aria-labelledby="create-dataset">
-							<DialogTitle id="form-dialog-title">Create New Dataset</DialogTitle>
-						{/*pass select to uploader so once upload succeeded, can jump to that dataset/file page*/}
-							<CreateDataset selectDataset={selectDataset} setOpen={setOpen}/>
-							</Dialog>
-							</div>
-							);
+								:
+								<></>
 						}
+						<Button onClick={previous}>Prev</Button>
+						<Button onClick={next}>Next</Button>
+					</TabPanel>
+					{/*<TabPanel value={selectedTabIndex} index={1}></TabPanel>*/}
+					{/*<TabPanel value={selectedTabIndex} index={2}></TabPanel>*/}
+					{/*<TabPanel value={selectedTabIndex} index={3}></TabPanel>*/}
+					{/*<TabPanel value={selectedTabIndex} index={4}></TabPanel>*/}
+				</Grid>
+				<Grid item lg={4} md={4} xl={4} sm={4} xs={12}>
+					<Box className="actionCard">
+						<Typography className="title">Create your dataset</Typography>
+						<Typography className="content">Some quick example text to tell users why they should upload
+							their own data</Typography>
+						<Link className="link" onClick={() => {setOpen(true);}}>Create Dataset</Link>
+					</Box>
+					<Box className="actionCard">
+						<Typography className="title">Explore more dataset</Typography>
+						<Typography className="content">Some quick example text to tell users why they should follow
+							more people</Typography>
+						<Link href="" className="link">Go to Explore</Link>
+					</Box>
+					<Box className="actionCard">
+						<Typography className="title">Want to learn more about Clowder?</Typography>
+						<Typography className="content">Some quick example text to tell users why they should read
+							the tutorial</Typography>
+						<Link href="" className="link">Show me Tutorial</Link>
+					</Box>
+				</Grid>
+			</Grid>
+			<Dialog open={open} onClose={() => {setOpen(false);}} fullWidth={true} aria-labelledby="create-dataset">
+				<DialogTitle id="form-dialog-title">Create New Dataset</DialogTitle>
+				{/*pass select to uploader so once upload succeeded, can jump to that dataset/file page*/}
+				<CreateDataset selectDataset={selectDataset} setOpen={setOpen}/>
+			</Dialog>
+		</div>
+	);
+}
 
-						function TabPanel(props) {
-						const {children, value, index, ...other} = props;
+function TabPanel(props) {
+	const {children, value, index, ...other} = props;
 
-						return (
-						<div
-						role="tabpanel"
-						hidden={value !== index}
-						id={`dashboard-tabpanel-${index}`}
-						aria-labelledby={`dashboard-tab-${index}`}
-					{...other}
-						>
-					{value === index && (
-						<Box p={3}>
-						<Typography>{children}</Typography>
-						</Box>
-						)}
-						</div>
-						);
-					}
+	return (
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`dashboard-tabpanel-${index}`}
+			aria-labelledby={`dashboard-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+				<Box p={3}>
+					<Typography>{children}</Typography>
+				</Box>
+			)}
+		</div>
+	);
+}
 
-						function a11yProps(index) {
-						return {
-						id: `dashboard-tab-${index}`,
-						"aria-controls": `dashboard-tabpanel-${index}`,
-					};
-					}
+function a11yProps(index) {
+	return {
+		id: `dashboard-tab-${index}`,
+		"aria-controls": `dashboard-tabpanel-${index}`,
+	};
+}

@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 
 // A custom theme for this app
 export const theme = createTheme({
@@ -8,20 +8,20 @@ export const theme = createTheme({
 			'sans-serif',
 		].join(','),
 	},
-	palette:{
-		primary:{
+	palette: {
+		primary: {
 			light: "#F7941E",
 			main: "#F7941E",
 			dark: "#e65100",
 			contrastText: '#FFFFFF',
 		},
-		secondary:{
+		secondary: {
 			light: "#868E96",
 			main: "#6C757D",
 			dark: "#333333",
 		},
-		info:{
-			main:"#0086A1"
+		info: {
+			main: "#0086A1"
 		},
 		background: {
 			default: "#F8F8F8"
@@ -44,8 +44,8 @@ export const theme = createTheme({
 
 export const searchTheme = {
 	typography: {
-    	fontFamily: theme.typography.fontFamily,
-    	fontSize: "16px",
+		fontFamily: theme.typography.fontFamily,
+		fontSize: "16px",
 	},
 	colors: {
 		textColor: theme.palette.secondary.dark,

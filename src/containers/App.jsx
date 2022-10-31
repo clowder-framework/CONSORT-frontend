@@ -1,18 +1,8 @@
 import {connect} from "react-redux";
 import AppComponent from "../components/App";
-import {
-	deleteFile,
-	fetchFileExtractedMetadata,
-	fetchFileMetadataJsonld,
-	fetchFilePreviews
-} from "../actions/file";
+import {deleteFile, fetchFileExtractedMetadata, fetchFileMetadataJsonld, fetchFilePreviews} from "../actions/file";
 
-import {
-	fetchFilesInDataset,
-	fetchDatasetAbout,
-	fetchDatasets,
-	deleteDataset
-} from "../actions/dataset";
+import {deleteDataset, fetchDatasetAbout, fetchDatasets, fetchFilesInDataset} from "../actions/dataset";
 
 const mapStateToProps = (state) => {
 	return {
@@ -46,7 +36,7 @@ const mapDispatchToProps = (dispatch) => {
 		listDatasetAbout: (datasetId) => {
 			dispatch(fetchDatasetAbout(datasetId));
 		},
-		listDatasets: (when, date, limit) =>{
+		listDatasets: (when, date, limit) => {
 			dispatch(fetchDatasets(when, date, limit));
 		},
 		deleteDataset: (datasetId) => {

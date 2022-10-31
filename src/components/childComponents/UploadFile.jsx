@@ -23,10 +23,9 @@ export default function UploadFile(props) {
 	const onSave = async (formData) => {
 		setLoading(true);
 		const response = await uploadFile(formData, selectedDatasetId);
-		if (response !== {} && (response["id"] !== undefined || response["ids"] !== undefined)){
+		if (response !== {} && (response["id"] !== undefined || response["ids"] !== undefined)) {
 			selectDataset(selectedDatasetId);
-		}
-		else{
+		} else {
 			// TODO display error message to show upload unsuccess
 			console.log("fail to upload files!");
 		}
@@ -41,12 +40,12 @@ export default function UploadFile(props) {
 			{/*	spinner*/}
 			{/*	text="Saving..."*/}
 			{/*>*/}
-				<Form schema={fileSchema["schema"]} uiSchema={fileSchema["uiSchema"]}
-					  onSubmit={({formData}, e) => {onSave(formData);}}>
-					<Box className="inputGroup">
-						<Button variant="contained" type="submit" className="form-button-block">Upload</Button>
-					</Box>
-				</Form>
+			<Form schema={fileSchema["schema"]} uiSchema={fileSchema["uiSchema"]}
+				  onSubmit={({formData}, e) => {onSave(formData);}}>
+				<Box className="inputGroup">
+					<Button variant="contained" type="submit" className="form-button-block">Upload</Button>
+				</Box>
+			</Form>
 			{/*</LoadingOverlay>*/}
 		</Container>
 	);

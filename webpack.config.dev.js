@@ -6,12 +6,12 @@ import ESLintPlugin from "eslint-webpack-plugin";
 
 
 // eslint-disable-next-line no-console
-console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${  process.env.CLOWDER_REMOTE_HOSTNAME}`);
+console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${process.env.CLOWDER_REMOTE_HOSTNAME}`);
 
 export default {
-	mode:"development",
+	mode: "development",
 	resolve: {
-		modules:["node_modules", "src"],
+		modules: ["node_modules", "src"],
 		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
 	},
 	devtool: "source-map",
@@ -42,7 +42,7 @@ export default {
 			__DEV__: true
 		}),
 		new ESLintPlugin({
-			extensions: ["ts","tsx","js","jsx"],
+			extensions: ["ts", "tsx", "js", "jsx"],
 			exclude: ["node_modules", "dist", "build"]
 		}),
 		new webpack.HotModuleReplacementPlugin(),
@@ -88,7 +88,8 @@ export default {
 				test: /\.[ot]tf(\?v=\d+.\d+.\d+)?$/,
 				type: "asset/inline"
 			},
-			{	test: /\.ico$/,
+			{
+				test: /\.ico$/,
 				type: "asset/resource"
 			},
 			{
@@ -101,11 +102,11 @@ export default {
 			},
 			{
 				test: /(\.css|\.scss)$/i,
-				use:[
+				use: [
 					"style-loader",
 					"css-loader",
-					{ loader: "postcss-loader", options: { postcssOptions: { plugins: ["autoprefixer"] }}},
-					{ loader: "sass-loader", options: { sourceMap: true } }
+					{loader: "postcss-loader", options: {postcssOptions: {plugins: ["autoprefixer"]}}},
+					{loader: "sass-loader", options: {sourceMap: true}}
 				]
 			},
 			// {
