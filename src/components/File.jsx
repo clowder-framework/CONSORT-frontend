@@ -7,8 +7,11 @@ import Video from "./previewers/Video";
 import {downloadResource} from "../utils/common";
 import Thumbnail from "./previewers/Thumbnail";
 import Html from "./previewers/Html";
+import {useDispatch, useSelector} from "react-redux";
+import {useParams} from "react-router";
+import {fetchFileMetadata, fetchFileMetadataJsonld, fetchFilePreviews} from "../actions/file";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	appBar: {
 		background: "#FFFFFF",
 		boxShadow: "none",
@@ -22,13 +25,29 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function File(props) {
+export default function File() {
 	const classes = useStyles();
 
-	const {fileMetadata, fileExtractedMetadata, fileMetadataJsonld, filePreviews, fileId, ...other} = props;
+	// path parameter
+	const {fileId} = useParams();
+
+	const dispatch = useDispatch();
+	const listFileMetadata = (fileId) => dispatch((fetchFileMetadata(fileId)));
+	const listFileMetadataJsonld = (fileId) => dispatch((fetchFileMetadataJsonld(fileId)));
+	const listFilePreviews = (fileId) => dispatch((fetchFilePreviews(fileId)));
+
+	const fileMetadata = useSelector((state) => state.file.metadata);
+	const fileMetadataJsonld = useSelector((state) => state.file.metadataJsonld);
+	const filePreviews = useSelector((state) => state.file.previews);
 
 	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 	const [previews, setPreviews] = useState([]);
+
+	useEffect(() => {
+		listFileMetadata(fileId);
+		listFileMetadataJsonld(fileId);
+		listFilePreviews(fileId); // get dataset name
+	}, []);
 
 	useEffect(() => {
 		(async () => {

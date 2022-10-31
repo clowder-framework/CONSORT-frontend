@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tabs, Typography} from "@material-ui/core";
 import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
@@ -8,6 +8,10 @@ import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined"
 
 import CreateDataset from "./childComponents/CreateDataset";
 import {downloadDataset} from "../utils/dataset";
+import {useSelector, useDispatch} from "react-redux";
+
+import {deleteDataset as deleteDatasetAction, fetchDatasets} from "../actions/dataset";
+import {downloadThumbnail} from "../utils/thumbnail";
 
 const useStyles = makeStyles((theme) => ({
 	appBar: {
@@ -59,10 +63,55 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard(props) {
 	const classes = useStyles();
 
-	const {datasets, selectDataset, deleteDataset, thumbnails, previous, next, datasetSchema, ...other} = props;
+	const dispatch = useDispatch();
+	const deleteDataset = (datasetId) => dispatch(deleteDatasetAction(datasetId));
+	const listDatasets = (when, date, limit) => dispatch(fetchDatasets(when, date, limit));
 
+	const datasets = useSelector((state) => state.dataset.datasets);
+
+	const [lastDataset, setLastDataset] = useState([]);
+	const [firstDataset, setFirstDataset] = useState([]);
+	const [limit, setLimit] = useState(5);
 	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 	const [open, setOpen] = React.useState(false);
+	const [datasetThumbnailList, setDatasetThumbnailList] = useState([]);
+
+	// component did mount
+	useEffect(() => {
+		listDatasets(null, null, limit);
+	}, []);
+
+	useEffect(() => {
+		(async () => {
+			if (datasets !== undefined && datasets.length > 0) {
+
+				let datasetThumbnailListTemp = [];
+				await Promise.all(datasets.map(async (dataset) => {
+					// add thumbnails
+					if (dataset["thumbnail"] !== null && dataset["thumbnail"] !== undefined) {
+						let thumbnailURL = await downloadThumbnail(dataset["thumbnail"]);
+						datasetThumbnailListTemp.push({"id": dataset["id"], "thumbnail": thumbnailURL})
+					}
+				}));
+				setDatasetThumbnailList(datasetThumbnailListTemp);
+
+				// find last and first dataset for pagination
+				setFirstDataset(datasets[0])
+				setLastDataset(datasets[datasets.length - 1]);
+
+			}
+		})();
+	}, [datasets])
+
+	const previous = () => {
+		let date = firstDataset["created"] !== undefined ? new Date(firstDataset["created"]) : null;
+		if (date) listDatasets("b", date.toISOString(), limit);
+	}
+
+	const next = () => {
+		let date = lastDataset["created"] !== undefined ? new Date(lastDataset["created"]) : null;
+		if (date) listDatasets("a", date.toISOString(), limit);
+	}
 
 	const handleTabChange = (event, newTabIndex) => {
 		setSelectedTabIndex(newTabIndex);
@@ -84,11 +133,11 @@ export default function Dashboard(props) {
 					<TabPanel value={selectedTabIndex} index={0}>
 
 						{
-							datasets !== undefined && thumbnails !== undefined ?
+							datasets !== undefined && datasetThumbnailList !== undefined ?
 								datasets.map((dataset) => {
 									let thumbnailComp = <BusinessCenterIcon className={classes.fileCardImg}
 																			style={{fontSize: "5em"}}/>;
-									thumbnails.map((thumbnail) => {
+									datasetThumbnailList.map((thumbnail) => {
 										if (dataset["id"] !== undefined && thumbnail["id"] !== undefined &&
 											thumbnail["thumbnail"] !== null && thumbnail["thumbnail"] !== undefined &&
 											dataset["id"] === thumbnail["id"]) {
@@ -98,8 +147,10 @@ export default function Dashboard(props) {
 									});
 									return (
 										<Box className={classes.fileCardOuterBox}>
-											<ListItem button className={classes.fileCard} key={dataset["id"]}
-													  onClick={() => selectDataset(dataset["id"])}>
+											<ListItem component={Link}
+													  to={`/datasets/${dataset["id"]}`} sx={{height: "100%"}}
+													  className={classes.fileCard}
+													  key={dataset["id"]}>
 												<Grid item xl={2} lg={2} md={2} sm={2} xs={12}>
 													{thumbnailComp}
 												</Grid>
@@ -165,7 +216,7 @@ export default function Dashboard(props) {
 			<Dialog open={open} onClose={() => {setOpen(false);}} fullWidth={true} aria-labelledby="create-dataset">
 				<DialogTitle id="form-dialog-title">Create New Dataset</DialogTitle>
 				{/*pass select to uploader so once upload succeeded, can jump to that dataset/file page*/}
-				<CreateDataset selectDataset={selectDataset} setOpen={setOpen}/>
+				<CreateDataset setOpen={setOpen}/>
 			</Dialog>
 		</div>
 	);

@@ -12,8 +12,10 @@ import LoadingOverlay from "react-loading-overlay-ts";
 const useStyles = makeStyles();
 
 export default function CreateDataset(props) {
-	const {selectDataset, setOpen, ...other} = props;
+	const {setOpen, ...other} = props;
 	const classes = useStyles();
+
+	const history = useNavigate();
 
 	const [disabled, setDisabled] = useState(true);
 	const [loading, setLoading] = useState(false);
@@ -21,11 +23,14 @@ export default function CreateDataset(props) {
 	const onSave = async (formData) => {
 		setLoading(true);
 		const response = await createDataset(formData);
-		if (response !== {} && response["id"] !== undefined) {
-			selectDataset(response["id"]);
-		}
+
 		setLoading(false);
 		setOpen(false);
+
+		// zoom into that newly created dataset
+		if (response !== {} && response["id"] !== undefined) {
+			history(`/datasets/${response["id"]}`);
+		}
 	};
 
 	return (

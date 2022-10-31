@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {
 	AppBar,
@@ -21,7 +21,13 @@ import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
 import {downloadDataset} from "../utils/dataset";
-import {downloadFile} from "../utils/file";
+import {downloadFile, fetchFileMetadata} from "../utils/file";
+import {useSelector} from "react-redux";
+import {deleteFile as deleteFileAction} from "../actions/file";
+import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchFilesInDataset} from "../actions/dataset";
+import fileSchema from "../schema/fileSchema.json";
+import {useParams} from "react-router";
+import {downloadThumbnail} from "../utils/thumbnail";
 
 const useStyles = makeStyles((theme) => ({
 	appBar: {
@@ -89,14 +95,64 @@ const useStyles = makeStyles((theme) => ({
 export default function Dataset(props) {
 	const classes = useStyles();
 
-	const {
-		files, deleteFile, thumbnails, about, selectFile, selectedDatasetId, deleteDataset, selectDataset,
-		fileSchema, ...other
-	} = props;
+	// path parameter
+	const {datasetId} = useParams();
+
+	// use history hook to redirect/navigate between routes
+	const history = useNavigate();
+
+	const listFilesInDataset = (datasetId) => dispatch(fetchFilesInDataset(datasetId));
+	const listDatasetAbout = (datasetId) => dispatch(fetchDatasetAbout(datasetId));
+	const deleteFile = (fileId) => dispatch(deleteFileAction(fileId));
+	const deleteDataset = (datasetId) => dispatch(deleteDatasetAction(datasetId));
+
+	const filesInDataset = useSelector((state) => state.dataset.files);
+	const about = useSelector((state) => state.dataset.about);
+
+	const [selectedFileId, setSelectedFileId] = useState("");
+
 	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 	const [open, setOpen] = React.useState(false);
-
 	const [anchorEl, setAnchorEl] = React.useState(null);
+	const [fileThumbnailList, setFileThumbnailList] = useState([]);
+
+	useEffect(() => {
+		listFilesInDataset(datasetId, folderId);
+		listDatasetAbout(datasetId);
+	}, []);
+
+	// get metadata of each files; because we need the thumbnail of each file!!!
+	useEffect(() => {
+
+		(async () => {
+			if (filesInDataset !== undefined && filesInDataset.length > 0) {
+
+				let fileThumbnailListTemp = [];
+				await Promise.all(filesInDataset.map(async (fileInDataset) => {
+
+					let fileMetadata = await fetchFileMetadata(fileInDataset["id"]);
+					fileMetadataListTemp.push({"id": fileInDataset["id"], "metadata": fileMetadata});
+
+					// add thumbnails
+					if (fileMetadata["thumbnail"] !== null && fileMetadata["thumbnail"] !== undefined) {
+						let thumbnailURL = await downloadThumbnail(fileMetadata["thumbnail"]);
+						fileThumbnailListTemp.push({"id": fileInDataset["id"], "thumbnail": thumbnailURL})
+					}
+				}));
+				setFileThumbnailList(fileThumbnailListTemp);
+			}
+		})();
+	}, [filesInDataset])
+
+	const selectFile = (selectedFileId) => {
+		// pass that id to file component
+		setSelectedFileId(selectedFileId);
+
+		// load file information
+		listFileExtractedMetadata(selectedFileId);
+		listFileMetadataJsonld(selectedFileId);
+		listFilePreviews(selectedFileId);
+	}
 
 	const handleTabChange = (event, newTabIndex) => {
 		setSelectedTabIndex(newTabIndex);
@@ -145,13 +201,13 @@ export default function Dataset(props) {
 								</MenuItem>
 								<MenuItem className={classes.optionMenuItem}
 										  onClick={() => {
-											  downloadDataset(selectedDatasetId, about["name"]);
+											  downloadDataset(datasetId, about["name"]).then();
 											  handleOptionClose();
 										  }}>
 									Download All
 								</MenuItem>
 								<MenuItem onClick={() => {
-									deleteDataset(selectedDatasetId);
+									deleteDataset(datasetId);
 									handleOptionClose();
 									// TODO go to the explore page
 								}
@@ -165,11 +221,11 @@ export default function Dataset(props) {
 					<TabPanel value={selectedTabIndex} index={0}>
 
 						{
-							files !== undefined && thumbnails !== undefined ?
+							files !== undefined && fileThumbnailList !== undefined ?
 								files.map((file) => {
 									let thumbnailComp = <DescriptionIcon className={classes.fileCardImg}
 																		 style={{fontSize: "5em"}}/>;
-									thumbnails.map((thumbnail) => {
+									fileThumbnailList.map((thumbnail) => {
 										if (file["id"] !== undefined && thumbnail["id"] !== undefined &&
 											thumbnail["thumbnail"] !== null && thumbnail["thumbnail"] !== undefined &&
 											file["id"] === thumbnail["id"]) {
@@ -263,7 +319,7 @@ export default function Dataset(props) {
 			<Dialog open={open} onClose={() => {setOpen(false);}} fullWidth={true} aria-labelledby="form-dialog">
 				<DialogTitle id="form-dialog-title">Add Files</DialogTitle>
 				{/*pass select to uploader so once upload succeeded, can jump to that dataset/file page*/}
-				<UploadFile selectedDatasetId={selectedDatasetId} selectDataset={selectDataset} setOpen={setOpen}/>
+				<UploadFile selectedDatasetId={datasetId} selectDataset={selectDataset} setOpen={setOpen}/>
 			</Dialog>
 		</div>
 	);
