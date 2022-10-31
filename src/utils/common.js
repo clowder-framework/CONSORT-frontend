@@ -1,69 +1,65 @@
 import Cookies from "universal-cookie";
-import {V2} from "../openapi";
+import jwt_decode from "jwt-decode";
+import config from "../app.config";
 
 const cookies = new Cookies();
 
 
 //NOTE: This is only checking if a cookie is present, but not validating the cookie.
 export const isAuthorized = () => {
-	const authorization = cookies.get("Authorization") || "Bearer none";
-	V2.OpenAPI.TOKEN = authorization.replace("Bearer ", "");
+	const authorization = cookies.get("Authorization");
 	return process.env.DEPLOY_ENV === "local" ||
 			(authorization !== undefined && authorization !== "" && authorization !==
-					null && authorization !== "Bearer none");
+					null);
 };
 
 // construct header
 export function getHeader() {
-	// return authorization header with jwt token
-	const authorization = cookies.get("Authorization") || "Bearer none";
-	V2.OpenAPI.TOKEN = authorization.replace("Bearer ", "");
-	if (authorization) {
-		return new Headers({ "Authorization": authorization});
-	} else {
-		return {};
-	}
-}
-
-export async function downloadResource(url) {
-	const authHeader = getHeader();
-	const response = await fetch(url, {
-		method: "GET",
-		mode: "cors",
-		headers: authHeader,
+	const headers = new Headers({
+		"X-API-Key": config.apikey
 	});
 
-	if (response.status === 200) {
-		const blob = await response.blob();
-		return window.URL.createObjectURL(blob);
-	} else if (response.status === 401) {
-		// TODO handle error
-		// logout();
-		return null;
-	} else {
-		// TODO handle error
-		return null;
-	}
+	return headers;
+
+		// const headers = new Headers({
+		// 	"Authorization": cookies.get("Authorization"),
+		// });
+}
+
+export async function downloadResource(url){
+		let authHeader = getHeader();
+		let response = await fetch(url, {
+			method: "GET",
+			mode: "cors",
+			headers: authHeader,
+		});
+
+		if (response.status  === 200){
+			let blob = await response.blob();
+			return window.URL.createObjectURL(blob);
+		}
+		else if  (response.status  === 401){
+			// TODO handle error
+			return null;
+		}
+		else {
+			// TODO handle error
+			return null;
+		}
 }
 
 export function dataURItoFile(dataURI) {
-	const metadata = dataURI.split(",")[0];
-	const mime = metadata.match(/:(.*?);/)[1];
-	const filename = metadata.match(/name=(.*?);/)[1];
+	let metadata = dataURI.split(",")[0];
+	let mime = metadata.match(/:(.*?);/)[1];
+	let filename = metadata.match(/name=(.*?);/)[1];
 
-	const binary = atob(dataURI.split(",")[1]);
-	const array = [];
+	let binary = atob(dataURI.split(",")[1]);
+	let array = [];
 	for (let i = 0; i < binary.length; i++) {
 		array.push(binary.charCodeAt(i));
 	}
 	const blob = new Blob([new Uint8Array(array)], {type: mime});
 	return new File([blob], filename, {type: mime, lastModified: new Date()});
-}
-
-export function parseDate(dateString) {
-	const options = { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" };
-	const mydate = new Date(dateString);
-	return mydate.toLocaleString("en-US", options);
 }
 
 // get current username
@@ -80,7 +76,7 @@ export function parseDate(dateString) {
 // 	}
 // }
 
-// get current user"s encoded email address for datawolf use
+// get current user's encoded email address for datawolf use
 // export function getCurrUserInfo(){
 // 	if (process.env.DEPLOY_ENV === "local"){
 // 		return config.testUserInfo;
@@ -105,7 +101,7 @@ export function parseDate(dateString) {
 // 	}
 // }
 //
-// // get current user"s encoded email address for datawolf use
+// // get current user's encoded email address for datawolf use
 // export function getCurrUserEmail(){
 // 	if (process.env.DEPLOY_ENV === "local"){
 // 		return config.testUserInfo;

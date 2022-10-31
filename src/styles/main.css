@@ -20,17 +20,19 @@ body {
 }
 
 .infoCard {
-	padding: 20px 0;
+	padding: 48px 0;
 }
 
 .infoCard .title{
 	font-weight: 600;
 	font-size: 16px;
+	color: #000000;
 	margin-bottom: 8px;
 }
 
 .infoCard .content{
 	font-size: 14px;
+	color: #000000;
 	margin-bottom:2px;
 }
 
@@ -42,21 +44,22 @@ body {
 	border-radius: 4px;
 }
 
-.actionCard .title,
-.search-title
-{
+.actionCard .title{
 	font-weight: 600;
 	font-size: 20px;
+	color: #212529;
 	margin-bottom: 12px;
 }
 
 .actionCard .content{
 	font-size: 16px;
+	color: #212529;
 	margin-bottom:12px;
 }
 
 .actionCard .link{
 	font-size: 16px;
+	color: #007BFF;
 }
 
 .appBar {
@@ -68,6 +71,7 @@ body {
 	font-style: normal;
 	font-weight: normal;
 	font-size: 16px;
+	color: #495057;
 	text-transform: capitalize;
 }
 
@@ -78,29 +82,4 @@ body {
 
 .inputGroup{
 	margin: 20px auto;
-}
-
-.search-input{
-	background-color: #FFFFFF!important;
-	border: 1px solid #CED4DA!important;
-	border-radius: 4px;
-}
-
-.embedded-search-input{
-	border: none!important;
-    background: transparent!important;
-    border-bottom: 0.5px solid #868E96!important;
-}
-
-/*turn off the shadow box on search*/
-/*TODO pass in outer div id*/
-.input-group{
-	box-shadow: none!important;
-}
-
-.filter-select{
-	border: none!important;
-    background: transparent!important;
-    border-bottom: 1px solid #868E96!important;
-    font-weight: bold;
 }

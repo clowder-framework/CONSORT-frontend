@@ -3,16 +3,16 @@ import config from "../app.config";
 
 
 export async function downloadThumbnail(thumbnailId, title=null) {
-	const url = `${config.hostname}/thumbnails/${thumbnailId}/blob?superAdmin=true`;
-	const authHeader = getHeader();
-	const response = await fetch(url, {
+	let url = `${config.hostname}/clowder/api/thumbnails/${thumbnailId}/blob?superAdmin=true`;
+	let authHeader = getHeader();
+	let response = await fetch(url, {
 		method: "GET",
 		mode: "cors",
 		headers: authHeader,
 	});
 
 	if (response.status  === 200){
-		const blob = await response.blob();
+		let blob = await response.blob();
 		if (window.navigator.msSaveOrOpenBlob) {
 			window.navigator.msSaveBlob(blob, thumbnailId);
 			return null;
@@ -22,7 +22,6 @@ export async function downloadThumbnail(thumbnailId, title=null) {
 	}
 	else if  (response.status  === 401){
 		// TODO handle error
-		// logout();
 		return null;
 	}
 	else {
