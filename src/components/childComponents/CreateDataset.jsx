@@ -8,12 +8,12 @@ import Form from "@rjsf/material-ui";
 import datasetSchema from "../../schema/datasetSchema.json";
 import {createDataset} from "../../utils/dataset";
 import LoadingOverlay from "react-loading-overlay-ts";
+import {useNavigate} from "react-router";
 
 const useStyles = makeStyles();
 
 export default function CreateDataset(props) {
 	const {setOpen, ...other} = props;
-	const classes = useStyles();
 
 	const history = useNavigate();
 

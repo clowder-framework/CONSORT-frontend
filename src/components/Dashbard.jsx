@@ -148,7 +148,7 @@ export default function Dashboard(props) {
 									return (
 										<Box className={classes.fileCardOuterBox}>
 											<ListItem component={Link}
-													  to={`/datasets/${dataset["id"]}`} sx={{height: "100%"}}
+													  to={`/datasets/${dataset["id"]}`}
 													  className={classes.fileCard}
 													  key={dataset["id"]}>
 												<Grid item xl={2} lg={2} md={2} sm={2} xs={12}>

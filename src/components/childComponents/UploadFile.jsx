@@ -9,28 +9,32 @@ import Form from "@rjsf/material-ui";
 
 import {uploadFile} from "../../utils/file.js";
 import fileSchema from "../../schema/fileSchema.json";
+import {useNavigate} from "react-router";
 
 const useStyles = makeStyles();
 
 export default function UploadFile(props) {
-	const {selectedDatasetId, selectDataset, setOpen, ...other} = props;
+	const {selectedDatasetId, setOpen} = props;
 	const classes = useStyles();
 
-	const [disabled, setDisabled] = useState(true);
+	// use history hook to redirect/navigate between routes
+	const history = useNavigate();
+
 	const [loading, setLoading] = useState(false);
 
 
 	const onSave = async (formData) => {
 		setLoading(true);
 		const response = await uploadFile(formData, selectedDatasetId);
+		setLoading(false);
+		setOpen(false);
 		if (response !== {} && (response["id"] !== undefined || response["ids"] !== undefined)) {
-			selectDataset(selectedDatasetId);
+			// Redirect to file route with file Id and dataset id
+			history(`/files/${response["id"]}?dataset=${selectedDatasetId}`);
 		} else {
 			// TODO display error message to show upload unsuccess
 			console.log("fail to upload files!");
 		}
-		setLoading(false);
-		setOpen(false);
 	};
 
 	return (

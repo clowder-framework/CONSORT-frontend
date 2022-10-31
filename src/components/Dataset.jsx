@@ -6,7 +6,7 @@ import {
 	Button,
 	Dialog,
 	DialogTitle,
-	Grid,
+	Grid, Link,
 	ListItem,
 	Menu,
 	MenuItem,
@@ -22,11 +22,11 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
 import {downloadDataset} from "../utils/dataset";
 import {downloadFile, fetchFileMetadata} from "../utils/file";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {deleteFile as deleteFileAction} from "../actions/file";
 import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchFilesInDataset} from "../actions/dataset";
 import fileSchema from "../schema/fileSchema.json";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {downloadThumbnail} from "../utils/thumbnail";
 
 const useStyles = makeStyles((theme) => ({
@@ -92,15 +92,13 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Dataset(props) {
+export default function Dataset() {
 	const classes = useStyles();
 
 	// path parameter
 	const {datasetId} = useParams();
 
-	// use history hook to redirect/navigate between routes
-	const history = useNavigate();
-
+	const dispatch = useDispatch();
 	const listFilesInDataset = (datasetId) => dispatch(fetchFilesInDataset(datasetId));
 	const listDatasetAbout = (datasetId) => dispatch(fetchDatasetAbout(datasetId));
 	const deleteFile = (fileId) => dispatch(deleteFileAction(fileId));
@@ -109,15 +107,13 @@ export default function Dataset(props) {
 	const filesInDataset = useSelector((state) => state.dataset.files);
 	const about = useSelector((state) => state.dataset.about);
 
-	const [selectedFileId, setSelectedFileId] = useState("");
-
 	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 	const [open, setOpen] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [fileThumbnailList, setFileThumbnailList] = useState([]);
 
 	useEffect(() => {
-		listFilesInDataset(datasetId, folderId);
+		listFilesInDataset(datasetId);
 		listDatasetAbout(datasetId);
 	}, []);
 
@@ -131,8 +127,6 @@ export default function Dataset(props) {
 				await Promise.all(filesInDataset.map(async (fileInDataset) => {
 
 					let fileMetadata = await fetchFileMetadata(fileInDataset["id"]);
-					fileMetadataListTemp.push({"id": fileInDataset["id"], "metadata": fileMetadata});
-
 					// add thumbnails
 					if (fileMetadata["thumbnail"] !== null && fileMetadata["thumbnail"] !== undefined) {
 						let thumbnailURL = await downloadThumbnail(fileMetadata["thumbnail"]);
@@ -143,16 +137,6 @@ export default function Dataset(props) {
 			}
 		})();
 	}, [filesInDataset])
-
-	const selectFile = (selectedFileId) => {
-		// pass that id to file component
-		setSelectedFileId(selectedFileId);
-
-		// load file information
-		listFileExtractedMetadata(selectedFileId);
-		listFileMetadataJsonld(selectedFileId);
-		listFilePreviews(selectedFileId);
-	}
 
 	const handleTabChange = (event, newTabIndex) => {
 		setSelectedTabIndex(newTabIndex);
@@ -221,8 +205,8 @@ export default function Dataset(props) {
 					<TabPanel value={selectedTabIndex} index={0}>
 
 						{
-							files !== undefined && fileThumbnailList !== undefined ?
-								files.map((file) => {
+							filesInDataset !== undefined && fileThumbnailList !== undefined ?
+								filesInDataset.map((file) => {
 									let thumbnailComp = <DescriptionIcon className={classes.fileCardImg}
 																		 style={{fontSize: "5em"}}/>;
 									fileThumbnailList.map((thumbnail) => {
@@ -235,8 +219,10 @@ export default function Dataset(props) {
 									});
 									return (
 										<Box className={classes.fileCardOuterBox}>
-											<ListItem button className={classes.fileCard} key={file["id"]}
-													  onClick={() => selectFile(file["id"])}>
+											<ListItem component={Link}
+													  to={`/files/${file["id"]}?datasetId=${datasetId}`}
+													  className={classes.fileCard}
+													  key={file["id"]}>
 												<Grid item xl={2} lg={2} md={2} sm={2} xs={12}>
 													{thumbnailComp}
 												</Grid>
@@ -319,7 +305,7 @@ export default function Dataset(props) {
 			<Dialog open={open} onClose={() => {setOpen(false);}} fullWidth={true} aria-labelledby="form-dialog">
 				<DialogTitle id="form-dialog-title">Add Files</DialogTitle>
 				{/*pass select to uploader so once upload succeeded, can jump to that dataset/file page*/}
-				<UploadFile selectedDatasetId={datasetId} selectDataset={selectDataset} setOpen={setOpen}/>
+				<UploadFile selectedDatasetId={datasetId} setOpen={setOpen}/>
 			</Dialog>
 		</div>
 	);
