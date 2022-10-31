@@ -72,7 +72,14 @@ export default function File() {
 					Configuration.previewer = `/public${filePreview["p_path"]}/`;
 					Configuration.fileType = filePreview["pv_contenttype"];
 
-					let resourceURL = `${config.hostname}${filePreview["pv_route"]}?superAdmin=true`;
+					// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
+					// /clowder/file vs clowder/api/file
+					// TODO Temp fix insert /api/
+					let pv_routes = filePreview["pv_route"];
+					if (!pv_routes.includes("/api/")) {
+						pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`
+					}
+					let resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
 					Configuration.resource = await downloadResource(resourceURL);
 
 					previewsTemp.push(Configuration);
@@ -130,7 +137,8 @@ export default function File() {
 											return <Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
 															  imgSrc={preview["resource"]}/>;
 										} else if (preview["previewType"] === "html") {
-											return <Html fileId={preview["fileid"]} htmlSrc={preview["url"]}/>;
+											return <Html fileId={preview["fileid"]}
+														 htmlSrc={preview["resource"]}/>;
 										}
 									})
 								}

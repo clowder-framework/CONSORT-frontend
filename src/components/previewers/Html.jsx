@@ -3,5 +3,5 @@ import Link from "@material-ui/core/Link";
 
 export default function Html(props) {
 	const {fileId, htmlSrc, ...other} = props;
-	return <Link id={fileId} href={htmlSrc} target="_blank">Click here to preview</Link>
+	return <iframe id={fileId} src={htmlSrc} width="1000" height="1000"/>
 }
