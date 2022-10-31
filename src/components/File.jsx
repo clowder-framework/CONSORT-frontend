@@ -89,14 +89,16 @@ export default function File() {
 
 	const paths = [
 		{
+			"name": "Explore",
+			"url": "/"
+		},
+		{
 			"name": datasetAbout["name"],
-			"id": datasetId,
-			"type": "dataset"
+			"url": `/datasets/${datasetId}`
 		},
 		{
 			"name": fileMetadata["filename"],
-			"id": fileId,
-			"type": "file"
+			"url": `/files/${fileId}?datasetId=${datasetId}`
 		}
 	]
 

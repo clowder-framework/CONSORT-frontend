@@ -120,7 +120,12 @@ export default function Dashboard(props) {
 		setSelectedTabIndex(newTabIndex);
 	};
 
-	const paths = [];
+	const paths = [
+		{
+			"name": "Explore",
+			"url": "/"
+		},
+	];
 
 	return (
 		<>

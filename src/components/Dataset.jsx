@@ -25,7 +25,7 @@ import {downloadFile, fetchFileMetadata} from "../utils/file";
 import {useDispatch, useSelector} from "react-redux";
 import {deleteFile as deleteFileAction} from "../actions/file";
 import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchFilesInDataset} from "../actions/dataset";
-import {useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {downloadThumbnail} from "../utils/thumbnail";
 import {Link as RouterLink} from "react-router-dom";
 import TopBar from "./childComponents/TopBar";
@@ -97,6 +97,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Dataset() {
 	const classes = useStyles();
 
+	const history = useNavigate();
+
 	// path parameter
 	const {datasetId} = useParams();
 
@@ -154,9 +156,12 @@ export default function Dataset() {
 
 	const paths = [
 		{
+			"name": "Explore",
+			"url": "/"
+		},
+		{
 			"name": datasetAbout["name"],
-			"id": datasetId,
-			"type": "dataset"
+			"url": `/datasets/${datasetId}`
 		}
 	]
 
@@ -207,7 +212,7 @@ export default function Dataset() {
 										<MenuItem onClick={() => {
 											deleteDataset(datasetId);
 											handleOptionClose();
-											// TODO go to the explore page
+											history("/")
 										}
 										} className={classes.optionMenuItem}>Delete</MenuItem>
 										{/*<MenuItem onClick={handleOptionClose} className={classes.optionMenuItem}>Follow</MenuItem>*/}
