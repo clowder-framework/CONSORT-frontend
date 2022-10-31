@@ -1,0 +1,15 @@
+# IDEA/Webstorm project files
+.idea
+*.iml
+
+#VSCode metadata
+.vscode
+
+# Mac files
+.DS_Store
+
+# Ignore swap files (for files currently being edited)
+**/*.swp
+
+# npm
+node_modules
