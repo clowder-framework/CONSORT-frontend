@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "@material-ui/core/Link";
 
 export default function Html(props) {
 	const {fileId, htmlSrc, ...other} = props;
