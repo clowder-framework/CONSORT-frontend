@@ -1,26 +1,29 @@
 import React, {useState} from "react";
 
-import {Box, Button, Container} from "@material-ui/core";
-
-import {makeStyles} from "@material-ui/core/styles";
+import {Box, Container} from "@material-ui/core";
 
 import Form from "@rjsf/material-ui";
 import datasetSchema from "../../schema/datasetSchema.json";
 import {createDataset} from "../../utils/dataset";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {useNavigate} from "react-router";
+import {FormProps} from "@rjsf/core";
+import {ClowderButton} from "../styledComponents/ClowderButton";
 
-const useStyles = makeStyles();
 
-export default function CreateDataset(props) {
-	const {setOpen, ...other} = props;
+type Props = {
+	setOpen: any
+}
+
+export default function CreateDataset(props: Props) {
+	const {setOpen} = props;
 
 	const history = useNavigate();
 
-	const [disabled, setDisabled] = useState(true);
+	// const [disabled, setDisabled] = useState(true);
 	const [loading, setLoading] = useState(false);
 
-	const onSave = async (formData) => {
+	const onSave = async (formData:FormData) => {
 		setLoading(true);
 		const response = await createDataset(formData);
 
@@ -40,10 +43,10 @@ export default function CreateDataset(props) {
 				spinner
 				text="Saving..."
 			>
-				<Form schema={datasetSchema["schema"]} uiSchema={datasetSchema["uiSchema"]} // widgets={widgets}
-					  onSubmit={({formData}, e) => {onSave(formData);}}>
+				<Form schema={datasetSchema["schema"] as FormProps<any>["schema"]} uiSchema={datasetSchema["uiSchema"]} // widgets={widgets}
+					  onSubmit={({formData}, _) => {onSave(formData);}}>
 					<Box className="inputGroup">
-						<Button variant="contained" type="submit" className="form-button-block">Create</Button>
+						<ClowderButton variant="contained" type="submit" className="form-button-block">Create</ClowderButton>
 					</Box>
 				</Form>
 			</LoadingOverlay>

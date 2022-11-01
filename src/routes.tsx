@@ -2,8 +2,8 @@ import React from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 import Dashboard from "./components/Dashbard";
-import DatasetComponent from "./components/Dataset";
-import FileComponent from "./components/File";
+import DatasetComponent from "./components/datasets/Dataset";
+import FileComponent from "./components/files/File";
 
 export const AppRoutes = (): JSX.Element => {
 	return (

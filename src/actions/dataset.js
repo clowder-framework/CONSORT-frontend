@@ -69,7 +69,7 @@ export function receiveDatasets(type, json) {
 	};
 }
 
-export function fetchDatasets(when, date, limit = "5") {
+export function fetchDatasets(when, date, limit = 5) {
 	let url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
 	if (date) url = `${url}&date=${date}`;
 	if (when) url = `${url}&when=${when}`;

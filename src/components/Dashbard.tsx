@@ -7,16 +7,16 @@ import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
 
-import CreateDataset from "./childComponents/CreateDataset";
+import CreateDataset from "./datasets/CreateDataset";
 import {downloadDataset} from "../utils/dataset";
 import {useDispatch, useSelector} from "react-redux";
 
 import {deleteDataset as deleteDatasetAction, fetchDatasets} from "../actions/dataset";
 import {downloadThumbnail} from "../utils/thumbnail";
-import TopBar from "./childComponents/TopBar";
-import Breadcrumbs from "./childComponents/BreadCrumb";
+import TopBar from "./navigation/TopBar";
+import {BreadCrumb} from "./navigation/BreadCrumb";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
 	appBar: {
 		background: "#FFFFFF",
 		boxShadow: "none",
@@ -63,18 +63,18 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Dashboard(props) {
+export default function Dashboard() {
 	const classes = useStyles();
 
 	const dispatch = useDispatch();
-	const deleteDataset = (datasetId) => dispatch(deleteDatasetAction(datasetId));
-	const listDatasets = (when, date, limit) => dispatch(fetchDatasets(when, date, limit));
+	const deleteDataset = (datasetId:string) => dispatch(deleteDatasetAction(datasetId));
+	const listDatasets = (when:string|null, date:string|null, limit:number|undefined) => dispatch(fetchDatasets(when, date, limit));
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 
 	const [lastDataset, setLastDataset] = useState([]);
 	const [firstDataset, setFirstDataset] = useState([]);
-	const [limit, setLimit] = useState(5);
+	const [limit, _] = useState(5);
 	const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 	const [open, setOpen] = React.useState(false);
 	const [datasetThumbnailList, setDatasetThumbnailList] = useState([]);
@@ -116,7 +116,7 @@ export default function Dashboard(props) {
 		if (date) listDatasets("a", date.toISOString(), limit);
 	}
 
-	const handleTabChange = (event, newTabIndex) => {
+	const handleTabChange = (event, newTabIndex:number) => {
 		setSelectedTabIndex(newTabIndex);
 	};
 
@@ -131,7 +131,7 @@ export default function Dashboard(props) {
 		<>
 			<TopBar/>
 			<div className="outer-container">
-				<Breadcrumbs paths={paths}/>
+				<BreadCrumb paths={paths}/>
 				<div className="inner-container">
 						<Grid container spacing={4}>
 							<Grid item lg={8} xl={8} md={8} sm={8} xs={12}>
@@ -258,7 +258,7 @@ function TabPanel(props) {
 	);
 }
 
-function a11yProps(index) {
+function a11yProps(index:number) {
 	return {
 		id: `dashboard-tab-${index}`,
 		"aria-controls": `dashboard-tabpanel-${index}`,
