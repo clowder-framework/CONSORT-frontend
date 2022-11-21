@@ -1,8 +1,14 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
 
-export default function Thumbnail(props){
-	const {fileId, imgSrc, fileType, ...other} = props;
+type Props = {
+	fileId: string,
+	imgSrc:string,
+	fileType: string
+}
+
+export default function Thumbnail(props:Props){
+	const {fileId, imgSrc, fileType} = props;
 	return (
 		(() => {
 			if (fileType === "image/jpeg" || fileType === "image/jpg" || fileType === "image/png"

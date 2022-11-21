@@ -3,7 +3,8 @@ import {getHeader} from "../utils/common";
 
 
 export const RECEIVE_FILE_METADATA = "RECEIVE_FILE_METADATA";
-export function receiveFileMetadata(type, json){
+
+export function receiveFileMetadata(type, json) {
 	return (dispatch) => {
 		dispatch({
 			type: type,
@@ -12,6 +13,7 @@ export function receiveFileMetadata(type, json){
 		});
 	};
 }
+
 export function fetchFileMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
 	return (dispatch) => {

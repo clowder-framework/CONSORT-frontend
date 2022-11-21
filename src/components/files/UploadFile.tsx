@@ -1,21 +1,24 @@
 import React, {useState} from "react";
 
-import {Box, Button, Container} from "@material-ui/core";
+import {Box, Container} from "@material-ui/core";
 
 import LoadingOverlay from "react-loading-overlay-ts";
-import {makeStyles} from "@material-ui/core/styles";
 
 import Form from "@rjsf/material-ui";
 
 import {uploadFile} from "../../utils/file.js";
 import fileSchema from "../../schema/fileSchema.json";
 import {useNavigate} from "react-router";
+import {FormProps} from "@rjsf/core";
+import {ClowderButton} from "../styledComponents/ClowderButton";
 
-const useStyles = makeStyles();
+type Props = {
+	selectedDatasetId: string,
+	setOpen: any
+}
 
-export default function UploadFile(props) {
+export default function UploadFile(props:Props) {
 	const {selectedDatasetId, setOpen} = props;
-	const classes = useStyles();
 
 	// use history hook to redirect/navigate between routes
 	const history = useNavigate();
@@ -23,7 +26,7 @@ export default function UploadFile(props) {
 	const [loading, setLoading] = useState(false);
 
 
-	const onSave = async (formData) => {
+	const onSave = async (formData:FormData) => {
 		setLoading(true);
 		const response = await uploadFile(formData, selectedDatasetId);
 		setLoading(false);
@@ -44,10 +47,10 @@ export default function UploadFile(props) {
 				spinner
 				text="Saving..."
 			>
-			<Form schema={fileSchema["schema"]} uiSchema={fileSchema["uiSchema"]}
-				  onSubmit={({formData}, e) => {onSave(formData);}}>
+			<Form schema={fileSchema["schema"] as FormProps<any>["schema"]} uiSchema={fileSchema["uiSchema"]}
+				  onSubmit={({formData}, _) => {onSave(formData);}}>
 				<Box className="inputGroup">
-					<Button variant="contained" type="submit" className="form-button-block">Upload</Button>
+					<ClowderButton variant="contained" type="submit" className="form-button-block">Upload</ClowderButton>
 				</Box>
 			</Form>
 			</LoadingOverlay>

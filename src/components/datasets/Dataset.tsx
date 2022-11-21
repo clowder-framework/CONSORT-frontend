@@ -16,20 +16,20 @@ import {
 } from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import UploadFile from "./childComponents/UploadFile";
+import UploadFile from "../files/UploadFile";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
-import {downloadDataset} from "../utils/dataset";
-import {downloadFile, fetchFileMetadata} from "../utils/file";
+import {downloadDataset} from "../../utils/dataset";
+import {downloadFile, fetchFileMetadata} from "../../utils/file";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteFile as deleteFileAction} from "../actions/file";
-import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchFilesInDataset} from "../actions/dataset";
+import {deleteFile as deleteFileAction} from "../../actions/file";
+import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchFilesInDataset} from "../../actions/dataset";
 import {useNavigate, useParams} from "react-router";
-import {downloadThumbnail} from "../utils/thumbnail";
+import {downloadThumbnail} from "../../utils/thumbnail";
 import {Link as RouterLink} from "react-router-dom";
-import TopBar from "./childComponents/TopBar";
-import Breadcrumbs from "./childComponents/BreadCrumb";
+import TopBar from "../navigation/TopBar";
+import {BreadCrumb} from "../navigation/BreadCrumb";
 
 const useStyles = makeStyles((theme) => ({
 	appBar: {
@@ -103,10 +103,10 @@ export default function Dataset() {
 	const {datasetId} = useParams();
 
 	const dispatch = useDispatch();
-	const listFilesInDataset = (datasetId) => dispatch(fetchFilesInDataset(datasetId));
-	const listDatasetAbout = (datasetId) => dispatch(fetchDatasetAbout(datasetId));
-	const deleteFile = (fileId) => dispatch(deleteFileAction(fileId));
-	const deleteDataset = (datasetId) => dispatch(deleteDatasetAction(datasetId));
+	const listFilesInDataset = (datasetId:string|undefined) => dispatch(fetchFilesInDataset(datasetId));
+	const listDatasetAbout = (datasetId:string|undefined) => dispatch(fetchDatasetAbout(datasetId));
+	const deleteFile = (fileId:string|undefined) => dispatch(deleteFileAction(fileId));
+	const deleteDataset = (datasetId:string|undefined|null) => dispatch(deleteDatasetAction(datasetId));
 
 	const filesInDataset = useSelector((state) => state.dataset.files);
 	const datasetAbout = useSelector((state) => state.dataset.about);
@@ -142,11 +142,11 @@ export default function Dataset() {
 		})();
 	}, [filesInDataset])
 
-	const handleTabChange = (event, newTabIndex) => {
+	const handleTabChange = (_event: any, newTabIndex:number) => {
 		setSelectedTabIndex(newTabIndex);
 	};
 
-	const handleOptionClick = (event) => {
+	const handleOptionClick = (event: { currentTarget: React.SetStateAction<null>; }) => {
 		setAnchorEl(event.currentTarget);
 	};
 
@@ -169,7 +169,7 @@ export default function Dataset() {
 		<>
 			<TopBar/>
 			<div className="outer-container">
-				<Breadcrumbs paths={paths}/>
+				<BreadCrumb paths={paths}/>
 				<div className="inner-container">
 					<Grid container spacing={4}>
 						<Grid item lg={8} xl={8} md={8} sm={8} xs={12}>
@@ -332,7 +332,7 @@ export default function Dataset() {
 	);
 }
 
-function TabPanel(props) {
+function TabPanel(props:any) {
 	const {children, value, index, ...other} = props;
 
 	return (
@@ -352,7 +352,7 @@ function TabPanel(props) {
 	);
 }
 
-function a11yProps(index) {
+function a11yProps(index:number) {
 	return {
 		id: `dataset-tab-${index}`,
 		"aria-controls": `dataset-tabpanel-${index}`,

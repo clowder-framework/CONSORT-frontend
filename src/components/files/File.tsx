@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from "react";
-import config from "../app.config";
+import config from "../../app.config";
 import {AppBar, Box, Grid, Tab, Tabs, Typography} from "@material-ui/core"
 import {makeStyles} from "@material-ui/core/styles";
-import Audio from "./previewers/Audio";
-import Video from "./previewers/Video";
-import {downloadResource} from "../utils/common";
-import Thumbnail from "./previewers/Thumbnail";
-import Html from "./previewers/Html";
+import Audio from "../previewers/Audio";
+import Video from "../previewers/Video";
+import {downloadResource} from "../../utils/common";
+import Thumbnail from "../previewers/Thumbnail";
+import Html from "../previewers/Html";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
-import {fetchFileMetadata, fetchFileMetadataJsonld, fetchFilePreviews} from "../actions/file";
-import TopBar from "./childComponents/TopBar";
-import Breadcrumbs from "./childComponents/BreadCrumb";
-import {fetchDatasetAbout} from "../actions/dataset";
+import {fetchFileMetadata, fetchFileMetadataJsonld, fetchFilePreviews} from "../../actions/file";
+import TopBar from "../navigation/TopBar";
+import {BreadCrumb} from "../navigation/BreadCrumb";
+import {fetchDatasetAbout} from "../../actions/dataset";
 import {useSearchParams} from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
@@ -35,14 +35,14 @@ export default function File() {
 	// path parameter
 	const {fileId} = useParams();
 	// search parameters
-	let [searchParams, setSearchParams] = useSearchParams();
+	let [searchParams, _] = useSearchParams();
 	const datasetId = searchParams.get("datasetId");
 
 	const dispatch = useDispatch();
-	const listFileMetadata = (fileId) => dispatch((fetchFileMetadata(fileId)));
-	const listFileMetadataJsonld = (fileId) => dispatch((fetchFileMetadataJsonld(fileId)));
-	const listFilePreviews = (fileId) => dispatch((fetchFilePreviews(fileId)));
-	const listDatasetAbout = (datasetId) => dispatch(fetchDatasetAbout(datasetId));
+	const listFileMetadata = (fileId:string|undefined) => dispatch((fetchFileMetadata(fileId)));
+	const listFileMetadataJsonld = (fileId:string|undefined) => dispatch((fetchFileMetadataJsonld(fileId)));
+	const listFilePreviews = (fileId:string|undefined) => dispatch((fetchFilePreviews(fileId)));
+	const listDatasetAbout = (datasetId:string|undefined) => dispatch(fetchDatasetAbout(datasetId));
 
 	const fileMetadata = useSelector((state) => state.file.metadata);
 	const fileMetadataJsonld = useSelector((state) => state.file.metadataJsonld);
@@ -113,7 +113,7 @@ export default function File() {
 		<>
 			<TopBar/>
 			<div className="outer-container">
-				<Breadcrumbs paths={paths}/>
+				<BreadCrumb paths={paths}/>
 				<div className="inner-container">
 					<Grid container spacing={4}>
 						<Grid item lg={8} sm={8} xl={8} xs={12}>

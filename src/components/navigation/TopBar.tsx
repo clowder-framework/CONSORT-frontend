@@ -1,6 +1,6 @@
-import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {AppBar, Link, Toolbar, Typography,} from '@material-ui/core';
+import React from "react";
+import {makeStyles} from "@material-ui/core/styles";
+import {AppBar, Link, Toolbar, Typography,} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -39,7 +39,7 @@ export default function TopBar() {
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.appBar}>
 				<Toolbar className={classes.toolBar}>
-					<img className={classes.logo} src="../../public/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
+					<img src="../../public/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
 					<Typography className={classes.toolBarItem}>
 						<Link href="/" target="_blank" className={classes.toolBarlink}>
 							Home</Link>
