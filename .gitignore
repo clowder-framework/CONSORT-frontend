@@ -13,3 +13,32 @@
 
 # npm
 node_modules
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# vim swap files
+*.swp
+
+# IDEA:
+.idea/
+**.iml
+**.iml
+
+# IDEA - generated artifacts
+**/build/
+**/out/
+
+# Apple metadata
+**/.DS_Store
+
+# env file
+.env
