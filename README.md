@@ -10,12 +10,3 @@ run `npm install`
 - Set env variables in .env file. An example env file is given.
 - run `npm start` when in development mode.
 
-## Codegen
-
-### Prod
-
-run `npm run codegen`
-
-### Dev
-
-run `npm run codegen:dev`
