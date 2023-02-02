@@ -7,7 +7,7 @@ import config from "../../app.config";
 import {getHeader} from "../../utils/common";
 
 async function getDatasetFromUrl(url) {
-	let dataset_data_response = await fetch(url, {method:"GET", headers:getHeader()});
+	const dataset_data_response = await fetch(url, {method:"GET", headers:getHeader()});
 
 	if (dataset_data_response.status === 200) {
 		return dataset_data_response.json();
@@ -21,26 +21,29 @@ async function getDatasetFromUrl(url) {
 }
 
 function GetThumbnailFromUrl(props) {
-	let thumbnail=props.thumbnail;
+	const thumbnail=props.thumbnail;
 	if (thumbnail !== null && thumbnail !== undefined) {
-		let thumbnail_url = `${config.hostname}/clowder/api/thumbnails/${thumbnail}/blob?superAdmin=true`;
+		const thumbnail_url = `${config.hostname}/clowder/api/thumbnails/${thumbnail}/blob?superAdmin=true`;
 		return (
 			<div className="thumbnail">
 				<img className="thumbnail-image" src={thumbnail_url} alt="thumbnail"/>
 			</div>
 		);
 	}
+	else {
+		return null;
+	}
 }
 
 function DisplayDataset(props) {
-	let dataset = props.dataset;
-	let name = dataset["name"];
-	let description = dataset["description"];
-	let created = dataset["created"];
-	let thumbnail = dataset["thumbnail"];
+	const dataset = props.dataset;
+	const name = dataset["name"];
+	const description = dataset["description"];
+	const created = dataset["created"];
+	const thumbnail = dataset["thumbnail"];
 
 	return (
-		<div className="dataset">
+		<div className="display-dataset">
 			<p>Name : {name}</p>
 			<p>Description: {description}</p>
 			<p>Created: {created}</p>
@@ -55,8 +58,8 @@ export default function GetDataset() {
 
 	// Click Explore Dataset button to get dataset list
 	useEffect(() => {
-		let dataset_url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=5`;
-		if (fetchDatasets == true) {
+		const dataset_url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=5`;
+		if (fetchDatasets === true) {
 			getDatasetFromUrl(dataset_url).then((response) => {setDatasets(response)});
 		}
 	}, [fetchDatasets]);
@@ -67,7 +70,7 @@ export default function GetDataset() {
 			{
 				datasets.map((dataset) => {
 					return(
-						<div>
+						<div key={dataset.id}>
 							<DisplayDataset dataset={dataset} />
 						</div>
 					);
