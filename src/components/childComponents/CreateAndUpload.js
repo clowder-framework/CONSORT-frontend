@@ -58,10 +58,10 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	}
 }
 
-async function extractionsRequest(file,extractor_name) {
+async function extractionsRequest(file,body_data) {
 	const file_id = file["id"];
 	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
-	const body = JSON.stringify({"extractor": extractor_name});
+	const body = JSON.stringify(body_data);
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
@@ -99,7 +99,7 @@ export default function CreateAndUpload() {
 			const body = {"name": name, "description": description};
 			const dataset = await createDatasetRequest(body);
 			if (dataset["id"] !== undefined) {
-				uploadToDatasetRequest(dataset["id"], dropFile).then((response) => {setClowderFile(response)} );
+				await uploadToDatasetRequest(dataset["id"], dropFile).then((response) => {setClowderFile(response)} );
 			}
 		}
 		else {
@@ -107,12 +107,12 @@ export default function CreateAndUpload() {
 		}
 	}, [dropFile]);
 
-	// if clowderFile state has changed, submit file for extraction
+	// if clowderFile state has changed, submit file for extraction. if disabled by default.
 	useEffect(async () => {
 		if (clowderFile !== null) {
-			const extractor_name = "ncsa.rctTransparencyExtractor";
+			const body = {"extractor": "ncsa.rctTransparencyExtractor"};
 			//const extractor_name = "ncsa.wordcount";
-			await extractionsRequest(clowderFile, extractor_name);
+			await extractionsRequest(clowderFile, body);
 
 		}
 	}, [clowderFile]);
