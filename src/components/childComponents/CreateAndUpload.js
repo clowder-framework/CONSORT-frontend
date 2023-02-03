@@ -9,8 +9,9 @@ import Dropfile from "./Dropfile";
 import config from "../../app.config";
 import {getHeader} from "../../utils/common";
 
-async function createDatasetRequest(body) {
+async function createDatasetRequest(body_data) {
 	const create_dataset_url = `${config.hostname}/clowder/api/datasets/createempty?superAdmin=true`;
+	let body = JSON.stringify(body_data);
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
@@ -31,9 +32,12 @@ async function createDatasetRequest(body) {
 }
 
 async function uploadToDatasetRequest(dataset_id, file) {
-	const upload_to_dataset_url = `${config.hostname}/clowder/api/datasets/uploadToDataset/${dataset_id}?extract=false`;
-	const body = { "File" : file};
+	const upload_to_dataset_url = `${config.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=false`;
+	let body = new FormData();
+	body.append("File" ,file);
 	let authHeader = getHeader();
+	//authHeader.append('Accept', 'application/json');
+	//authHeader.append('Content-Type', 'multipart/form-data');
 	let response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
@@ -42,8 +46,8 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	});
 
 	if (response.status === 200) {
-		// {id:xxx}
-		// {ids:[{id:xxx}, {id:xxx}]}
+		// return file ID
+		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 		return response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
@@ -58,29 +62,35 @@ export default function CreateAndUpload() {
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
 
-	// if file state has changed, create a dataset
-	useEffect(() => {
+	// if dropFile state has changed, create and upload to dataset
+	useEffect(async () => {
 		const name = dropFile.name;
 		const description = dropFile.type;
-		const body = {'name':name, 'description':description};
-		const dataset = createDatasetRequest(body);
-		if (dataset.id !== undefined) {
-			uploadToDatasetRequest(dataset.id, dropFile).then((response) => {setClowderFile(response)});
+		if (name !== undefined) {
+			const body = {"name": name, "description": description};
+			const dataset = await createDatasetRequest(body);
+			if (dataset["id"] !== undefined) {
+				uploadToDatasetRequest(dataset["id"], dropFile).then((response) => {setClowderFile(response)} );
+			}
+		}
+		else {
+			console.log("error in dropped file");
 		}
 	}, [dropFile]);
 
 	// onDrop function
 	const onDrop = useCallback(acceptedFiles => {
 		// this callback will be called after files get dropped, we will get the acceptedFiles. If you want, you can even access the rejected files too
-		console.log(acceptedFiles);
-		setDropFile(acceptedFiles)
+		acceptedFiles.map(file => setDropFile(file));
 	}, []);
+	// TODO have a dependancy here - mouse hover or dropped file action
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="dropfile" sx={{ border: 1, borderColor: 'primary.main'}}>
 			<Dropfile onDrop={onDrop}
-					  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }/>
+					  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
+			/>
 		</Box>
 
 	);
