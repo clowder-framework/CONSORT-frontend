@@ -58,6 +58,35 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	}
 }
 
+async function extractionsRequest(file,extractor_name) {
+	const file_id = file["id"];
+	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
+	const body = JSON.stringify({"extractor": extractor_name});
+	let authHeader = getHeader();
+	authHeader.append('Accept', 'application/json');
+	authHeader.append('Content-Type', 'application/json');
+	let response = await fetch(extractions_url, {
+		method: "POST",
+		mode: "cors",
+		headers: authHeader,
+		body: body,
+	});
+
+	if (response.status === 200) {
+		// return {"status":"OK","job_id":"string"}
+		//return response.json();
+		console.log(response);
+	} else if (response.status === 401) {
+		// TODO handle error
+		console.log("error");
+		//return {};
+	} else {
+		// TODO handle error
+		console.log("error");
+		//return {};
+	}
+}
+
 export default function CreateAndUpload() {
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
@@ -77,6 +106,16 @@ export default function CreateAndUpload() {
 			console.log("error in dropped file");
 		}
 	}, [dropFile]);
+
+	// if clowderFile state has changed, submit file for extraction
+	useEffect(async () => {
+		if (clowderFile !== null) {
+			const extractor_name = "ncsa.rctTransparencyExtractor";
+			//const extractor_name = "ncsa.wordcount";
+			await extractionsRequest(clowderFile, extractor_name);
+
+		}
+	}, [clowderFile]);
 
 	// onDrop function
 	const onDrop = useCallback(acceptedFiles => {
