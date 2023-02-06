@@ -83,3 +83,28 @@ body {
 .inputGroup {
 	margin: 20px auto;
 }
+
+.dropzone-div {
+	height:200px;
+	border: 1px solid #007BFF;
+	text-align: center;
+	cursor: pointer;
+}
+
+.intro {
+	position: relative;
+}
+
+.major-text {
+	color: #F7941E;
+}
+
+.minor-text {
+	color: #F7941E;
+}
+
+.spirit-consort-logo {
+	height:30%;
+	width:40%;
+	object-fit: contain;
+}
