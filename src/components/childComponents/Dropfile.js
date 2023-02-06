@@ -1,11 +1,8 @@
 // File drag and drop
 
 import React from "react";
-import { styled } from "@material-ui/core/styles";
-import {Box} from "@material-ui/core";
 // Import the useDropzone hooks from react-dropzone
 import { useDropzone } from "react-dropzone";
-
 
 const Dropfile = ({ onDrop, accept }) => {
 	// Initializing useDropzone hooks with options
