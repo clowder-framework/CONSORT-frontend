@@ -89,6 +89,7 @@ body {
 	border: 1px solid #007BFF;
 	text-align: center;
 	cursor: pointer;
+	margin-bottom: 7px;
 }
 
 .intro {
@@ -101,10 +102,12 @@ body {
 
 .minor-text {
 	color: #F7941E;
+	margin-top: 20px;
 }
 
 .spirit-consort-logo {
 	height:30%;
 	width:40%;
 	object-fit: contain;
+	margin-top: 55px;
 }
