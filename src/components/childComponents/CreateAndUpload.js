@@ -6,6 +6,7 @@ import {Box, Button} from "@material-ui/core";
 import { borders } from '@mui/system';
 
 import Dropfile from "./Dropfile";
+import Html from "../previewers/Html";
 import config from "../../app.config";
 import {getHeader} from "../../utils/common";
 
@@ -74,21 +75,65 @@ async function extractionsRequest(file,body_data) {
 
 	if (response.status === 200) {
 		// return {"status":"OK","job_id":"string"}
-		//return response.json();
-		console.log(response);
+		return response.json();
+
 	} else if (response.status === 401) {
 		// TODO handle error
 		console.log("error");
-		//return {};
+		return {};
 	} else {
 		// TODO handle error
 		console.log("error");
-		//return {};
+		return {};
+	}
+}
+
+async function checkHtmlInDataset(dataset){
+	// function to check if an html file is there in the dataset
+	const dataset_id = dataset["id"];
+	const listFiles_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
+	// get the list of files in dataset
+	const dataset_listFiles_response = await fetch(listFiles_url, {method:"GET", headers:getHeader()});
+	// .then((response) => {setClowderFile(response)} );
+	await fetch(listFiles_url, {method:"GET", headers:getHeader()}).then((response) => {
+		// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
+		const dataset_listFiles = response.json();
+		console.log(dataset_listFiles);
+		// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
+		const htmlFile = Object.values(dataset_listFiles).filter(file => file.contentType === "text/html");
+		console.log(htmlFile);
+		if (htmlFile !== undefined ) {
+			// found html file in dataset
+			return htmlFile;
+		}
+		else {
+			return null;
+		}
+	});
+
+}
+
+
+async function getPreviewUrl(file_id) {
+	const previews_url = `${config.hostname}/clowder/api/files/${file_id}/getPreviews`;
+	let response = await fetch(previews_url, {method:"GET", headers:getHeader()});
+	if (response.status === 200) {
+		let json_response = response.json();
+		json_response[0]["previews"].map((preview) => {
+			if(preview["pv_contenttype"] === "text/html") {
+				return preview["pv_route"];
+			}
+			else{
+				console.log("preview error");
+				return null;
+			}
+		});
 	}
 }
 
 export default function CreateAndUpload() {
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
+	const [clowderDataset, setClowderDataset] = useState(null); // state for created dataset in Clowder
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
 
 	// if dropFile state has changed, create and upload to dataset
@@ -99,6 +144,7 @@ export default function CreateAndUpload() {
 			const body = {"name": name, "description": description};
 			const dataset = await createDatasetRequest(body);
 			if (dataset["id"] !== undefined) {
+				setClowderDataset(dataset);
 				await uploadToDatasetRequest(dataset["id"], dropFile).then((response) => {setClowderFile(response)} );
 			}
 		}
@@ -107,12 +153,36 @@ export default function CreateAndUpload() {
 		}
 	}, [dropFile]);
 
-	// if clowderFile state has changed, submit file for extraction. if disabled by default.
+	// if clowderFile state has changed, submit file for extraction and preview html.
 	useEffect(async () => {
 		if (clowderFile !== null) {
 			const body = {"extractor": "ncsa.rctTransparencyExtractor"};
 			//const extractor_name = "ncsa.wordcount";
-			await extractionsRequest(clowderFile, body);
+			await extractionsRequest(clowderFile, body).then((response)=> {
+				const timer = setTimeout(() => {
+					// check dataset again after 1min
+					console.log("check after 1min");
+				}, 60000);
+				clearTimeout(timer);
+				if (response["status"] === "OK") {
+
+					const htmlFile = checkHtmlInDataset(clowderDataset);
+					if (htmlFile === undefined) {
+						console.log("check after 1min html file");
+					}
+					else{
+						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
+						const preview_url = getPreviewUrl(htmlFile["id"]);
+						if (preview_url !== null) {
+							const htmlFileUrl = `${config.hostname}/${preview_url}`;
+							console.log(htmlFileUrl);
+							return <Html fileId={htmlFile["id"]} htmlSrc={htmlFileUrl}/>;
+						}
+					}
+
+				}
+
+			}); // end of extraction request
 
 		}
 	}, [clowderFile]);
