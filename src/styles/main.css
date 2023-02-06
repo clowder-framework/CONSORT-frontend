@@ -83,3 +83,9 @@ body {
 .inputGroup {
 	margin: 20px auto;
 }
+
+.dropzone-div {
+	height:200px;
+	border: 1px solid #007BFF;
+	text-align: center;
+}
