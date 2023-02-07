@@ -88,6 +88,13 @@ async function extractionsRequest(file,body_data) {
 	}
 }
 
+async function checkExtractionStatus(file){
+	// function to check extraction status of a file
+	const file_id = file["id"];
+	const extractions_status_url = `${config.hostname}/clowder/api/extractions/${file_id}/status`;
+	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:getHeader()});
+}
+
 async function checkHtmlInDataset(dataset){
 	// function to check if an html file is there in the dataset
 	const dataset_id = dataset["id"];
@@ -165,6 +172,7 @@ export default function CreateAndUpload() {
 				}, 60000);
 				clearTimeout(timer);
 				if (response["status"] === "OK") {
+					const extraction_status = await checkExtractionStatus(clowderFile);
 
 					const htmlFile = checkHtmlInDataset(clowderDataset);
 					if (htmlFile === undefined) {
