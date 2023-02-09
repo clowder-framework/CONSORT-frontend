@@ -93,6 +93,9 @@ async function checkExtractionStatus(file){
 	const file_id = file["id"];
 	const extractions_status_url = `${config.hostname}/clowder/api/extractions/${file_id}/status`;
 	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:getHeader()});
+	const extractions_response_json = extractions_response.json();
+	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
+	return extractions_response_json;
 }
 
 async function checkHtmlInDataset(dataset){
@@ -142,6 +145,7 @@ export default function CreateAndUpload() {
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
 	const [clowderDataset, setClowderDataset] = useState(null); // state for created dataset in Clowder
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
+	const [extractionJob, setExtractionJob] = useState(null);  // state for extraction job ID and status
 
 	// if dropFile state has changed, create and upload to dataset
 	useEffect(async () => {
@@ -165,35 +169,46 @@ export default function CreateAndUpload() {
 		if (clowderFile !== null) {
 			const body = {"extractor": "ncsa.rctTransparencyExtractor"};
 			//const extractor_name = "ncsa.wordcount";
-			await extractionsRequest(clowderFile, body).then((response)=> {
-				const timer = setTimeout(() => {
-					// check dataset again after 1min
-					console.log("check after 1min");
-				}, 60000);
-				clearTimeout(timer);
-				if (response["status"] === "OK") {
-					const extraction_status = await checkExtractionStatus(clowderFile);
-
-					const htmlFile = checkHtmlInDataset(clowderDataset);
-					if (htmlFile === undefined) {
-						console.log("check after 1min html file");
-					}
-					else{
-						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-						const preview_url = getPreviewUrl(htmlFile["id"]);
-						if (preview_url !== null) {
-							const htmlFileUrl = `${config.hostname}/${preview_url}`;
-							console.log(htmlFileUrl);
-							return <Html fileId={htmlFile["id"]} htmlSrc={htmlFileUrl}/>;
-						}
-					}
-
-				}
-
-			}); // end of extraction request
-
+			await extractionsRequest(clowderFile, body).then((response)=> {setExtractionJob(response)}); // end of extraction request
 		}
 	}, [clowderFile]);
+
+	// set timer for 30s once extraction is done
+	useEffect( () => {
+		const timer = setTimeout(() => {
+			// check dataset again after 1min
+			console.log("check after 30s");
+		}, 30000);
+		// unmount function to clear interval to prevent memory leaks.
+		return () => clearTimeout(timer);
+	}, [extractionJob]);
+
+	if (extractionJob.status === 200) {
+		// const loop = () => {
+		// 		// 	const extraction_status = checkExtractionStatus(clowderFile);
+		// 		// 	if (extraction_status["Status"] === "Done") {
+		// 		// 		const htmlFile = checkHtmlInDataset(clowderDataset);
+		// 		// 		if (htmlFile === undefined) {
+		// 		// 			console.log("check html file after 5s");
+		// 		// 			setTimeout(loop, 5000);
+		// 		// 		} else {
+		// 		// 			// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
+		// 		// 			const preview_url = getPreviewUrl(htmlFile["id"]);
+		// 		// 			if (preview_url !== null) {
+		// 		// 				const htmlFileUrl = `${config.hostname}/${preview_url}`;
+		// 		// 				console.log(htmlFileUrl);
+		// 		// 				return <Html fileId={htmlFile["id"]} htmlSrc={htmlFileUrl}/>;
+		// 		// 			}
+		// 		// 		}
+		// 		// 	} else {
+		// 		// 		setTimeout(loop, 5000);
+		// 		// 	}
+		// 		//
+		// 		// };
+		// 		// loop(); // call the loop to check extractions
+		console.log(extractionJob);
+
+	}
 
 	// onDrop function
 	const onDrop = useCallback(acceptedFiles => {
@@ -204,7 +219,7 @@ export default function CreateAndUpload() {
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
-		<Box className="dropfile" sx={{ border: 1, borderColor: 'primary.main'}}>
+		<Box className="dropfile">
 			<Dropfile onDrop={onDrop}
 					  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
 			/>
