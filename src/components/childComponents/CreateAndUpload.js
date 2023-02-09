@@ -26,6 +26,7 @@ async function createDatasetRequest(body_data) {
 
 	if (create_dataset_response.status === 200) {
 		// return the dataset ID {id:xxx}
+		console.log("create dataset successful");
 		return create_dataset_response.json();
 	} else if (create_dataset_response.status === 401) {
 		// TODO handle error
@@ -53,6 +54,7 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	if (response.status === 200) {
 		// return file ID
 		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+		console.log("upload to dataset successful");
 		return response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
@@ -79,15 +81,16 @@ async function extractionsRequest(file,body_data) {
 
 	if (response.status === 200) {
 		// return {"status":"OK","job_id":"string"}
+		console.log("submit to extraction successful");
 		return response.json();
 
 	} else if (response.status === 401) {
 		// TODO handle error
-		console.log("error");
+		console.log("submit to extraction error");
 		return {};
 	} else {
 		// TODO handle error
-		console.log("error");
+		console.log("submit to extraction error");
 		return {};
 	}
 }
@@ -97,9 +100,9 @@ async function checkExtractionStatus(file){
 	const file_id = file["id"];
 	const extractions_status_url = `${config.hostname}/clowder/api/extractions/${file_id}/status`;
 	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:getHeader()});
-	const extractions_response_json = extractions_response.json();
+	let extractions_data = await extractions_response.json();
 	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
-	return extractions_response_json;
+	return extractions_data;
 }
 
 async function checkHtmlInDataset(dataset){
@@ -108,22 +111,19 @@ async function checkHtmlInDataset(dataset){
 	const listFiles_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
 	// get the list of files in dataset
 	const dataset_listFiles_response = await fetch(listFiles_url, {method:"GET", headers:getHeader()});
-	// .then((response) => {setClowderFile(response)} );
-	await fetch(listFiles_url, {method:"GET", headers:getHeader()}).then((response) => {
-		// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
-		const dataset_listFiles = response.json();
-		console.log(dataset_listFiles);
-		// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
-		const htmlFile = Object.values(dataset_listFiles).filter(file => file.contentType === "text/html");
-		console.log(htmlFile);
-		if (htmlFile !== undefined ) {
-			// found html file in dataset
-			return htmlFile;
-		}
-		else {
-			return null;
-		}
-	});
+	const dataset_listFiles = await dataset_listFiles_response.json();
+	// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
+	const htmlFile = Object.values(dataset_listFiles).filter(file => file.contentType === "text/html");
+	console.log(htmlFile);
+	if (htmlFile !== undefined && htmlFile.contentType === "text/html") {
+		// found html file in dataset. return the object
+		console.log("html file generated");
+		return htmlFile;
+	}
+	else {
+		console.log("html file generation failed");
+		return null;
+	}
 
 }
 
@@ -177,42 +177,37 @@ export default function CreateAndUpload() {
 		}
 	}, [clowderFile]);
 
-	// set timer for 30s once extraction is done
+	// check extraction status in loop
 	useEffect( () => {
-		const timer = setTimeout(() => {
-			// check dataset again after 1min
-			console.log("check after 30s");
-		}, 30000);
-		// unmount function to clear interval to prevent memory leaks.
-		return () => clearTimeout(timer);
+		const loop = async () => {
+			const extraction_status = await checkExtractionStatus(clowderFile);
+			console.log(extraction_status);
+			if (extraction_status["Status"] === "Done" && extraction_status["ncsa.rctTransparencyExtractor"] === "DONE") {
+				const htmlFile = checkHtmlInDataset(clowderDataset);
+				if (htmlFile !== undefined && htmlFile.contentType === "text/html") {
+					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
+					const preview_url = await getPreviewUrl(htmlFile.id);
+					if (preview_url !== null) {
+						const htmlFileUrl = `${config.hostname}/${preview_url}`;
+						console.log(htmlFileUrl);
+						return <Html fileId={htmlFile["id"]} htmlSrc={htmlFileUrl}/>;
+					}
+
+				} else {
+					console.log("check html file after 5s");
+					setTimeout(loop, 5000);
+				}
+			} else {
+				console.log("check extraction status after 5s");
+				setTimeout(loop, 5000);
+			}
+
+		};
+		if (extractionJob !== null){
+			loop(); // call the loop to check extractions
+		}
+
 	}, [extractionJob]);
-
-	if (extractionJob.status === 200) {
-		// const loop = () => {
-		// 		// 	const extraction_status = checkExtractionStatus(clowderFile);
-		// 		// 	if (extraction_status["Status"] === "Done") {
-		// 		// 		const htmlFile = checkHtmlInDataset(clowderDataset);
-		// 		// 		if (htmlFile === undefined) {
-		// 		// 			console.log("check html file after 5s");
-		// 		// 			setTimeout(loop, 5000);
-		// 		// 		} else {
-		// 		// 			// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-		// 		// 			const preview_url = getPreviewUrl(htmlFile["id"]);
-		// 		// 			if (preview_url !== null) {
-		// 		// 				const htmlFileUrl = `${config.hostname}/${preview_url}`;
-		// 		// 				console.log(htmlFileUrl);
-		// 		// 				return <Html fileId={htmlFile["id"]} htmlSrc={htmlFileUrl}/>;
-		// 		// 			}
-		// 		// 		}
-		// 		// 	} else {
-		// 		// 		setTimeout(loop, 5000);
-		// 		// 	}
-		// 		//
-		// 		// };
-		// 		// loop(); // call the loop to check extractions
-		console.log(extractionJob);
-
-	}
 
 	// onDrop function
 	const onDrop = useCallback(acceptedFiles => {
