@@ -3,7 +3,11 @@
 
 import React, {useEffect, useState, useCallback} from 'react';
 import {Box, Button} from "@material-ui/core";
-import { borders } from '@mui/system';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 import Dropfile from "./Dropfile";
 import Html from "../previewers/Html";
@@ -219,11 +223,20 @@ export default function CreateAndUpload() {
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
-		<Box className="dropfile">
+		<Box className="createupload">
 			<Dropfile onDrop={onDrop}
 					  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
 			/>
+			<FormControl>
+				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
+				<RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="consort" name="radio-buttons-group">
+					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" />
+					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" />
+				</RadioGroup>
+			</FormControl>
 		</Box>
+
+
 
 	);
 
