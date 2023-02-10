@@ -150,6 +150,7 @@ async function getPreviewUrl(file_id) {
 }
 
 export default function CreateAndUpload() {
+	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
 	const [clowderDataset, setClowderDataset] = useState(null); // state for created dataset in Clowder
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
@@ -241,15 +242,18 @@ export default function CreateAndUpload() {
 	const onDrop = useCallback(acceptedFiles => {
 		// this callback will be called after files get dropped, we will get the acceptedFiles. If you want, you can even access the rejected files too
 		acceptedFiles.map(file => setDropFile(file));
-	}, []);
+	}, [mouseHover]);
 	// TODO have a dependancy here - mouse hover or dropped file action
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="createupload">
-			<Dropfile onDrop={onDrop}
-					  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
-			/>
+			<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
+				<Dropfile onDrop={onDrop}
+						  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
+				/>
+			</div>
+
 			<FormControl>
 				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
 				<RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="consort" name="radio-buttons-group">
