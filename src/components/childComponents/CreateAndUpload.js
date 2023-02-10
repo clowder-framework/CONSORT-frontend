@@ -19,6 +19,7 @@ import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
 
 async function createDatasetRequest(body_data) {
+	// Clowder API call to create empty dataset
 	const create_dataset_url = `${config.hostname}/clowder/api/datasets/createempty?superAdmin=true`;
 	let body = JSON.stringify(body_data);
 	let authHeader = getHeader();
@@ -42,6 +43,7 @@ async function createDatasetRequest(body_data) {
 }
 
 async function uploadToDatasetRequest(dataset_id, file) {
+	// Clowder API call to upload file to dataset
 	const upload_to_dataset_url = `${config.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=false`;
 	let body = new FormData();
 	body.append("File" ,file);
@@ -70,6 +72,7 @@ async function uploadToDatasetRequest(dataset_id, file) {
 }
 
 async function extractionsRequest(file,body_data) {
+	// Clowder API call to submit a file for extraction
 	const file_id = file["id"];
 	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
 	const body = JSON.stringify(body_data);
@@ -100,7 +103,7 @@ async function extractionsRequest(file,body_data) {
 }
 
 async function checkExtractionStatus(file){
-	// function to check extraction status of a file
+	// Clowder API call to check extraction status of a file
 	const file_id = file["id"];
 	const extractions_status_url = `${config.hostname}/clowder/api/extractions/${file_id}/status`;
 	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:getHeader()});
@@ -131,7 +134,7 @@ async function checkHtmlInDataset(dataset){
 
 }
 
-async function getPreviewUrl(file_id) {
+async function getPreviews(file_id) {
 	const previews_url = `${config.hostname}/clowder/api/files/${file_id}/getPreviews?superAdmin=true`;
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:getHeader()});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
@@ -193,7 +196,7 @@ export default function CreateAndUpload() {
 				console.log(htmlFile);
 				if (typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					const previews_list = await getPreviewUrl(htmlFile.id);
+					const previews_list = await getPreviews(htmlFile.id);
 					const preview = previews_list[0];
 					console.log(preview);
 					if (preview !== undefined) {
