@@ -172,9 +172,6 @@ export default function CreateAndUpload() {
 				await uploadToDatasetRequest(dataset["id"], dropFile).then((response) => {setClowderFile(response)} );
 			}
 		}
-		else {
-			console.log("error in dropped file");
-		}
 	}, [dropFile]);
 
 	// if clowderFile state has changed, submit file for extraction and preview html.
