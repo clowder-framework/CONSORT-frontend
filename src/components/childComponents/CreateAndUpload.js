@@ -2,7 +2,7 @@
 // Use Clowder createempty dataset API to create an empty dataset and uploadToDataset API to upload file to that dataset
 
 import React, {useEffect, useState, useCallback} from 'react';
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {Box, Button} from "@material-ui/core";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
