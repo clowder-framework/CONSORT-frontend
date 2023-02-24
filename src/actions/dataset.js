@@ -59,33 +59,17 @@ export function fetchDatasetAbout(id) {
 
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
 
-export function receiveDatasets(type, json) {
-	return (dispatch) => {
-		dispatch({
-			type: type,
-			datasets: json,
-			receivedAt: Date.now(),
-		});
-	};
-}
+export const receiveDatasets = (type, json) => ({type: type, datasets: json, receivedAt: Date.now()});
 
-export function fetchDatasets(when, date, limit = "5") {
-	let url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
-	if (date) url = `${url}&date=${date}`;
-	if (when) url = `${url}&when=${when}`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch(receiveDatasets(RECEIVE_DATASETS, json));
-				});
-			} else {
-				dispatch(receiveDatasets(RECEIVE_DATASETS, []));
-			}
-		});
-	};
-}
+export const fetchDatasets = (limit="5") => async dispatch => {
+	const url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
+	const response = await fetch(url, {mode: "cors", headers: getHeader()});
+	if (response.status === 200) {
+		const response_data = await response.json();
+		dispatch(receiveDatasets(RECEIVE_DATASETS, response_data));
+
+	}
+};
 
 export const DELETE_DATASET = "DELETE_DATASET";
 
