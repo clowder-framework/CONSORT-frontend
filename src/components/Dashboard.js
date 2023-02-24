@@ -4,10 +4,9 @@ import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tab
 import TopBar from "./childComponents/TopBar";
 import Intro from "./childComponents/Intro";
 import GetDataset from "./childComponents/GetDataset";
-import CreateAndUpload from "./childComponents/CreateAndUpload";
 
 
-export default function Dashboard() {
+function Dashboard() {
 	return (
 		<>
 			<TopBar/>
@@ -19,19 +18,16 @@ export default function Dashboard() {
 								<Intro />
 							</Box>
 						</Grid>
-						<Grid item xs={5}>
-							<Box className="createAndUpload">
-								<CreateAndUpload />
+						<Grid item xs={2} >
+							<Box className="getDataset">
+								<GetDataset />
 							</Box>
 						</Grid>
-						{/*<Grid item xs={2} >*/}
-						{/*	<Box className="getDataset">*/}
-						{/*		<GetDataset />*/}
-						{/*	</Box>*/}
-						{/*</Grid>*/}
 					</Grid>
 				</div>
 			</div>
 		</>
 	)
 }
+
+export default Dashboard;
