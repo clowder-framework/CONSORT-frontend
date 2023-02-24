@@ -1,6 +1,8 @@
 import {applyMiddleware, compose, createStore} from "redux";
 import reduxImmutableStateInvariant from "redux-immutable-state-invariant";
 import thunk from "redux-thunk";
+import thunkMiddleware from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "../reducers";
 
 function configureStoreProd() {
@@ -21,6 +23,7 @@ function configureStoreProd() {
 function configureStoreDev() {
 	const middlewares = [
 		// Add other middleware on this line...
+		thunkMiddleware,
 
 		// Redux middleware that spits an error on you when you try to mutate your state either inside a dispatch or between dispatches.
 		reduxImmutableStateInvariant(),
@@ -31,12 +34,9 @@ function configureStoreDev() {
 	];
 
 	// adds support for Redux dev tools
-	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-	const store = createStore(rootReducer, composeEnhancers(
-		applyMiddleware(...middlewares)
-		),
-		// window.devToolsExtension ? window.devToolsExtension() : f => f
-	);
+	//const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+	const composedEnhancer = composeWithDevTools(applyMiddleware(...middlewares));
+	const store = createStore(rootReducer, composedEnhancer);
 
 	if (module.hot) {
 		// Enable Webpack hot module replacement for reducers
