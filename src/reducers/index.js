@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
 import file from "./file";
-import dataset from "./dataset";
+import datasetReducer from "./dataset";
 
 const rootReducer = combineReducers({
 	file: file,
-	dataset: dataset
+	dataset: datasetReducer
 });
 
 export default rootReducer;
