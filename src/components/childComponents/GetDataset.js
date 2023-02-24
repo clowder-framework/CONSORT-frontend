@@ -37,7 +37,6 @@ function GetThumbnailFromUrl(props) {
 	}
 }
 
-
 function DisplayDataset(props) {
 	const dataset = props.dataset;
 	const name = dataset["name"];

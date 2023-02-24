@@ -2,6 +2,9 @@ import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
+//import Dashboard from "./components/Dashbard";
+//import DatasetComponent from "./components/Dataset";
+//import FileComponent from "./components/File";
 
 export const AppRoutes = (): JSX.Element => {
 	return (
@@ -17,5 +20,5 @@ export const AppRoutes = (): JSX.Element => {
 				/>
 			</Routes>
 		</BrowserRouter>
-	)
+	);
 }
