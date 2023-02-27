@@ -1,6 +1,27 @@
 import {getHeader} from "./common";
 import config from "../app.config";
 
+export async function getDatasetsRequest(title, limit) {
+	// Clowder API to get dataset list
+	let url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
+	if (title) url = `${url}&title=${title}`;
+	const response = await fetch(url, {mode: "cors", headers: getHeader()});
+	if (response.status === 200) {
+		console.log("Fetch dataset successful");
+		return await response.json(); // list of datasets
+	}
+	else if (response.status === 401) {
+		// handle error
+		console.log("Fetch of dataset failed");
+		return null;
+	} else {
+		// handle error
+		console.log("Fetch of dataset failed");
+		return null;
+	}
+
+}
+
 
 export async function createEmptyDatasetRequest(file) {
 	// Clowder API call to create empty dataset
@@ -8,22 +29,50 @@ export async function createEmptyDatasetRequest(file) {
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
-	const filename = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension
-	const datasetname = filename + "_dataset";
+	const datasetname = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 	const description = file.type;
 	const body_data = {"name": datasetname, "description": description};
 	const body = JSON.stringify(body_data);
 	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {
 		// return the dataset ID {id:xxx}
+		console.log("Creation of dataset successful");
 		return await response.json();
 	}
 	else if (response.status === 401) {
 		// handle error
+		console.log("Creation of dataset failed");
 		return null;
 	} else {
 		// handle error
+		console.log("Creation of dataset failed");
 		return null;
+	}
+}
+
+export async function uploadFileToDatasetRequest(dataset_id, file) {
+	// Clowder API call to upload file to dataset
+	const upload_to_dataset_url = `${config.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=false`;
+	let body = new FormData();
+	body.append("File" ,file);
+	let authHeader = getHeader();
+	let response = await fetch(upload_to_dataset_url, {
+		method: "POST",
+		mode: "cors",
+		headers: authHeader,
+		body: body,
+	});
+	if (response.status === 200) {
+		// return file ID
+		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+		console.log("upload to dataset successful");
+		return response.json();
+	} else if (response.status === 401) {
+		// TODO handle error
+		return {};
+	} else {
+		// TODO handle error
+		return {};
 	}
 }
 
