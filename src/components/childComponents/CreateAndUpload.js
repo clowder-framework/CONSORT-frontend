@@ -2,6 +2,7 @@
 // Use Clowder createempty dataset API to create an empty dataset and uploadToDataset API to upload file to that dataset
 
 import React, {useEffect, useState, useCallback} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {Box, Button} from "@material-ui/core";
 import Radio from '@mui/material/Radio';
@@ -18,6 +19,7 @@ import {downloadResource} from "../../utils/common";
 import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
+import {createEmptyDataset as createEmptyDatasetAction} from "../../actions/dataset";
 
 async function createDatasetRequest(body_data) {
 	// Clowder API call to create empty dataset
@@ -154,6 +156,7 @@ async function getPreviews(file_id) {
 }
 
 export default function CreateAndUpload() {
+	const dispatch = useDispatch();
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // processing state. set to active when dropfile is active
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
@@ -241,10 +244,16 @@ export default function CreateAndUpload() {
 
 	}, [extractionJob]);
 
+	const onDropFile = (file) => {
+		dispatch(createEmptyDatasetAction(file));
+		const datasets = useSelector((state) => state.dataset.datasets);
+
+	};
+
 	// onDrop function
 	const onDrop = useCallback(acceptedFiles => {
 		// this callback will be called after files get dropped, we will get the acceptedFiles. If you want, you can even access the rejected files too
-		acceptedFiles.map(file => setDropFile(file));
+		acceptedFiles.map(file => onDropFile(file));
 		setLoading(true);
 	}, [mouseHover]);
 	// TODO have a dependancy here - mouse hover or dropped file action
