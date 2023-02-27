@@ -14,6 +14,7 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 	}
 };
 
+
 export const CREATE_DATASETS = "CREATE_DATASETS";
 
 export const createDataset = (type, json) => ({type: type, datasets: json});
@@ -23,6 +24,22 @@ export const createEmptyDataset = (file) => async dispatch => {
 	const dataset = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
 	if (dataset !== undefined) {
 		dispatch(createDataset(CREATE_DATASETS, dataset));
+	}
+};
+
+
+export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
+
+export const addFileToDataset = (type, json) => ({type: type, files: json});
+
+export const uploadFileToDataset = (file) => async dispatch => {
+	const datasetname = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
+	const datasets_response = await getDatasetsRequest(datasetname, "1");
+	const dataset_id = datasets_response[0].id;
+	console.log("datasetid", dataset_id);
+	const file_json = await uploadFileToDatasetRequest(dataset_id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+	if (file_json !== undefined){
+		dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
 	}
 };
 
