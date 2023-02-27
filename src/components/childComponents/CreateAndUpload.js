@@ -21,38 +21,8 @@ import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
 import {createEmptyDataset as createEmptyDatasetAction} from "../../actions/dataset";
 import {uploadFileToDataset as uploadFileToDatasetAction} from "../../actions/dataset";
+import {submitForExtraction} from "../../utils/file";
 
-
-async function extractionsRequest(file,body_data) {
-	// Clowder API call to submit a file for extraction
-	const file_id = file["id"];
-	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
-	const body = JSON.stringify(body_data);
-	let authHeader = getHeader();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
-	let response = await fetch(extractions_url, {
-		method: "POST",
-		mode: "cors",
-		headers: authHeader,
-		body: body,
-	});
-
-	if (response.status === 200) {
-		// return {"status":"OK","job_id":"string"}
-		console.log("submit to extraction successful");
-		return response.json();
-
-	} else if (response.status === 401) {
-		// TODO handle error
-		console.log("submit to extraction error");
-		return {};
-	} else {
-		// TODO handle error
-		console.log("submit to extraction error");
-		return {};
-	}
-}
 
 async function checkExtractionStatus(file){
 	// Clowder API call to check extraction status of a file
@@ -115,76 +85,92 @@ export default function CreateAndUpload() {
 
 
 	// if clowderFile state has changed, submit file for extraction and preview html.
-	useEffect(async () => {
-		if (clowderFile !== null) {
-			const body = {"extractor": "ncsa.rctTransparencyExtractor"};
-			//const extractor_name = "ncsa.wordcount";
-			await extractionsRequest(clowderFile, body).then((response)=> setExtractionJob(response)); // end of extraction request
-		}
-	}, [clowderFile]);
+	// useEffect(async () => {
+	// 	if (clowderFile !== null) {
+	// 		const body = {"extractor": "ncsa.rctTransparencyExtractor"};
+	// 		//const extractor_name = "ncsa.wordcount";
+	// 		await extractionsRequest(clowderFile, body).then((response)=> setExtractionJob(response)); // end of extraction request
+	// 	}
+	// }, [clowderFile]);
 
 	// check extraction status in loop
-	useEffect( () => {
-		const loop = async () => {
-			const extraction_status = await checkExtractionStatus(clowderFile);
-			console.log(extraction_status);
-			if (extraction_status["Status"] === "Done" && extraction_status["ncsa.rctTransparencyExtractor"] === "DONE") {
-				const htmlFile = await checkHtmlInDataset(clowderDataset);
-				console.log(htmlFile);
-				if (typeof htmlFile.id === "string") {
-					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					const previews_list = await getPreviews(htmlFile.id);
-					const preview = previews_list[0];
-					console.log(preview);
-					if (preview !== undefined) {
-						let previewsTemp = [];
-						// get all preview resources
-						let preview_config = {};
-						preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
-						preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
-						preview_config.fileid = preview["pv_id"];
-						preview_config.previewer = `/public${preview["p_path"]}/`;
-						preview_config.fileType = preview["pv_contenttype"];
+	// useEffect( () => {
+	// 	const loop = async () => {
+	// 		const extraction_status = await checkExtractionStatus(clowderFile);
+	// 		console.log(extraction_status);
+	// 		if (extraction_status["Status"] === "Done" && extraction_status["ncsa.rctTransparencyExtractor"] === "DONE") {
+	// 			const htmlFile = await checkHtmlInDataset(clowderDataset);
+	// 			console.log(htmlFile);
+	// 			if (typeof htmlFile.id === "string") {
+	// 				// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
+	// 				const previews_list = await getPreviews(htmlFile.id);
+	// 				const preview = previews_list[0];
+	// 				console.log(preview);
+	// 				if (preview !== undefined) {
+	// 					let previewsTemp = [];
+	// 					// get all preview resources
+	// 					let preview_config = {};
+	// 					preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
+	// 					preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
+	// 					preview_config.fileid = preview["pv_id"];
+	// 					preview_config.previewer = `/public${preview["p_path"]}/`;
+	// 					preview_config.fileType = preview["pv_contenttype"];
+	//
+	// 					// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
+	// 					// /clowder/file vs clowder/api/file
+	// 					// TODO Temp fix insert /api/
+	// 					let pv_routes = preview["pv_route"];
+	// 					if (!pv_routes.includes("/api/")) {
+	// 						pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
+	// 					}
+	// 					const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
+	// 					preview_config.resource = await downloadResource(resourceURL);
+	// 					previewsTemp.push(preview_config);
+	// 					setPreviews(previewsTemp); // set previews
+	// 					setLoading(false); // stop display of Overlay
+	// 				}
+	// 				else{
+	// 					console.log("preview generation failed");
+	// 				}
+	//
+	// 			} else {
+	// 				console.log("check html file after 5s");
+	// 				setTimeout(loop, 5000);
+	// 			}
+	// 		} else {
+	// 			console.log("check extraction status after 5s");
+	// 			setTimeout(loop, 5000);
+	// 		}
+	//
+	// 	};
+	// 	if (extractionJob !== null){
+	// 		loop(); // call the loop to check extractions
+	// 	}
+	//
+	// }, [extractionJob]);
 
-						// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-						// /clowder/file vs clowder/api/file
-						// TODO Temp fix insert /api/
-						let pv_routes = preview["pv_route"];
-						if (!pv_routes.includes("/api/")) {
-							pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
-						}
-						const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
-						preview_config.resource = await downloadResource(resourceURL);
-						previewsTemp.push(preview_config);
-						setPreviews(previewsTemp); // set previews
-						setLoading(false); // stop display of Overlay
-					}
-					else{
-						console.log("preview generation failed");
-					}
-
-				} else {
-					console.log("check html file after 5s");
-					setTimeout(loop, 5000);
-				}
-			} else {
-				console.log("check extraction status after 5s");
-				setTimeout(loop, 5000);
-			}
-
-		};
-		if (extractionJob !== null){
-			loop(); // call the loop to check extractions
-		}
-
-	}, [extractionJob]);
-
-	const onDropFile = (file) => {
+	const datasets = useSelector((state) => state.dataset.datasets);
+	const filesInDataset = useSelector(state => state.dataset.files);
+	const onDropFile = async (file) => {
 		dispatch(createEmptyDatasetAction(file));
-		//const datasets = useSelector((state) => state.dataset.datasets);
+		// TODO check below code if it can be used instead
+		// if (datasets !== undefined && datasets.length > 0) {
+		// 	await (datasets.map(dataset => {
+		// 		const dataset_id = dataset.id;
+		// 		dispatch(uploadFileToDatasetAction(dataset_id, file));
+		// 	}));
+		// }
 		dispatch(uploadFileToDatasetAction(file));
+		//dispatch(submitForExtractionAction(files[0].id))
 
 	};
+
+	// useEffect(async()=> {
+	// 	if (filesInDataset !== undefined && filesInDataset.length > 0){
+	// 		const file_id = filesInDataset[0].id;
+	// 		const extraction_response = submitForExtraction(file_id);
+	// 	}
+	// }, [filesInDataset]);
 
 	// onDrop function
 	const onDrop = useCallback(acceptedFiles => {
