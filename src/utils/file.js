@@ -2,6 +2,43 @@ import {dataURItoFile, getHeader} from "./common";
 import config from "../app.config";
 
 
+export async function submitForExtraction(file_id){
+	const body = {"extractor": "ncsa.rctTransparencyExtractor"};
+	const extraction_response = await extractionRequest(file_id, body);
+	// return {"status":"OK","job_id":"string"}
+	return extraction_response;
+}
+
+async function extractionRequest(file_id,body_data) {
+	// Clowder API call to submit a file for extraction
+	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
+	const body = JSON.stringify(body_data);
+	let authHeader = getHeader();
+	authHeader.append('Accept', 'application/json');
+	authHeader.append('Content-Type', 'application/json');
+	let response = await fetch(extractions_url, {
+		method: "POST",
+		mode: "cors",
+		headers: authHeader,
+		body: body,
+	});
+
+	if (response.status === 200) {
+		// return {"status":"OK","job_id":"string"}
+		console.log("submit to extraction successful");
+		return response.json();
+
+	} else if (response.status === 401) {
+		// TODO handle error
+		console.log("submit to extraction error");
+		return {};
+	} else {
+		// TODO handle error
+		console.log("submit to extraction error");
+		return {};
+	}
+}
+
 export async function fetchFileMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
 	let response = await fetch(url, {mode: "cors", headers: getHeader()});
