@@ -1,19 +1,16 @@
 import config from "../app.config";
 import {getHeader} from "../utils/common";
-import {createEmptyDatasetRequest} from "../utils/dataset";
+import {createEmptyDatasetRequest, getDatasetsRequest, uploadFileToDatasetRequest} from "../utils/dataset";
 
 
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
 
 export const receiveDatasets = (type, json) => ({type: type, datasets: json, receivedAt: Date.now()});
 
-export const fetchDatasets = (limit="5") => async dispatch => {
-	const url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
-	const response = await fetch(url, {mode: "cors", headers: getHeader()});
-	if (response.status === 200) {
-		const response_data = await response.json(); // list of datasets
-		dispatch(receiveDatasets(RECEIVE_DATASETS, response_data));
-
+export const fetchDatasets = (title = null, limit="5") => async dispatch => {
+	const dataset_json = await getDatasetsRequest(title, limit); // list of datasets
+	if (dataset_json !== undefined) {
+		dispatch(receiveDatasets(RECEIVE_DATASETS, dataset_json));
 	}
 };
 
