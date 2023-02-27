@@ -3,7 +3,7 @@ import {
 	RECEIVE_DATASET_ABOUT,
 	RECEIVE_DATASETS,
 	DELETE_DATASET,
-	CREATE_DATASETS
+	CREATE_DATASETS, ADD_FILE_TO_DATASET
 } from "../actions/dataset";
 import {DELETE_FILE} from "../actions/file";
 
@@ -13,6 +13,11 @@ const datasetReducer = (state=defaultState, action) => {
 	switch(action.type) {
 		case RECEIVE_FILES_IN_DATASET:
 			return Object.assign({}, state, {files: action.files});
+		case ADD_FILE_TO_DATASET:
+			return { ...state,
+				// new files list
+				files: [...state.files, action.files]
+			};
 		case DELETE_FILE:
 			return Object.assign({}, state, {
 				files: state.files.filter(file => file.id !== action.file.id),
