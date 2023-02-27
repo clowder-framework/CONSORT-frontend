@@ -1,5 +1,6 @@
 import config from "../app.config";
 import {getHeader} from "../utils/common";
+import {createEmptyDatasetRequest} from "../utils/dataset";
 
 
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -10,11 +11,24 @@ export const fetchDatasets = (limit="5") => async dispatch => {
 	const url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
 	const response = await fetch(url, {mode: "cors", headers: getHeader()});
 	if (response.status === 200) {
-		const response_data = await response.json();
+		const response_data = await response.json(); // list of datasets
 		dispatch(receiveDatasets(RECEIVE_DATASETS, response_data));
 
 	}
 };
+
+export const CREATE_DATASETS = "CREATE_DATASETS";
+
+export const createDataset = (type, json) => ({type: type, datasets: json});
+
+export const createEmptyDataset = (file) => async dispatch => {
+	// Clowder API call to create empty dataset
+	const dataset = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
+	if (dataset !== undefined) {
+		dispatch(createDataset(CREATE_DATASETS, dataset));
+	}
+};
+
 
 export const RECEIVE_FILES_IN_DATASET = "RECEIVE_FILES_IN_DATASET";
 
