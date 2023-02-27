@@ -8,6 +8,7 @@ import {getHeader} from "../../utils/common";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchDatasets as fetchDatasetsAction} from "../../actions/dataset";
 
+// not used in react-redux
 async function getDatasetFromUrl(url) {
 	const dataset_data_response = await fetch(url, {method:"GET", headers:getHeader()});
 
