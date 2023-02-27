@@ -3,7 +3,7 @@ import {Link as RouterLink} from "react-router-dom";
 import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tabs, Typography} from "@material-ui/core";
 import TopBar from "./childComponents/TopBar";
 import Intro from "./childComponents/Intro";
-import GetDataset from "./childComponents/GetDataset";
+import CreateAndUpload from "./childComponents/CreateAndUpload";
 
 function Dashboard() {
 	return (
@@ -18,8 +18,8 @@ function Dashboard() {
 							</Box>
 						</Grid>
 						<Grid item xs={2} >
-							<Box className="getDataset">
-								<GetDataset />
+							<Box className="createAndUpload">
+								<CreateAndUpload />
 							</Box>
 						</Grid>
 					</Grid>
