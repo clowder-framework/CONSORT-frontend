@@ -152,6 +152,7 @@ export default function CreateAndUpload() {
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const onDropFile = async (file) => {
+		// dont think we need async here in the above line
 		dispatch(createEmptyDatasetAction(file));
 		// TODO check below code if it can be used instead
 		// if (datasets !== undefined && datasets.length > 0) {
