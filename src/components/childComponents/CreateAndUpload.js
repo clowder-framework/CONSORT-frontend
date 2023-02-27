@@ -20,59 +20,8 @@ import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
 import {createEmptyDataset as createEmptyDatasetAction} from "../../actions/dataset";
+import {uploadFileToDataset as uploadFileToDatasetAction} from "../../actions/dataset";
 
-async function createDatasetRequest(body_data) {
-	// Clowder API call to create empty dataset
-	const create_dataset_url = `${config.hostname}/clowder/api/datasets/createempty?superAdmin=true`;
-	let body = JSON.stringify(body_data);
-	let authHeader = getHeader();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
-
-	let create_dataset_response = await fetch(create_dataset_url,
-		{method:"POST", mode:"cors", headers:authHeader, body:body} )
-
-	if (create_dataset_response.status === 200) {
-		// return the dataset ID {id:xxx}
-		console.log("create dataset successful");
-		return create_dataset_response.json();
-	} else if (create_dataset_response.status === 401) {
-		// TODO handle error
-		return null;
-	} else {
-		// TODO handle error
-		return null;
-	}
-}
-
-async function uploadToDatasetRequest(dataset_id, file) {
-	// Clowder API call to upload file to dataset
-	const upload_to_dataset_url = `${config.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=false`;
-	let body = new FormData();
-	body.append("File" ,file);
-	let authHeader = getHeader();
-	//authHeader.append('Accept', 'application/json');
-	//authHeader.append('Content-Type', 'multipart/form-data');
-	let response = await fetch(upload_to_dataset_url, {
-		method: "POST",
-		mode: "cors",
-		headers: authHeader,
-		body: body,
-	});
-
-	if (response.status === 200) {
-		// return file ID
-		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
-		console.log("upload to dataset successful");
-		return response.json();
-	} else if (response.status === 401) {
-		// TODO handle error
-		return {};
-	} else {
-		// TODO handle error
-		return {};
-	}
-}
 
 async function extractionsRequest(file,body_data) {
 	// Clowder API call to submit a file for extraction
@@ -159,25 +108,11 @@ export default function CreateAndUpload() {
 	const dispatch = useDispatch();
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // processing state. set to active when dropfile is active
-	const [dropFile, setDropFile] = useState([]); // state for dropped file
 	const [clowderDataset, setClowderDataset] = useState(null); // state for created dataset in Clowder
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
 	const [extractionJob, setExtractionJob] = useState(null);  // state for extraction job ID and status
 	const [previews, setPreviews] = useState([]); // state for file previews
 
-	// if dropFile state has changed, create and upload to dataset
-	useEffect(async () => {
-		const name = dropFile.name;
-		const description = dropFile.type;
-		if (name !== undefined) {
-			const body = {"name": name, "description": description};
-			const dataset = await createDatasetRequest(body);
-			if (dataset["id"] !== undefined) {
-				setClowderDataset(dataset);
-				await uploadToDatasetRequest(dataset["id"], dropFile).then((response) => {setClowderFile(response)} );
-			}
-		}
-	}, [dropFile]);
 
 	// if clowderFile state has changed, submit file for extraction and preview html.
 	useEffect(async () => {
@@ -246,7 +181,8 @@ export default function CreateAndUpload() {
 
 	const onDropFile = (file) => {
 		dispatch(createEmptyDatasetAction(file));
-		const datasets = useSelector((state) => state.dataset.datasets);
+		//const datasets = useSelector((state) => state.dataset.datasets);
+		dispatch(uploadFileToDatasetAction(file));
 
 	};
 
