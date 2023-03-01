@@ -2,11 +2,10 @@ import config from "../app.config";
 import {getHeader} from "../utils/common";
 import {createEmptyDatasetRequest, getDatasetsRequest, uploadFileToDatasetRequest} from "../utils/dataset";
 
-
+// receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
-
 export const receiveDatasets = (type, json) => ({type: type, datasets: json, receivedAt: Date.now()});
-
+// fetchDatasets thunk function
 export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 	const dataset_json = await getDatasetsRequest(title, limit); // list of datasets
 	if (dataset_json !== undefined) {
@@ -14,11 +13,24 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 	}
 };
 
+export function createUploadExtract(file) {
+	return async function createUploadExtractThunk(dispatch, getState) {
+		dispatch(createEmptyDataset(file));
+		const present_state = getState();
+		const datasets = getState().dataset.datasets;
+		if (datasets !== undefined && datasets.length > 0) {
+			const datasetID = datasets[0].id;
+			console.log(datasetID)
+			dispatch(uploadFileToDataset(datasetID, file));
+		}
+	};
+}
 
+
+// crate datasets action
 export const CREATE_DATASETS = "CREATE_DATASETS";
-
 export const createDataset = (type, json) => ({type: type, datasets: json});
-
+// createEmptyDataset thunk function
 export const createEmptyDataset = (file) => async dispatch => {
 	// Clowder API call to create empty dataset
 	const dataset = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
@@ -27,15 +39,14 @@ export const createEmptyDataset = (file) => async dispatch => {
 	}
 };
 
-
+// add file to dataset action
 export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
-
 export const addFileToDataset = (type, json) => ({type: type, files: json});
-
-export const uploadFileToDataset = (file) => async dispatch => {
-	const datasetname = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
-	const datasets_response = await getDatasetsRequest(datasetname, "1");
-	const dataset_id = datasets_response[0].id;
+// uploadFileToDataset thunk function
+export const uploadFileToDataset = (dataset_id, file) => async dispatch => {
+	// const datasetname = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
+	// const datasets_response = await getDatasetsRequest(datasetname, "1");
+	// const dataset_id = datasets_response[0].id;
 	console.log("datasetid", dataset_id);
 	const file_json = await uploadFileToDatasetRequest(dataset_id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 	if (file_json !== undefined){
@@ -45,7 +56,6 @@ export const uploadFileToDataset = (file) => async dispatch => {
 
 
 export const RECEIVE_FILES_IN_DATASET = "RECEIVE_FILES_IN_DATASET";
-
 export function receiveFilesInDataset(type, json) {
 	return (dispatch) => {
 		dispatch({
