@@ -19,7 +19,7 @@ import {downloadResource} from "../../utils/common";
 import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
-import {createEmptyDataset as createEmptyDatasetAction} from "../../actions/dataset";
+import {createEmptyDataset as createEmptyDatasetAction, createUploadExtract} from "../../actions/dataset";
 import {uploadFileToDataset as uploadFileToDatasetAction} from "../../actions/dataset";
 import {submitForExtraction} from "../../utils/file";
 
@@ -151,9 +151,19 @@ export default function CreateAndUpload() {
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
+
+	function selectDatasetID(){
+		// not able to useSelector here
+		//const datasets = useSelector((state) => state.dataset.datasets);
+		return datasets.map(dataset => dataset.id);
+	}
+
 	const onDropFile = async (file) => {
 		// dont think we need async here in the above line
+		//dispatch(createUploadExtract(file));
 		dispatch(createEmptyDatasetAction(file));
+		const datasetID = selectDatasetID(datasets);
+		console.log("datsetID", datasetID);
 		// TODO check below code if it can be used instead
 		// if (datasets !== undefined && datasets.length > 0) {
 		// 	await (datasets.map(dataset => {
@@ -161,7 +171,7 @@ export default function CreateAndUpload() {
 		// 		dispatch(uploadFileToDatasetAction(dataset_id, file));
 		// 	}));
 		// }
-		dispatch(uploadFileToDatasetAction(file));
+		//dispatch(uploadFileToDatasetAction(file));
 		//dispatch(submitForExtractionAction(files[0].id))
 
 	};
