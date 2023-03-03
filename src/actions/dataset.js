@@ -1,6 +1,7 @@
 import config from "../app.config";
 import {getHeader} from "../utils/common";
 import {createEmptyDatasetRequest, getDatasetsRequest, uploadFileToDatasetRequest} from "../utils/dataset";
+import {submitForExtraction} from "../utils/file";
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -18,7 +19,7 @@ export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
 export const addFileToDataset = (type, file_json, dataset_json) => ({type: type, files: file_json, datasets: dataset_json});
 
 // createUploadExtract thunk function
-export function createUploadExtract(file) {
+export function createUploadExtract(file, extractor_name) {
 	return async function createUploadExtractThunk(dispatch) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
 		// Clowder API call to create empty dataset
@@ -27,6 +28,7 @@ export function createUploadExtract(file) {
 			// upload file to dataset
 			const file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
+				const extraction_json = submitForExtraction(file_json.id, extractor_name)
 				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json, dataset_json));
 			}
 		}
