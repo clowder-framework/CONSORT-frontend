@@ -16,7 +16,9 @@ const datasetReducer = (state=defaultState, action) => {
 		case ADD_FILE_TO_DATASET:
 			return { ...state,
 				// new files list
-				files: [...state.files, action.files]
+				files: [...state.files, action.files],
+				// new datasets list
+				datasets: [...state.datasets, action.datasets]
 			};
 		case DELETE_FILE:
 			return Object.assign({}, state, {
