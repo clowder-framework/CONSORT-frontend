@@ -76,6 +76,26 @@ export async function uploadFileToDatasetRequest(dataset_id, file) {
 	}
 }
 
+export async function checkHtmlInDatasetRequest(dataset_id){
+	// function to check if html file is there in the dataset
+	const listFiles_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
+	// get the list of files in dataset
+	const dataset_listFiles_response = await fetch(listFiles_url, {method:"GET", headers:getHeader(), mode: "cors"});
+	const dataset_listFiles = await dataset_listFiles_response.json();
+	// filter html file and select the first item in filtered array.
+	const htmlFile = Object.values(dataset_listFiles).filter(file => file.contentType === "text/html")[0];
+	// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
+	if (htmlFile !== undefined && htmlFile.contentType === "text/html") {
+		// found html file in dataset. return the object
+		console.log("html file generated");
+		return htmlFile;
+	}
+	else {
+		console.log("html file generation failed");
+		return null;
+	}
+
+}
 
 export async function downloadDataset(datasetId, filename = null) {
 
