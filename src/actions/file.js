@@ -110,6 +110,7 @@ export function fetchFilePreviews(id) {
 	}
 }
 
+
 export const DELETE_FILE = "DELETE_FILE";
 
 export function deleteFile(fileId) {

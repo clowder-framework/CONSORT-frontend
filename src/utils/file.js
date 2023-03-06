@@ -9,6 +9,7 @@ export async function submitForExtraction(file_id, extractor_name){
 	return extraction_response;
 }
 
+
 async function extractionRequest(file_id,body_data) {
 	// Clowder API call to submit a file for extraction
 	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
@@ -38,6 +39,7 @@ async function extractionRequest(file_id,body_data) {
 		return {};
 	}
 }
+
 
 export async function fetchFileMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
@@ -94,6 +96,7 @@ export async function uploadFile(formData, selectedDatasetId) {
 	}
 }
 
+
 export async function downloadFile(fileId, filename = null) {
 
 	if (!filename) {
@@ -123,6 +126,7 @@ export async function downloadFile(fileId, filename = null) {
 
 }
 
+
 export async function getPreviewsRequest(file_id) {
 	const previews_url = `${config.hostname}/clowder/api/files/${file_id}/getPreviews?superAdmin=true`;
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:getHeader()});
@@ -140,6 +144,7 @@ export async function getPreviewsRequest(file_id) {
 		console.log("preview failed");
 	}
 }
+
 
 export async function getPreviewResources(preview) {
 	// get all file preview resources
