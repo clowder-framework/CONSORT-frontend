@@ -1,4 +1,4 @@
-import {dataURItoFile, getHeader} from "./common";
+import {dataURItoFile, downloadResource, getHeader} from "./common";
 import config from "../app.config";
 
 
@@ -139,4 +139,26 @@ export async function getPreviewsRequest(file_id) {
 	else{
 		console.log("preview failed");
 	}
+}
+
+export async function getPreviewResources(preview) {
+	// get all file preview resources
+	const preview_config = {}
+	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
+	preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
+	preview_config.fileid = preview["pv_id"];
+	preview_config.previewer = `/public${preview["p_path"]}/`;
+	preview_config.fileType = preview["pv_contenttype"];
+
+	// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
+	// /clowder/file vs clowder/api/file
+	// TODO Temp fix insert /api/
+	let pv_routes = preview["pv_route"];
+	if (!pv_routes.includes("/api/")) {
+		pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
+	}
+	preview_config.pv_route = pv_routes;
+	const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
+	preview_config.resource = await downloadResource(resourceURL);
+	return preview_config;
 }
