@@ -42,6 +42,8 @@ export default function CreateAndUpload() {
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
 		dispatch(createUploadExtract(file, extractor_name));
+		// dispatch(createEmptyDatasetAction(file));
+		// const datasets = useSelector((state) => state.dataset.datasets);
 	};
 
 	// useEffect on filesInDataset for preview generation
