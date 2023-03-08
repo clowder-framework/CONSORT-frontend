@@ -40,8 +40,6 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	let body = new FormData();
 	body.append("File" ,file);
 	let authHeader = getHeader();
-	//authHeader.append('Accept', 'application/json');
-	//authHeader.append('Content-Type', 'multipart/form-data');
 	let response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
@@ -50,8 +48,7 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	});
 
 	if (response.status === 200) {
-		// return file ID
-		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+		// return file ID   {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 		return response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
