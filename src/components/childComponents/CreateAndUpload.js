@@ -48,8 +48,6 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	let body = new FormData();
 	body.append("File" ,file);
 	let authHeader = getHeader();
-	//authHeader.append('Accept', 'application/json');
-	//authHeader.append('Content-Type', 'multipart/form-data');
 	let response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
@@ -58,9 +56,8 @@ async function uploadToDatasetRequest(dataset_id, file) {
 	});
 
 	if (response.status === 200) {
-		// return file ID
-		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 		console.log("upload to dataset successful");
+		// return file ID   {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 		return response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
@@ -250,15 +247,15 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
 				<Dropfile onDrop={onDrop}
-						  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
+						  accept={ {'text/plain':['.txt']} }
 				/>
 			</div>
 
 			<FormControl>
 				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
 				<RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="consort" name="radio-buttons-group">
-					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" />
-					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" />
+					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" disabled={true} />
+					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" disabled={true} />
 				</RadioGroup>
 			</FormControl>
 
