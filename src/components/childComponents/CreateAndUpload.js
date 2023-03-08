@@ -132,7 +132,7 @@ export default function CreateAndUpload() {
 	return (
 		<Box className="createupload">
 			<Dropfile onDrop={onDrop}
-					  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
+					  accept={ {'text/plain':['.txt']} }
 			/>
 			<FormControl>
 				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
