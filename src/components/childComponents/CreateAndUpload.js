@@ -137,8 +137,8 @@ export default function CreateAndUpload() {
 			<FormControl>
 				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
 				<RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="consort" name="radio-buttons-group">
-					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" />
-					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" />
+					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" disabled={true} />
+					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" disabled={true} />
 				</RadioGroup>
 			</FormControl>
 		</Box>
