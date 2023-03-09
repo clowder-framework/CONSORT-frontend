@@ -40,37 +40,39 @@ export default function CreateAndUpload() {
 
 	// useEffect on filesInDataset for preview generation
 	useEffect(async()=> {
-		const file_id = filesInDataset[0].id;
-		const dataset_id = datasets[0].id;
-		// check extraction status and html file generation in loop
-		const loop = async () => {
-			setLoadingText("Checking extraction status");
-			const extraction_status = await checkExtractionStatus(file_id);
-			console.log(extraction_status);
-			if (extraction_status["Status"] === "Done" && extraction_status[extractor_name] === "DONE") {
-				setLoadingText("Generating html file");
-				const htmlFile = await checkHtmlInDatasetRequest(dataset_id);
-				console.log(htmlFile);
-				if (typeof htmlFile.id === "string") {
-					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					listFilePreviews(htmlFile.id);
-					setLoading(false); // stop display of Overlay
-					setPreview(true)  // Continue button activated
+		if (filesInDataset !== undefined && filesInDataset.length > 0) {
+			const file_id = filesInDataset[0].id;
+			const dataset_id = datasets[0].id;
+			// check extraction status and html file generation in loop
+			const loop = async () => {
+				setLoadingText("Checking extraction status");
+				const extraction_status = await checkExtractionStatus(file_id);
+				console.log(extraction_status);
+				if (extraction_status["Status"] === "Done" && extraction_status[extractor_name] === "DONE") {
+					setLoadingText("Generating html file");
+					const htmlFile = await checkHtmlInDatasetRequest(dataset_id);
+					console.log(htmlFile);
+					if (typeof htmlFile.id === "string") {
+						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
+						listFilePreviews(htmlFile.id);
+						setLoading(false); // stop display of Overlay
+						setPreview(true)  // Continue button activated
+					} else {
+						console.log("check html file after 5s");
+						setTimeout(loop, 5000);
+					}
 				} else {
-					console.log("check html file after 5s");
+					console.log("check extraction status after 5s");
 					setTimeout(loop, 5000);
 				}
-			} else {
-				console.log("check extraction status after 5s");
-				setTimeout(loop, 5000);
-			}
-		};
+			};
 
-		if (file_id !== null){
-			await loop(); // call the loop to check extractions
-		}
-		else{
-			console.log("file does not exist");
+			if (file_id !== null){
+				await loop(); // call the loop to check extractions
+			}
+			else{
+				console.log("file does not exist");
+			}
 		}
 	}, [filesInDataset]);
 	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start
