@@ -11,7 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/dataset";
-import {checkExtractionStatus} from "../../utils/file";
+import {checkExtractionStatus, getPreviewResources} from "../../utils/file";
 import {checkHtmlInDatasetRequest} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 
@@ -55,7 +55,7 @@ export default function CreateAndUpload() {
 					if (typeof htmlFile.id === "string") {
 						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 						listFilePreviews(htmlFile.id);
-						setLoading(false); // stop display of Overlay
+						setLoadingText("Extraction completed");
 						setPreview(true)  // Continue button activated
 					} else {
 						console.log("check html file after 5s");
@@ -87,6 +87,7 @@ export default function CreateAndUpload() {
 	// TODO have a dependancy here - mouse hover or dropped file action
 
 	const goToPreviewRoute = () => {
+		setLoading(false); // stop display of Overlay
 		let path = '/preview';
 		navigate(path);
 	}
