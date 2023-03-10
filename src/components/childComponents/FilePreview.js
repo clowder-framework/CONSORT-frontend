@@ -9,6 +9,7 @@ import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
 import {getPreviewResources} from "../../utils/file";
+import TopBar from "./TopBar";
 
 
 export default function FilePreview() {
@@ -30,42 +31,46 @@ export default function FilePreview() {
 	}, [filePreviews])
 
 	return (
-		<div className="outer-container">
-			<Box className="filepreview">
-				<div className="previewBox">
-					{
-						previews.map((preview) => {
-							if (preview["previewType"] === "audio") {
-								return (
-									<div key={preview["fileid"]}>
-										<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>;
-									</div>
-								);
-							} else if (preview["previewType"] === "video") {
-								return (
-									<div key={preview["fileid"]}>
-										<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>;
-									</div>
-								);
-							} else if (preview["previewType"] === "thumbnail") {
-								return (
-									<div key={preview["fileid"]}>
-										<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
-												   imgSrc={preview["resource"]}/>;
-									</div>
-								);
-							} else if (preview["previewType"] === "html") {
-								return (
-									<div key={preview["fileid"]}>
-										<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>;
-									</div>
-								);
-							}
+		<>
+			<TopBar/>
+			<div className="outer-container">
+				<Box className="filepreview">
+					<div className="previewBox">
+						{
+							previews.map((preview) => {
+								if (preview["previewType"] === "audio") {
+									return (
+										<div key={preview["fileid"]}>
+											<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>;
+										</div>
+									);
+								} else if (preview["previewType"] === "video") {
+									return (
+										<div key={preview["fileid"]}>
+											<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>;
+										</div>
+									);
+								} else if (preview["previewType"] === "thumbnail") {
+									return (
+										<div key={preview["fileid"]}>
+											<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
+													   imgSrc={preview["resource"]}/>;
+										</div>
+									);
+								} else if (preview["previewType"] === "html") {
+									return (
+										<div key={preview["fileid"]}>
+											<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>;
+										</div>
+									);
+								}
 
-						})
-					}
-				</div>
-			</Box>
-		</div>
+							})
+						}
+					</div>
+				</Box>
+			</div>
+		</>
+
 	)
 }
