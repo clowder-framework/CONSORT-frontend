@@ -22,7 +22,8 @@ export default function CreateAndUpload() {
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
-	const [loading_text , setLoadingText] = useState("processing"); // loading overlay text.
+	const [loading_text , setLoadingText] = useState("Processing"); // loading overlay text.
+	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
 	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
@@ -56,7 +57,8 @@ export default function CreateAndUpload() {
 						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 						listFilePreviews(htmlFile.id);
 						setLoadingText("Extraction completed");
-						setPreview(true)  // Continue button activated
+						setPreview(false)  // Continue button activated
+						setSpinner(false); // stop display of spinner
 					} else {
 						console.log("check html file after 5s");
 						setTimeout(loop, 5000);
@@ -95,7 +97,7 @@ export default function CreateAndUpload() {
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="createupload">
-			<LoadingOverlay active={loading} text={loading_text} spinner>
+			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
 					<Dropfile onDrop={onDrop} accept={ {'text/plain':['.txt']} }/>
 				</div>
