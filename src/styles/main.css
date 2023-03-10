@@ -106,6 +106,19 @@ body {
 	justify-content: right;
 }
 
+.preview-button{
+	margin-top: 20px;
+}
+.consort-logo{
+	width: 280px;
+	height: 70px;
+	padding-right: 10px;
+}
+.spirit-logo {
+	width: 300px;
+	height: 70px;
+}
+
 .major-text {
 	color: #F7941E;
 }
