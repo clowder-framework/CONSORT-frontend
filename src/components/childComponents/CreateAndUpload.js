@@ -1,4 +1,4 @@
-// Create a dataset and upload a file and submit for extraction
+// Create a dataset and upload a file. Submit for extraction and get file previews
 
 import React, {useEffect, useState, useCallback} from 'react';
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/dataset";
-import {checkExtractionStatus, getPreviewResources} from "../../utils/file";
+import {checkExtractionStatus} from "../../utils/file";
 import {checkHtmlInDatasetRequest} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 
@@ -99,14 +99,16 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
-					<Dropfile onDrop={onDrop} accept={ {'text/plain':['.txt']} }/>
+					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"]}}/>
 				</div>
 			</LoadingOverlay>
 
-			<div className="radio-buttons-group-div align-left">
+			<div className="radio-buttons-group-div">
 				<RadioGroup defaultValue="consort" name="radio-buttons-group" row>
-					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" />
-					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" />
+					<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
+					<img className="consort-logo" src="../../public/consort-logo.png" alt="consort-logo-sm"/>
+					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
+					<img className="spirit-logo" src="../../public/spirit-logo.png" alt="spirit-logo-sm"/>
 				</RadioGroup>
 			</div>
 			<div className="preview-button align-right">
