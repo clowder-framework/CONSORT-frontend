@@ -41,26 +41,26 @@ export default function FilePreview() {
 								if (preview["previewType"] === "audio") {
 									return (
 										<div key={preview["fileid"]}>
-											<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>;
+											<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>
 										</div>
 									);
 								} else if (preview["previewType"] === "video") {
 									return (
 										<div key={preview["fileid"]}>
-											<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>;
+											<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>
 										</div>
 									);
 								} else if (preview["previewType"] === "thumbnail") {
 									return (
 										<div key={preview["fileid"]}>
 											<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
-													   imgSrc={preview["resource"]}/>;
+													   imgSrc={preview["resource"]}/>
 										</div>
 									);
 								} else if (preview["previewType"] === "html") {
 									return (
 										<div key={preview["fileid"]}>
-											<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>;
+											<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
 										</div>
 									);
 								}
