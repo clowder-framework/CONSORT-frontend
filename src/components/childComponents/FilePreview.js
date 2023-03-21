@@ -34,17 +34,6 @@ export default function FilePreview() {
 	return (
 		<>
 			<div className="outer-container">
-				<div className="previewDrawer">
-					{
-						previews.map((preview) => {
-							return (
-								<div key={preview["fileid"]}>
-									<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]}/>
-								</div>
-							)
-						})
-					}
-				</div>
 				<div className="inner-container">
 					<Box className="filepreview">
 						<div className="previewBox">
@@ -72,6 +61,7 @@ export default function FilePreview() {
 									} else if (preview["previewType"] === "html") {
 										return (
 											<div key={preview["fileid"]}>
+												<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]}/>
 												<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
 											</div>
 										);
