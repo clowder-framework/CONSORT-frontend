@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
+import {Box, Button} from "@material-ui/core";
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
@@ -19,6 +19,7 @@ export default function PreviewDrawerLeft(props) {
 		<Box sx={{ display: 'flex' }}>
 			<Drawer
 				sx={{
+					paddingTop: "30px",
 					width: drawerWidth,
 					flexShrink: 0,
 					'& .MuiDrawer-paper': {
