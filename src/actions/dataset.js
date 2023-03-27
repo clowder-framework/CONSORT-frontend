@@ -1,7 +1,7 @@
 import config from "../app.config";
 import {getHeader} from "../utils/common";
 import {createEmptyDatasetRequest, getDatasetsRequest, uploadFileToDatasetRequest} from "../utils/dataset";
-import {submitForExtraction} from "../utils/file";
+import {convertPDF, submitForExtraction} from "../utils/file";
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -39,6 +39,27 @@ export function createUploadExtract(file, extractor_name) {
 	};
 }
 
+// createUpload thunk function
+export function convertCreateUploadExtract(pdfFile, extractor_name) {
+	return async function convertCreateUploadExtractThunk(dispatch) {
+		// this function converts pdf file to text.
+		// creates an empty dataset. uploads the 2 files to the dataset and submits text file for extraction
+		// convert pdf to text file using npm pdf2json package
+		const textFile = convertPDF(pdfFile);
+		// Clowder API call to create empty dataset
+		const dataset_json = await createEmptyDatasetRequest(pdfFile); // returns the dataset ID {id:xxx}
+		if (dataset_json !== undefined) {
+			dispatch(createDataset(CREATE_DATASETS, dataset_json));
+			// upload file to dataset
+			const pdfFile_json = await uploadFileToDatasetRequest(dataset_json.id, pdfFile); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+			const textFile_json = await uploadFileToDatasetRequest(dataset_json.id, textFile);
+			if (textFile_json !== undefined){
+				const extraction_json = submitForExtraction(textFile_json.id, extractor_name)
+				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, textFile_json));
+			}
+		}
+	};
+}
 
 
 // createEmptyDataset thunk function

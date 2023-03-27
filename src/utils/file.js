@@ -1,5 +1,6 @@
 import {dataURItoFile, downloadResource, getHeader} from "./common";
 import config from "../app.config";
+import PDFParser from "pdf2json";
 
 
 export async function submitForExtraction(file_id, extractor_name){
@@ -166,4 +167,18 @@ export async function getPreviewResources(preview) {
 	const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
 	preview_config.resource = await downloadResource(resourceURL);
 	return preview_config;
+}
+
+
+export function convertPDF(file) {
+	const textFilename = file.name.replace(/\.[^/.]+$/, "") + ".txt"; // get filename without extension
+	const pdfParser = new PDFParser(this,1); // 1 argument to parse just the content.
+	pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError));
+	pdfParser.on("pdfParser_dataReady", pdfData => {
+		const textData = pdfParser.getRawTextContent();
+		const textFile = new Blob([textData], {type: 'text/plain'});
+		return textFile;
+	});
+
+	pdfParser.loadPDF(file);
 }

@@ -1,6 +1,7 @@
 // Create a dataset and upload a file. Submit for extraction and get file previews
 
 import React, {useEffect, useState, useCallback} from 'react';
+
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -10,7 +11,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
-import {createUploadExtract} from "../../actions/dataset";
+import {convertCreateUploadExtract, createUploadExtract} from "../../actions/dataset";
 import {checkExtractionStatus} from "../../utils/file";
 import {checkHtmlInDatasetRequest} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
@@ -36,7 +37,12 @@ export default function CreateAndUpload() {
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
-		dispatch(createUploadExtract(file, extractor_name));
+		if (file.type === "application/pdf") {
+			dispatch(convertCreateUploadExtract(file, extractor_name));
+		}
+		else if (file.type === "text/plain"){
+			dispatch(createUploadExtract(file, extractor_name));
+		}
 	};
 
 	// useEffect on filesInDataset for preview generation
@@ -99,7 +105,7 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
-					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"]}}/>
+					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"], "application/pdf":[".pdf"]}}/>
 				</div>
 			</LoadingOverlay>
 
