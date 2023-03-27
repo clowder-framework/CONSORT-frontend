@@ -204,7 +204,7 @@ export default function CreateAndUpload() {
 						// get all preview resources
 						let preview_config = {};
 						preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
-						preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
+						preview_config.url = `${config.hostname}${preview["pv_route"]}`;
 						preview_config.fileid = preview["pv_id"];
 						preview_config.previewer = `/public${preview["p_path"]}/`;
 						preview_config.fileType = preview["pv_contenttype"];
@@ -216,7 +216,7 @@ export default function CreateAndUpload() {
 						if (!pv_routes.includes("/api/")) {
 							pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
 						}
-						const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
+						const resourceURL = `${config.hostname}${pv_routes}`;
 						preview_config.resource = await downloadResource(resourceURL);
 						previewsTemp.push(preview_config);
 						setPreviews(previewsTemp); // set previews
