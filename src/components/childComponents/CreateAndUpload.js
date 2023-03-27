@@ -36,9 +36,11 @@ async function createDatasetRequest(body_data) {
 		return create_dataset_response.json();
 	} else if (create_dataset_response.status === 401) {
 		// TODO handle error
+		console.error("dataset create error");
 		return null;
 	} else {
 		// TODO handle error
+		console.error("dataset create error");
 		return null;
 	}
 }
@@ -62,9 +64,11 @@ async function uploadToDatasetRequest(dataset_id, file) {
 		return response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
+		console.error("upload error");
 		return {};
 	} else {
 		// TODO handle error
+		console.error("upload error");
 		return {};
 	}
 }
@@ -91,11 +95,11 @@ async function extractionsRequest(file,body_data) {
 
 	} else if (response.status === 401) {
 		// TODO handle error
-		console.log("submit to extraction error");
+		console.error("submit to extraction error");
 		return {};
 	} else {
 		// TODO handle error
-		console.log("submit to extraction error");
+		console.error("submit to extraction error");
 		return {};
 	}
 }
@@ -126,7 +130,7 @@ async function checkHtmlInDataset(dataset){
 		return htmlFile;
 	}
 	else {
-		console.log("html file generation failed");
+		console.error("html file generation failed");
 		return null;
 	}
 
@@ -146,7 +150,7 @@ async function getPreviews(file_id) {
 		return previews_list;
 	}
 	else{
-		console.log("preview failed");
+		console.error("preview failed");
 	}
 }
 
