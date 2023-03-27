@@ -112,7 +112,7 @@ export default function CreateAndUpload() {
 				</RadioGroup>
 			</div>
 			<div className="preview-button align-right">
-				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute}> Continue </Button>
+				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute}> View Results </Button>
 			</div>
 
 		</Box>
