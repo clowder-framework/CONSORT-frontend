@@ -33,7 +33,7 @@ export default function UploadFile(props) {
 			history(`/files/${response["id"]}?datasetId=${selectedDatasetId}`);
 		} else {
 			// TODO display error message to show upload unsuccess
-			console.log("fail to upload files!");
+			console.error("fail to upload files!");
 		}
 	};
 

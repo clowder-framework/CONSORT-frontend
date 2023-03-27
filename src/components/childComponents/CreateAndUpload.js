@@ -73,7 +73,7 @@ export default function CreateAndUpload() {
 				await loop(); // call the loop to check extractions
 			}
 			else{
-				console.log("file does not exist");
+				console.error("file does not exist");
 			}
 		}
 	}, [filesInDataset]);
