@@ -2,6 +2,7 @@
 // Use Clowder createempty dataset API to create an empty dataset and uploadToDataset API to upload file to that dataset
 
 import React, {useEffect, useState, useCallback} from 'react';
+import LoadingOverlay from "react-loading-overlay-ts";
 import {Box, Button} from "@material-ui/core";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -151,6 +152,7 @@ async function getPreviews(file_id) {
 
 export default function CreateAndUpload() {
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
+	const [loading, setLoading] = useState(false); // processing state. set to active when dropfile is active
 	const [dropFile, setDropFile] = useState([]); // state for dropped file
 	const [clowderDataset, setClowderDataset] = useState(null); // state for created dataset in Clowder
 	const [clowderFile, setClowderFile] = useState(null);  // state for uploaded file in Clowder
@@ -214,6 +216,7 @@ export default function CreateAndUpload() {
 						preview_config.resource = await downloadResource(resourceURL);
 						previewsTemp.push(preview_config);
 						setPreviews(previewsTemp); // set previews
+						setLoading(false); // stop display of Overlay
 					}
 					else{
 						console.log("preview generation failed");
@@ -239,17 +242,24 @@ export default function CreateAndUpload() {
 	const onDrop = useCallback(acceptedFiles => {
 		// this callback will be called after files get dropped, we will get the acceptedFiles. If you want, you can even access the rejected files too
 		acceptedFiles.map(file => setDropFile(file));
+		setLoading(true);
 	}, [mouseHover]);
 	// TODO have a dependancy here - mouse hover or dropped file action
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="createupload">
+			<LoadingOverlay
+				active={loading}
+				spinner
+				text="Processing..."
+			>
 			<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
 				<Dropfile onDrop={onDrop}
 						  accept={ {'text/plain':['.txt']} }
 				/>
 			</div>
+			</LoadingOverlay>
 
 			<FormControl>
 				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
