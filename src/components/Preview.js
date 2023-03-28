@@ -6,7 +6,6 @@ import FilePreview from "./childComponents/FilePreview";
 function Preview() {
 	return (
 		<>
-			<TopBar/>
 			<div className="outer-container">
 				<div className="inner-container">
 					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "2rem", justifyContent:"flex-start" }}>
