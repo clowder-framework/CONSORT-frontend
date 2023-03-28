@@ -3,7 +3,7 @@ import config from "../app.config";
 
 
 export async function submitForExtraction(file_id, extractor_name){
-	const body = {"extractor": "ncsa.rctTransparencyExtractor"};
+	const body = {"extractor": extractor_name};
 	const extraction_response = await extractionRequest(file_id, body);
 	// return {"status":"OK","job_id":"string"}
 	return extraction_response;
