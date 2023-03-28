@@ -73,7 +73,7 @@ export default function CreateAndUpload() {
 				await loop(); // call the loop to check extractions
 			}
 			else{
-				console.log("file does not exist");
+				console.error("file does not exist");
 			}
 		}
 	}, [filesInDataset]);
@@ -112,9 +112,7 @@ export default function CreateAndUpload() {
 				</RadioGroup>
 			</div>
 			<div className="preview-button align-right">
-				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute} color="primary">
-					Continue
-				</Button>
+				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute}> View Results </Button>
 			</div>
 
 		</Box>
