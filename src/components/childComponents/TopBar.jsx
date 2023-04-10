@@ -9,9 +9,14 @@ const useStyles = makeStyles((theme) => ({
 	appBar: {
 		background: "#FFFFFF",
 		boxShadow: "none",
+		position: "relative",
+		zIndex: theme.zIndex.drawer + 1
 	},
 	toolBar: {
 		padding: "0 45px"
+	},
+	drawer:{
+		paddingTop: "45px"
 	},
 	menuButton: {
 		marginRight: theme.spacing(2),
