@@ -86,7 +86,6 @@ body {
 
 .dropzone-div {
 	height: 200px;
-	width: 600px;
 	border: 1px solid #007BFF;
 	text-align: center;
 	cursor: pointer;
@@ -95,6 +94,29 @@ body {
 
 .intro {
 	position: relative;
+}
+
+.align-left {
+	display: flex;
+	justify-content: left;
+}
+
+.align-right {
+	display: flex;
+	justify-content: right;
+}
+
+.preview-button{
+	margin-top: 20px;
+}
+.consort-logo{
+	width: 280px;
+	height: 70px;
+	padding-right: 10px;
+}
+.spirit-logo {
+	width: 300px;
+	height: 70px;
 }
 
 .major-text {

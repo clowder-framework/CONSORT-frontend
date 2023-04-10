@@ -1,40 +1,35 @@
-// Create a dataset and upload a file and submit for extraction
+// Create a dataset and upload a file. Submit for extraction and get file previews
 
 import React, {useEffect, useState, useCallback} from 'react';
+import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {Box, Button} from "@material-ui/core";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 import Dropfile from "./Dropfile";
-import Html from "../previewers/Html";
-import Audio from "../previewers/Audio";
-import Video from "../previewers/Video";
-import Thumbnail from "../previewers/Thumbnail";
-import {createEmptyDataset as createEmptyDatasetAction, createUploadExtract} from "../../actions/dataset";
-import {uploadFileToDataset as uploadFileToDatasetAction} from "../../actions/dataset";
-import {checkExtractionStatus, getPreviewResources} from "../../utils/file";
+import {createUploadExtract} from "../../actions/dataset";
+import {checkExtractionStatus} from "../../utils/file";
 import {checkHtmlInDatasetRequest} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 
 
 export default function CreateAndUpload() {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
-	const [loading, setLoading] = useState(false); // loading overlay state. set to active when dropfile is active
-	const [loading_text , setLoadingText] = useState("processing"); // loading overlay text.
-	const [previews, setPreviews] = useState([]); // state for file previews
+	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
+	const [loading_text , setLoadingText] = useState("Processing"); // loading overlay text.
+	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
+	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
 	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
-	const filePreviews = useSelector((state) => state.file.previews);
 
 	const extractor_name = "ncsa.rctTransparencyExtractor"
 
@@ -46,7 +41,7 @@ export default function CreateAndUpload() {
 
 	// useEffect on filesInDataset for preview generation
 	useEffect(async()=> {
-		if (filesInDataset !== undefined && filesInDataset.length > 0){
+		if (filesInDataset !== undefined && filesInDataset.length > 0) {
 			const file_id = filesInDataset[0].id;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
@@ -61,6 +56,9 @@ export default function CreateAndUpload() {
 					if (typeof htmlFile.id === "string") {
 						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 						listFilePreviews(htmlFile.id);
+						setLoadingText("Extraction completed");
+						setPreview(false)  // Continue button activated
+						setSpinner(false); // stop display of spinner
 					} else {
 						console.log("check html file after 5s");
 						setTimeout(loop, 5000);
@@ -82,21 +80,6 @@ export default function CreateAndUpload() {
 	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start
 
 
-	// useEffect on filePreviews to download preview resources
-	useEffect( async ()=> {
-		if (filePreviews !== undefined && filePreviews.length > 0) {
-			const previewsTemp = [];
-			filePreviews[0].map(async (preview) => {
-				// get all preview resources
-				const preview_config = await getPreviewResources(preview);
-				previewsTemp.push(preview_config);
-				setPreviews(previewsTemp); // set previews
-				setLoading(false); // stop display of Overlay
-			});
-		}
-	}, [filePreviews])
-
-
 	// onDrop function to trigger createUploadExtract action dispatch
 	const onDrop = useCallback(acceptedFiles => {
 		// this callback will be called after files get dropped, we will get the acceptedFiles. If you want, you can even access the rejected files too
@@ -105,62 +88,33 @@ export default function CreateAndUpload() {
 	}, [mouseHover]);
 	// TODO have a dependancy here - mouse hover or dropped file action
 
+	const goToPreviewRoute = () => {
+		setLoading(false); // stop display of Overlay
+		let path = '/preview';
+		navigate(path);
+	}
+
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="createupload">
-			<LoadingOverlay
-				active={loading}
-				spinner
-				text={loading_text}
-			>
-			<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
-				<Dropfile onDrop={onDrop}
-						  accept={ {'image/png': ['.png'], 'image/jpeg': ['.jpg', '.jpeg'], 'text/html': ['.html', '.htm'], 'text/plain':['.txt']} }
-				/>
-			</div>
+			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
+				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
+					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"]}}/>
+				</div>
 			</LoadingOverlay>
 
-			<FormControl>
-				<FormLabel id="demo-radio-buttons-group-label">Guideline</FormLabel>
-				<RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="consort" name="radio-buttons-group">
-					<FormControlLabel value="consort" control={<Radio />} label="CONSORT" />
-					<FormControlLabel value="spirit" control={<Radio />} label="SPIRIT" />
+			<div className="radio-buttons-group-div">
+				<RadioGroup defaultValue="consort" name="radio-buttons-group" row>
+					<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
+					<img className="consort-logo" src="../../public/consort-logo.png" alt="consort-logo-sm"/>
+					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
+					<img className="spirit-logo" src="../../public/spirit-logo.png" alt="spirit-logo-sm"/>
 				</RadioGroup>
-			</FormControl>
-
-			<div className="previewBox">
-				{
-					previews.map((preview) => {
-						if (preview["previewType"] === "audio") {
-							return (
-								<div key={preview["fileid"]}>
-									<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>;
-								</div>
-							);
-						} else if (preview["previewType"] === "video") {
-							return (
-								<div key={preview["fileid"]}>
-									<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>;
-								</div>
-							);
-						} else if (preview["previewType"] === "thumbnail") {
-							return (
-								<div key={preview["fileid"]}>
-									<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
-											   imgSrc={preview["resource"]}/>;
-								</div>
-							);
-						} else if (preview["previewType"] === "html") {
-							return (
-								<div key={preview["fileid"]}>
-									<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>;
-								</div>
-							);
-						}
-
-					})
-				}
 			</div>
+			<div className="preview-button align-right">
+				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute}> View Results </Button>
+			</div>
+
 		</Box>
 
 	);

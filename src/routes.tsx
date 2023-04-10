@@ -2,15 +2,15 @@ import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
-//import Dashboard from "./components/Dashbard";
-//import DatasetComponent from "./components/Dataset";
-//import FileComponent from "./components/File";
+import Preview from "./components/Preview";
+
 
 export const AppRoutes = (): JSX.Element => {
 	return (
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<Dashboard/>}/>
+				<Route path="/preview" element={<Preview/>} />
 				<Route path="*"
 					   element={
 						   <main style={{padding: "1rem"}}>

@@ -14,9 +14,12 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 	}
 };
 
+// create datasets action
+export const CREATE_DATASETS = "CREATE_DATASETS";
+export const createDataset = (type, json) => ({type: type, datasets: json});
 // add file to dataset action
 export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
-export const addFileToDataset = (type, file_json, dataset_json) => ({type: type, files: file_json, datasets: dataset_json});
+export const addFileToDataset = (type, file_json) => ({type: type, files: file_json});
 
 // createUploadExtract thunk function
 export function createUploadExtract(file, extractor_name) {
@@ -25,20 +28,19 @@ export function createUploadExtract(file, extractor_name) {
 		// Clowder API call to create empty dataset
 		const dataset_json = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
 		if (dataset_json !== undefined) {
+			dispatch(createDataset(CREATE_DATASETS, dataset_json));
 			// upload file to dataset
 			const file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
 				const extraction_json = submitForExtraction(file_json.id, extractor_name)
-				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json, dataset_json));
+				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
 			}
 		}
 	};
 }
 
 
-// crate datasets action
-export const CREATE_DATASETS = "CREATE_DATASETS";
-export const createDataset = (type, json) => ({type: type, datasets: json});
+
 // createEmptyDataset thunk function
 export const createEmptyDataset = (file) => async dispatch => {
 	// Clowder API call to create empty dataset

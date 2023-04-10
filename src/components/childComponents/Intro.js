@@ -6,7 +6,7 @@ export default function Intro() {
 		<div className="intro">
 			<div className="major-text">
 				<Typography variant="h3" palette="primary.main">
-					Check your trial quality before submission
+					Check your manuscript reporting quality
 				</Typography>
 			</div>
 			<div className="minor-text">
