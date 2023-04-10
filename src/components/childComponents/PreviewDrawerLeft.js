@@ -12,7 +12,7 @@ export default function PreviewDrawerLeft(props) {
 	const {fileId, fileSrc, ...other} = props;
 
 	const onDownload = () => {
-		downloadFile(fileId)
+		downloadFile(fileId, "results.html");
 	}
 
 	return (
