@@ -13,22 +13,22 @@ export default function Dashboard() {
 			<TopBar/>
 			<div className="outer-container">
 				<div className="inner-container">
-					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "1rem", justifyContent:"flex-start" }}>
+					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "2rem", justifyContent:"flex-start" }}>
 						<Grid item xs={5} >
 							<Box className="intro">
 								<Intro />
 							</Box>
 						</Grid>
-						<Grid item xs={4}>
+						<Grid item xs={5}>
 							<Box className="createAndUpload">
 								<CreateAndUpload />
 							</Box>
 						</Grid>
-						<Grid item xs={2} >
-							<Box className="getDataset">
-								<GetDataset />
-							</Box>
-						</Grid>
+						{/*<Grid item xs={2} >*/}
+						{/*	<Box className="getDataset">*/}
+						{/*		<GetDataset />*/}
+						{/*	</Box>*/}
+						{/*</Grid>*/}
 					</Grid>
 				</div>
 			</div>
