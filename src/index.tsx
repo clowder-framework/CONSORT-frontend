@@ -3,22 +3,20 @@
 
 import React from "react";
 import {render} from "react-dom";
-import {Provider} from "react-redux";
+//import {Provider} from "react-redux";
 import {AppRoutes} from "./routes";
-import configureStore from "./store/configureStore";
+//import configureStore from "./store/configureStore";
 import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {theme} from './theme';
 
-const store = configureStore();
+//const store = configureStore();
 
 
 render(
 	<ThemeProvider theme={theme}>
-		<Provider store={store}>
-			<CssBaseline/>
-			<AppRoutes/>
-		</Provider>
+		<CssBaseline/>
+		<AppRoutes/>
 	</ThemeProvider>
 	, document.getElementById("app")
 );
