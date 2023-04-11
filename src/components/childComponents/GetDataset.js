@@ -5,7 +5,10 @@ import {Box, Button} from "@material-ui/core";
 
 import config from "../../app.config";
 import {getHeader} from "../../utils/common";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchDatasets as fetchDatasetsAction} from "../../actions/dataset";
 
+// not used in react-redux
 async function getDatasetFromUrl(url) {
 	const dataset_data_response = await fetch(url, {method:"GET", headers:getHeader()});
 
@@ -52,21 +55,16 @@ function DisplayDataset(props) {
 	);
 }
 
-export default function GetDataset() {
-	const [fetchDatasets, setFetchDatasets] = useState(false); // state of explore button
-	const [datasets, setDatasets] = useState([]); // state for dataset list returned from fetch
+const GetDataset = () => {
 
-	// Click Explore Dataset button to get dataset list
-	useEffect(() => {
-		const dataset_url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=5`;
-		if (fetchDatasets === true) {
-			getDatasetFromUrl(dataset_url).then((response) => {setDatasets(response)});
-		}
-	}, [fetchDatasets]);
+	const dispatch = useDispatch();
+	const listDatasets = () => dispatch(fetchDatasetsAction()); // get list of Datasets. limit 5
+
+	const datasets = useSelector((state) => state.dataset.datasets);
 
 	return (
 		<>
-			<Button onClick={()=> setFetchDatasets(true)}> Explore Datasets </Button>
+			<Button onClick={()=> listDatasets()}> Explore Datasets </Button>
 			{
 				datasets.map((dataset) => {
 					return(
@@ -79,5 +77,6 @@ export default function GetDataset() {
 		</>
 	);
 
-}
+};
 
+export default GetDataset;

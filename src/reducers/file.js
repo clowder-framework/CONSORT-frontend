@@ -16,7 +16,10 @@ const file = (state = defaultState, action) => {
 		case RECEIVE_FILE_METADATA_JSONLD:
 			return Object.assign({}, state, {metadataJsonld: action.metadataJsonld});
 		case RECEIVE_PREVIEWS:
-			return Object.assign({}, state, {previews: action.previews});
+			return { ...state,
+				// new previews list
+				previews: [...state.previews, action.previews]
+			};
 		default:
 			return state;
 	}

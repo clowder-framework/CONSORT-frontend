@@ -1,25 +1,17 @@
 import React, {useEffect, useState, Component} from "react";
-import {Link as RouterLink} from "react-router-dom";
 import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tabs, Typography} from "@material-ui/core";
 import TopBar from "./childComponents/TopBar";
-import Intro from "./childComponents/Intro";
-import CreateAndUpload from "./childComponents/CreateAndUpload";
+import FilePreview from "./childComponents/FilePreview";
 
-function Dashboard() {
+function Preview() {
 	return (
 		<>
-			<TopBar/>
 			<div className="outer-container">
 				<div className="inner-container">
 					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "2rem", justifyContent:"flex-start" }}>
-						<Grid item xs={5} >
-							<Box className="intro">
-								<Intro />
-							</Box>
-						</Grid>
-						<Grid item xs={6} >
-							<Box className="createAndUpload">
-								<CreateAndUpload />
+						<Grid item xs={10} >
+							<Box className="filePreview">
+								<FilePreview />
 							</Box>
 						</Grid>
 					</Grid>
@@ -29,4 +21,4 @@ function Dashboard() {
 	)
 }
 
-export default Dashboard;
+export default Preview;
