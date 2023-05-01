@@ -11,11 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Redux implementation of simple upload and extract function. [#12](https://github.com/clowder-framework/CONSORT-frontend/issues/12)
 - Results page implemented using redux. [#22](https://github.com/clowder-framework/CONSORT-frontend/issues/22)
 - Export of html preview file. [#24](https://github.com/clowder-framework/CONSORT-frontend/issues/24)
+
 ### Changed
 
 
 ### Fixed
-
+- Display of error messages on uploading files in dropzone. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
 
 ### Security
 
