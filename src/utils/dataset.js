@@ -1,6 +1,8 @@
 import {getHeader} from "./common";
 import config from "../app.config";
 
+const space_id = "645177dfe4b03d8d787951ea"
+
 export async function getDatasetsRequest(title, limit) {
 	// Clowder API to get dataset list
 	let url = `${config.hostname}/clowder/api/datasets?superAdmin=true&limit=${limit}`;
@@ -31,7 +33,7 @@ export async function createEmptyDatasetRequest(file) {
 	authHeader.append('Content-Type', 'application/json');
 	const datasetname = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 	const description = file.type;
-	const body_data = {"name": datasetname, "description": description};
+	const body_data = {"name": datasetname, "description": description, "space": [space_id]};
 	const body = JSON.stringify(body_data);
 	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {
