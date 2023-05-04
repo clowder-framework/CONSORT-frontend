@@ -31,8 +31,6 @@ export default function CreateAndUpload() {
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 
-	const extractor_name = "ncsa.rctTransparencyExtractor"
-
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
@@ -49,7 +47,7 @@ export default function CreateAndUpload() {
 				setLoadingText("Checking extraction status");
 				const extraction_status = await checkExtractionStatus(file_id);
 				console.log(extraction_status);
-				if (extraction_status["Status"] === "Done" && extraction_status[extractor_name] === "DONE") {
+				if (extraction_status["Status"] === "Done") {
 					setLoadingText("Generating html file");
 					const htmlFile = await checkHtmlInDatasetRequest(dataset_id);
 					console.log(htmlFile);
@@ -99,7 +97,7 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
-					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"]}}/>
+					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"], "application/pdf":[".pdf"]}}/>
 				</div>
 			</LoadingOverlay>
 
