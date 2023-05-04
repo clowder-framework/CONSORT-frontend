@@ -22,7 +22,7 @@ export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
 export const addFileToDataset = (type, file_json) => ({type: type, files: file_json});
 
 // createUploadExtract thunk function
-export function createUploadExtract(file, extractor_name) {
+export function createUploadExtract(file) {
 	return async function createUploadExtractThunk(dispatch) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
 		// Clowder API call to create empty dataset
@@ -32,7 +32,17 @@ export function createUploadExtract(file, extractor_name) {
 			// upload file to dataset
 			const file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
-				const extraction_json = submitForExtraction(file_json.id, extractor_name)
+				if (file.type == "text/plain"){
+					const rct_extraction_json = submitForExtraction(file_json.id, config.rct_extractor);
+				}
+				else if (file.type == "application/pdf") {
+					const pdf_extraction_json = submitForExtraction(file_json.id, config.pdf_extractor);
+				}
+				else {
+					// TODO add error action
+					console.log("Error in file type");
+				}
+
 				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
 			}
 		}
