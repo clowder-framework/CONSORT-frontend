@@ -1,7 +1,10 @@
 import config from "../app.config";
 import {getHeader} from "../utils/common";
-import {createEmptyDatasetRequest, getDatasetsRequest, uploadFileToDatasetRequest} from "../utils/dataset";
-import {submitForExtraction} from "../utils/file";
+import {
+	createEmptyDatasetRequest, getDatasetsRequest,
+	getFileInDataset, listFilesInDatasetRequest, uploadFileToDatasetRequest
+} from "../utils/dataset";
+import {checkExtractionStatus, submitForExtraction} from "../utils/file";
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -32,23 +35,49 @@ export function createUploadExtract(file) {
 			// upload file to dataset
 			const file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
+				// add uploaded file to dataset state
+				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
+				// submit uploaded file for extraction
 				if (file.type == "text/plain"){
 					const rct_extraction_json = submitForExtraction(file_json.id, config.rct_extractor);
+					// check every 5s for extraction status
+					// const loop = async () => {
+					// 	if (rct_extraction_json.status === "OK") {
+					// 		const filesInDataset = listFilesInDatasetRequest(dataset_json["id"]);
+					// 		// add extracted output files to dataset state
+					// 		Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
+					// 	}
+					// 	else {
+					// 		console.log("check RCT extraction status after 5s");
+					// 		setTimeout(loop, 5000);
+					//
+					// 	}
+					// }
 				}
 				else if (file.type == "application/pdf") {
+					console.log("pdf file name", file.name);
 					const pdf_extraction_json = submitForExtraction(file_json.id, config.pdf_extractor);
+					const loop = async () => {
+						if (pdf_extraction_json.status !== "OK"){
+							console.log("check pdf extraction status after 2s");
+							setTimeout(loop, 2000);
+						}
+					}
+					// check if txt file is generated and submit for RCTextractor
+					const extracted_txt_file = getFileInDataset(dataset_json["id"], "text/plain", file.name);
+					const rct_extraction_json = submitForExtraction(extracted_txt_file.id, config.rct_extractor);
+					// add extracted output files to dataset state
+					//Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
 				}
 				else {
 					// TODO add error action
 					console.log("Error in file type");
 				}
 
-				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
 			}
 		}
 	};
 }
-
 
 
 // createEmptyDataset thunk function
@@ -71,6 +100,7 @@ export function receiveFilesInDataset(type, json) {
 		});
 	};
 }
+
 
 export function fetchFilesInDataset(id) {
 	let url = `${config.hostname}/clowder/api/datasets/${id}/files?superAdmin=true`;
