@@ -64,10 +64,17 @@ export function createUploadExtract(file) {
 							console.log("check pdf extraction status after 2s");
 							setTimeout(loop, 2000);
 						}
+						else if (pdf_extraction_json.status === "OK"){
+							// check if txt file is generated and submit for RCTextractor
+							const extracted_txt_file = getFileInDataset(dataset_json.id, "text/plain", file_name);
+							if (typeof extracted_txt_file.id === "string") {
+								const rct_extraction_json = submitForExtraction(extracted_txt_file.id, config.rct_extractor);
+							}
+							else {
+								await loop();
+							}
+						}
 					}
-					// check if txt file is generated and submit for RCTextractor
-					const extracted_txt_file = getFileInDataset(dataset_json["id"], "text/plain", file_name);
-					const rct_extraction_json = submitForExtraction(extracted_txt_file.id, config.rct_extractor);
 					// add extracted output files to dataset state
 					//Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
 				}
