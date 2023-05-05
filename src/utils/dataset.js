@@ -24,15 +24,13 @@ export async function getDatasetsRequest(title, limit) {
 }
 
 
-export async function createEmptyDatasetRequest(file) {
+export async function createEmptyDatasetRequest(dataset_name, dataset_description) {
 	// Clowder API call to create empty dataset
 	const url = `${config.hostname}/clowder/api/datasets/createempty`;
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
-	const datasetname = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
-	const description = file.type;
-	const body_data = {"name": datasetname, "description": description, "space": [config.space]};
+	const body_data = {"name": dataset_name, "description": dataset_description, "space": [config.space]};
 	const body = JSON.stringify(body_data);
 	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {

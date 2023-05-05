@@ -29,7 +29,9 @@ export function createUploadExtract(file) {
 	return async function createUploadExtractThunk(dispatch) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
 		// Clowder API call to create empty dataset
-		const dataset_json = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
+		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
+		const file_description = file.type;
+		const dataset_json = await createEmptyDatasetRequest(file_name, file_description); // returns the dataset ID {id:xxx}
 		if (dataset_json !== undefined) {
 			dispatch(createDataset(CREATE_DATASETS, dataset_json));
 			// upload file to dataset
@@ -55,7 +57,7 @@ export function createUploadExtract(file) {
 					// }
 				}
 				else if (file.type == "application/pdf") {
-					console.log("pdf file name", file.name);
+					console.log("pdf file name", file_name);
 					const pdf_extraction_json = submitForExtraction(file_json.id, config.pdf_extractor);
 					const loop = async () => {
 						if (pdf_extraction_json.status !== "OK"){
@@ -64,7 +66,7 @@ export function createUploadExtract(file) {
 						}
 					}
 					// check if txt file is generated and submit for RCTextractor
-					const extracted_txt_file = getFileInDataset(dataset_json["id"], "text/plain", file.name);
+					const extracted_txt_file = getFileInDataset(dataset_json["id"], "text/plain", file_name);
 					const rct_extraction_json = submitForExtraction(extracted_txt_file.id, config.rct_extractor);
 					// add extracted output files to dataset state
 					//Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
