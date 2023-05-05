@@ -35,7 +35,7 @@ async function extractionRequest(file_id,body_data) {
 		return {};
 	} else {
 		// TODO handle error
-		console.log("submit to extraction error");
+		console.log("submit to extraction error", response.status);
 		return {};
 	}
 }
