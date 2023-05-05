@@ -51,6 +51,7 @@ export async function createEmptyDatasetRequest(file) {
 	}
 }
 
+
 export async function uploadFileToDatasetRequest(dataset_id, file) {
 	// Clowder API call to upload file to dataset
 	const upload_to_dataset_url = `${config.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=${config.extract}`;
@@ -77,22 +78,42 @@ export async function uploadFileToDatasetRequest(dataset_id, file) {
 	}
 }
 
-export async function checkHtmlInDatasetRequest(dataset_id){
-	// function to check if html file is there in the dataset
+
+export async function listFilesInDatasetRequest(dataset_id) {
+	// function to get a list of all files in clowder dataset
 	const listFiles_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
 	// get the list of files in dataset
-	const dataset_listFiles_response = await fetch(listFiles_url, {method:"GET", headers:getHeader(), mode: "cors"});
-	const dataset_listFiles = await dataset_listFiles_response.json();
-	// filter html file and select the first item in filtered array.
-	const htmlFile = Object.values(dataset_listFiles).filter(file => file.contentType === "text/html")[0];
-	// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
-	if (htmlFile !== undefined && htmlFile.contentType === "text/html") {
-		// found html file in dataset. return the object
-		console.log("html file generated");
-		return htmlFile;
+	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:getHeader(), mode: "cors"});
+	return listFiles_response.json();
+}
+
+
+export async function getFileInDataset(dataset_id, file_type, file_name=null){
+	// function to check if a specific file is present in dataset and return the file
+	// filter files on file type and filename and select the first item in filtered array.
+	let fileObjects = listFilesInDatasetRequest(dataset_id);
+	console.log("getFileFromDataset", fileObjects);
+	let files = [];
+	if (file_name) {
+		files = Object.values(fileObjects).filter(file => {
+			if (file.contentType === file_type && file.filename === file_name){
+				return file
+			}
+		});
 	}
 	else {
-		console.log("html file generation failed");
+		files = Object.values(fileObjects).filter(file => file.contentType === file_type);
+	}
+	// get the first item of files list
+	const file = files[0];
+	// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
+	if (file !== undefined && file.contentType === file_type) {
+		// found file in dataset. return the object
+		console.log("File with type ", file_type, " generated");
+		return file;
+	}
+	else {
+		console.log("No File with type ", file_type);
 		return null;
 	}
 
