@@ -74,6 +74,10 @@ export function createUploadExtract(file) {
 								await loop();
 							}
 						}
+						else {
+							console.log("check pdf extraction status after 2s");
+							await loop();
+						}
 					}
 					// add extracted output files to dataset state
 					//Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
