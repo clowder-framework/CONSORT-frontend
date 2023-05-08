@@ -89,8 +89,9 @@ export async function listFilesInDatasetRequest(dataset_id) {
 export async function getFileInDataset(dataset_id, file_type, file_name=null){
 	// function to check if a specific file is present in dataset and return the file
 	// filter files on file type and filename and select the first item in filtered array.
-	let fileObjects = listFilesInDatasetRequest(dataset_id);
-	console.log("getFileFromDataset", fileObjects);
+	let fileObjects = await listFilesInDatasetRequest(dataset_id);
+	console.log("getFileInDataset", dataset_id, file_type, file_name);
+	console.log("fileObjects", fileObjects);
 	let files = [];
 	if (file_name) {
 		files = Object.values(fileObjects).filter(file => {
