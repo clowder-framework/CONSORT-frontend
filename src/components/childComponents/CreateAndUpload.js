@@ -36,7 +36,7 @@ export default function CreateAndUpload() {
 		setLoadingText("Uploading file");
 		dispatch(createUploadExtract(file));
 	};
-	
+
 	// useEffect on filesInDataset for preview generation
 	useEffect(async () => {
 		if (filesInDataset !== undefined && filesInDataset.length > 0) {
