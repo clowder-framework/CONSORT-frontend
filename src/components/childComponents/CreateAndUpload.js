@@ -22,7 +22,7 @@ export default function CreateAndUpload() {
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
-	const [loading_text , setLoadingText] = useState("Processing"); // loading overlay text.
+	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
 	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
@@ -36,18 +36,20 @@ export default function CreateAndUpload() {
 		setLoadingText("Uploading file");
 		dispatch(createUploadExtract(file));
 	};
-
+	
 	// useEffect on filesInDataset for preview generation
-	useEffect(async()=> {
+	useEffect(async () => {
 		if (filesInDataset !== undefined && filesInDataset.length > 0) {
+			console.log(filesInDataset);
 			const file_id = filesInDataset[0].id;
-			const file_name = filesInDataset[0].filename;
+			const file_name = filesInDataset[0].filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
+			console.log("file_name", file_name);
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
-			const loop = async () => {
+			const html_file_loop = async () => {
 				setLoadingText("Checking extraction status");
-				const htmlFile = await getFileInDataset(dataset_id, "text/html", file_name);
-				if (typeof htmlFile.id === "string") {
+				const htmlFile = await getFileInDataset(dataset_id, "text/html", file_name + '.html');
+				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					listFilePreviews(htmlFile.id);
 					setLoadingText("Extraction completed");
@@ -55,7 +57,7 @@ export default function CreateAndUpload() {
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check html file after 5s");
-					setTimeout(loop, 5000);
+					setTimeout(html_file_loop, 5000);
 				}
 				// const extraction_status = await checkExtractionStatus(htmlFile.id);
 				// console.log(extraction_status);
@@ -79,10 +81,9 @@ export default function CreateAndUpload() {
 				// }
 			};
 
-			if (file_id !== null){
-				await loop(); // call the loop to check extractions
-			}
-			else{
+			if (file_id !== null) {
+				await html_file_loop(); // call the loop to check extractions
+			} else {
 				console.error("file does not exist");
 			}
 		}
@@ -108,16 +109,16 @@ export default function CreateAndUpload() {
 	return (
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
-				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
-					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"], "application/pdf":[".pdf"]}}/>
+				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
+					<Dropfile onDrop={onDrop} accept={{"text/plain": [".txt"], "application/pdf": [".pdf"]}}/>
 				</div>
 			</LoadingOverlay>
 
 			<div className="radio-buttons-group-div">
 				<RadioGroup defaultValue="consort" name="radio-buttons-group" row>
-					<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
+					<FormControlLabel value="consort" control={<Radio/>} label="Trial results"/>
 					<img className="consort-logo" src="../../public/consort-logo.png" alt="consort-logo-sm"/>
-					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
+					<FormControlLabel value="spirit" control={<Radio/>} label="Trial protocol"/>
 					<img className="spirit-logo" src="../../public/spirit-logo.png" alt="spirit-logo-sm"/>
 				</RadioGroup>
 			</div>
