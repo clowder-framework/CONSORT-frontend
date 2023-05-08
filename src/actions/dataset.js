@@ -4,7 +4,7 @@ import {
 	createEmptyDatasetRequest, getDatasetsRequest,
 	getFileInDataset, listFilesInDatasetRequest, uploadFileToDatasetRequest
 } from "../utils/dataset";
-import {checkExtractionStatus, submitForExtraction} from "../utils/file";
+import {checkExtractionStatus, checkExtractionStatusLoop, submitForExtraction} from "../utils/file";
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -34,59 +34,64 @@ export function createUploadExtract(file) {
 		const dataset_json = await createEmptyDatasetRequest(file_name, file_description); // returns the dataset ID {id:xxx}
 		if (dataset_json !== undefined) {
 			dispatch(createDataset(CREATE_DATASETS, dataset_json));
-			// upload file to dataset
-			const file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+			// upload input file to dataset
+			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
-				// add uploaded file to dataset state
-				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
+				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
 				if (file.type == "text/plain"){
 					const rct_extraction_json = submitForExtraction(file_json.id, config.rct_extractor);
 					// check every 5s for extraction status
-					// const loop = async () => {
-					// 	if (rct_extraction_json.status === "OK") {
-					// 		const filesInDataset = listFilesInDatasetRequest(dataset_json["id"]);
-					// 		// add extracted output files to dataset state
-					// 		Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
-					// 	}
-					// 	else {
-					// 		console.log("check RCT extraction status after 5s");
-					// 		setTimeout(loop, 5000);
-					//
-					// 	}
-					// }
+					const rct_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
+					if (rct_extraction_status){
+						console.log("RCT extraction status true");
+						//dispatch(extractionStatus(EXTRACTION_STATUS, true));
+
+					}
+					else {
+						console.error("RCT extraction status false");
+						//dispatch(extractionStatus(EXTRACTION_STATUS, false));
+					}
 				}
 				else if (file.type == "application/pdf") {
 					console.log("pdf file name", file_name);
-					const pdf_extraction_json = submitForExtraction(file_json.id, config.pdf_extractor);
-					const loop = async () => {
-						if (pdf_extraction_json.status !== "OK"){
-							console.log("check pdf extraction status after 2s");
-							setTimeout(loop, 2000);
-						}
-						else if (pdf_extraction_json.status === "OK"){
-							// check if txt file is generated and submit for RCTextractor
-							const extracted_txt_file = getFileInDataset(dataset_json.id, "text/plain", file_name);
-							if (typeof extracted_txt_file.id === "string") {
-								const rct_extraction_json = submitForExtraction(extracted_txt_file.id, config.rct_extractor);
+					const pdf_extraction_json = await submitForExtraction(file_json.id, config.pdf_extractor);
+					const pdf_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
+					if (pdf_extraction_status){
+						console.log("pdf extraction done");
+						const text_file_name = file_name + '.txt';
+						const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/plain", text_file_name);
+						if (extracted_txt_file !== null && typeof extracted_txt_file.id === "string") {
+							const rct_extraction_json = await submitForExtraction(extracted_txt_file.id, config.rct_extractor);
+							// check every 5s for extraction status
+							const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, 5000);
+							if (rct_extraction_status){
+								console.log("RCT extraction status true");
+								//dispatch(extractionStatus(EXTRACTION_STATUS, true));
+
 							}
 							else {
-								await loop();
+								console.error("RCT extraction status false");
+								//dispatch(extractionStatus(EXTRACTION_STATUS, false));
 							}
 						}
-						else {
-							console.log("check pdf extraction status after 2s");
-							await loop();
-						}
+					}
+					else {
+						console.error("Pdf extraction status false");
 					}
 					// add extracted output files to dataset state
+					//const filesInDataset = listFilesInDatasetRequest(dataset_json["id"]);
 					//Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
 				}
 				else {
 					// TODO add error action
-					console.log("Error in file type");
+					console.error("Error in file type");
 				}
-
+				// after submitting uploaded file for extraction, add the file to dataset state
+				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
+			}
+			else {
+				console.error("Error in clowder upload of file ", file.name)
 			}
 		}
 	};
