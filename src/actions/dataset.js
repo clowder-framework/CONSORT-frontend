@@ -47,7 +47,7 @@ export function createUploadExtract(file) {
 					const rct_extraction_json = submitForExtraction(file_json.id, config.rct_extractor);
 					// check every 5s for extraction status
 					const rct_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
-					if (rct_extraction_status){
+					if (rct_extraction_status === "Done"){
 						console.log("RCT extraction status true");
 						//dispatch(extractionStatus(EXTRACTION_STATUS, true));
 
@@ -58,10 +58,10 @@ export function createUploadExtract(file) {
 					}
 				}
 				else if (file.type == "application/pdf") {
-					console.log("pdf file name", file_name);
 					const pdf_extraction_json = await submitForExtraction(file_json.id, config.pdf_extractor);
 					const pdf_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
-					if (pdf_extraction_status){
+					console.log("pdf extraction status", pdf_extraction_status);
+					if (pdf_extraction_status === "Done"){
 						console.log("pdf extraction done");
 						const text_file_name = file_name + '.txt';
 						const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/plain", text_file_name);
@@ -69,7 +69,7 @@ export function createUploadExtract(file) {
 							const rct_extraction_json = await submitForExtraction(extracted_txt_file.id, config.rct_extractor);
 							// check every 5s for extraction status
 							const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, 5000);
-							if (rct_extraction_status){
+							if (rct_extraction_status === "Done"){
 								console.log("RCT extraction status true");
 								//dispatch(extractionStatus(EXTRACTION_STATUS, true));
 
