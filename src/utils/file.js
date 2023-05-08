@@ -65,6 +65,28 @@ export async function checkExtractionStatus(file_id){
 	return extractions_data;
 }
 
+export async function checkExtractionStatusLoop(file_id, interval){
+	// check extraction status of a file in loop. Check status every interval seconds
+	console.log("extraction status loop for", interval);
+	const status_check_loop = async () => {
+		const extractions_data = await checkExtractionStatus(file_id);
+		console.log(extractions_data);
+		if (extractions_data["Status"] === "Done"){
+			return true;
+		}
+		else {
+			console.log("check extraction status after %s ms", interval);
+			setTimeout(status_check_loop, interval);
+		}
+	}
+	if (file_id !== null) {
+		await status_check_loop();
+	}
+	else {
+		return false;
+	}
+}
+
 
 export async function uploadFile(formData, selectedDatasetId) {
 	let endpoint = `${config.hostname}/clowder/api/datasets/${selectedDatasetId}/files?superAdmin=true`;
