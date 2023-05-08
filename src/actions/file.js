@@ -87,6 +87,16 @@ export function fetchFileMetadataJsonld(id) {
 	};
 }
 
+export const EXTRACTION_STATUS = "EXTRACTION_STATUS";
+export function getExtractionStatus(type, status) {
+	return (dispatch) => {
+		dispatch({
+			type: type,
+			extraction_status: status
+		});
+	};
+}
+
 export const RECEIVE_PREVIEWS = "RECEIVE_PREVIEWS";
 export function receiveFilePreviews(type, json) {
 	return (dispatch) => {

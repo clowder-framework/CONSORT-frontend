@@ -23,6 +23,10 @@ export const createDataset = (type, json) => ({type: type, datasets: json});
 // add file to dataset action
 export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
 export const addFileToDataset = (type, file_json) => ({type: type, files: file_json});
+// get extraction status of file
+export const EXTRACTION_STATUS = "EXTRACTION_STATUS";
+export const extractionStatus = (type, status) => ({type: type, extraction_status:status})
+
 
 // createUploadExtract thunk function
 export function createUploadExtract(file) {
