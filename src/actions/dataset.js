@@ -60,7 +60,6 @@ export function createUploadExtract(file) {
 				else if (file.type == "application/pdf") {
 					const pdf_extraction_json = await submitForExtraction(file_json.id, config.pdf_extractor);
 					const pdf_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
-					console.log("pdf extraction status", pdf_extraction_status);
 					if (pdf_extraction_status === true){
 						console.log("pdf extraction done");
 						const text_file_name = file_name + '.txt';

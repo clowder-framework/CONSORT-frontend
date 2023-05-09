@@ -40,10 +40,8 @@ export default function CreateAndUpload() {
 	// useEffect on filesInDataset for preview generation
 	useEffect(async () => {
 		if (filesInDataset !== undefined && filesInDataset.length > 0) {
-			console.log(filesInDataset);
 			const file_id = filesInDataset[0].id;
 			const file_name = filesInDataset[0].filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
-			console.log("file_name", file_name);
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
 			const html_file_loop = async () => {
@@ -60,26 +58,6 @@ export default function CreateAndUpload() {
 					console.log("check html file after 5s");
 					setTimeout(html_file_loop, 5000);
 				}
-				// const extraction_status = await checkExtractionStatus(htmlFile.id);
-				// console.log(extraction_status);
-				// if (extraction_status["Status"] === "Done") {
-				// 	setLoadingText("Generating html file");
-				// 	const htmlFile = await getFileInDataset(dataset_id);
-				// 	console.log(htmlFile);
-				// 	if (typeof htmlFile.id === "string") {
-				// 		// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-				// 		listFilePreviews(htmlFile.id);
-				// 		setLoadingText("Extraction completed");
-				// 		setPreview(false)  // Continue button activated
-				// 		setSpinner(false); // stop display of spinner
-				// 	} else {
-				// 		console.log("check html file after 5s");
-				// 		setTimeout(loop, 5000);
-				// 	}
-				// } else {
-				// 	console.log("check extraction status after 5s");
-				// 	setTimeout(loop, 5000);
-				// }
 			};
 
 			if (file_id !== null) {

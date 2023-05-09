@@ -89,11 +89,13 @@ export async function checkExtractionStatusLoop(file_id, interval){
 			await status_check_loop();
 		}
 	}
-	if (!extraction_status) {
+	if (file_id !== null){
 		await status_check_loop();
 	}
-	else {
-		console.log(extraction_status);
+	if (extraction_status === false) {
+		await status_check_loop();
+	}
+	else if (extraction_status === true) {
 		return extraction_status;
 	}
 }
