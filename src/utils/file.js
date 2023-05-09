@@ -74,13 +74,14 @@ export async function checkExtractionStatusLoop(file_id, interval){
 	// check extraction status of a file in loop. Check status every interval seconds
 
 	const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+	let extraction_status = false;
 
 	const status_check_loop = async () => {
 		const extractions_data = await checkExtractionStatus(file_id);
 		console.log(extractions_data);
 		if (extractions_data["Status"] === "Done"){
-			console.log("return status done");
-			return extractions_data.get("Status").toString();
+			console.log("Extraction completed for file");
+			extraction_status = true;
 		}
 		else {
 			console.log("check extraction status after %s ms", interval);
@@ -88,11 +89,12 @@ export async function checkExtractionStatusLoop(file_id, interval){
 			await status_check_loop();
 		}
 	}
-	if (file_id !== null) {
+	if (!extraction_status) {
 		await status_check_loop();
 	}
 	else {
-		return null;
+		console.log(extraction_status);
+		return extraction_status;
 	}
 }
 
