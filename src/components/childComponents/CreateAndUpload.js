@@ -48,7 +48,8 @@ export default function CreateAndUpload() {
 			// check extraction status and html file generation in loop
 			const html_file_loop = async () => {
 				setLoadingText("Checking extraction status");
-				const htmlFile = await getFileInDataset(dataset_id, "text/html", file_name + '.html');
+				const html_output_filename = file_name + '_predicted' + '.html'
+				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename);
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					listFilePreviews(htmlFile.id);
