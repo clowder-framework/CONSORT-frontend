@@ -64,7 +64,7 @@ export function createUploadExtract(file) {
 					if (pdf_extraction_status === true){
 						console.log("pdf extraction done");
 						const text_file_name = file_name + '.txt';
-						const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/plain", text_file_name);
+						const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/file", text_file_name);
 						if (extracted_txt_file !== null && typeof extracted_txt_file.id === "string") {
 							const rct_extraction_json = await submitForExtraction(extracted_txt_file.id, config.rct_extractor);
 							// check every 5s for extraction status
