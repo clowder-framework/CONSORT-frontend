@@ -1,8 +1,8 @@
+// file actions
+
 import config from "../app.config";
 import {getHeader} from "../utils/common";
-import {getDatasetsRequest} from "../utils/dataset";
 import {getPreviewsRequest} from "../utils/file";
-import {RECEIVE_DATASETS, receiveDatasets} from "./dataset";
 
 
 export const RECEIVE_FILE_METADATA = "RECEIVE_FILE_METADATA";
@@ -15,6 +15,7 @@ export function receiveFileMetadata(type, json){
 		});
 	};
 }
+
 export function fetchFileMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
 	return (dispatch) => {

@@ -10,8 +10,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
-import {createUploadExtract} from "../../actions/dataset";
-import {checkExtractionStatus} from "../../utils/file";
+import {createUploadExtract} from "../../actions/client";
 import {getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 
