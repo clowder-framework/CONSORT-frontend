@@ -31,12 +31,14 @@ export default function CreateAndUpload() {
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
+	const clientMessage = useSelector(state => state.client.message);
 
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
 		setFilename(file.name);
 		dispatch(createUploadExtract(file));
+		setLoadingText(clientMessage);
 	};
 
 	// useEffect on filesInDataset for preview generation
@@ -68,7 +70,7 @@ export default function CreateAndUpload() {
 			}
 		}
 		else if (extractionStatus === false){
-			setLoadingText("Error in extraction");
+			setLoadingText(clientMessage);
 			setSpinner(false); // stop display of spinner
 		}
 	}, [extractionStatus]);
