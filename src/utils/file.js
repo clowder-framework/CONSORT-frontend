@@ -34,11 +34,13 @@ async function extractionRequest(file_id,body_data) {
 		console.log("submit to extraction successful");
 		return response.json();
 
-	} else if (response.status === 401) {
+	} else if (response.status === 409){
 		// TODO handle error
-		console.log("submit to extraction error");
-		return null;
-	} else {
+		console.log("submit to extraction error", response.json());
+		console.log("submit for extraction after 30s");
+		setTimeout(extractionRequest(file_id,body_data), 30000);
+	}
+	else {
 		// TODO handle error
 		console.log("submit to extraction error", response.status);
 		return null;
