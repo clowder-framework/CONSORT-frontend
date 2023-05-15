@@ -87,12 +87,12 @@ export function fetchFileMetadataJsonld(id) {
 	};
 }
 
-export const EXTRACTION_STATUS = "EXTRACTION_STATUS";
-export function getExtractionStatus(type, status) {
+export const SET_EXTRACTION_STATUS = "SET_EXTRACTION_STATUS";
+export function setExtractionStatus(type, status) {
 	return (dispatch) => {
 		dispatch({
 			type: type,
-			extraction_status: status
+			extractionStatus: status
 		});
 	};
 }

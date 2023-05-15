@@ -42,7 +42,7 @@ export default function CreateAndUpload() {
 
 	// useEffect on filesInDataset for preview generation
 	useEffect(async () => {
-		if (extractionStatus) {
+		if (extractionStatus !== null && extractionStatus === true) {
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
@@ -67,6 +67,10 @@ export default function CreateAndUpload() {
 			} else {
 				console.error("Dataset does not exist");
 			}
+		}
+		else if (extractionStatus === false){
+			setLoadingText("Error in extraction");
+			setSpinner(false); // stop display of spinner
 		}
 	}, [extractionStatus]);
 	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start

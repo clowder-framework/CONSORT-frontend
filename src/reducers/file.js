@@ -1,12 +1,12 @@
 import {
-	EXTRACTION_STATUS,
+	SET_EXTRACTION_STATUS,
 	RECEIVE_FILE_EXTRACTED_METADATA,
 	RECEIVE_FILE_METADATA,
 	RECEIVE_FILE_METADATA_JSONLD,
 	RECEIVE_PREVIEWS
 } from "../actions/file";
 
-const defaultState = {metadata: {}, extractedMetadata: {}, metadataJsonld: [], previews: [], extractionStatus: false};
+const defaultState = {metadata: {}, extractedMetadata: {}, metadataJsonld: [], previews: [], extractionStatus: null};
 
 const file = (state = defaultState, action) => {
 	switch (action.type) {
@@ -21,7 +21,7 @@ const file = (state = defaultState, action) => {
 				// new previews list
 				previews: [...state.previews, action.previews]
 			};
-		case EXTRACTION_STATUS:
+		case SET_EXTRACTION_STATUS:
 			return Object.assign({}, state, {extractionStatus: action.extractionStatus});
 		default:
 			return state;
