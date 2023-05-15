@@ -6,11 +6,7 @@ export async function submitForExtraction(file_id, extractor_name){
 	const body = {"extractor": extractor_name};
 	//const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 	const extraction_response = await extractionRequest(file_id, body);
-	// if (extraction_response === null) {
-	// 	await sleep(5000);
-	//
-	// }
-	// return {"status":"OK","job_id":"string"}
+	// return {"status":"OK","job_id":"string"} or null
 	return extraction_response;
 }
 
