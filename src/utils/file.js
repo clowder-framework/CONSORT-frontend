@@ -68,7 +68,7 @@ export async function checkExtractionStatus(file_id){
 	return extractions_data;
 }
 
-export async function checkExtractionStatusLoop(file_id, interval){
+export async function checkExtractionStatusLoop(file_id, extractor, interval){
 	// check extraction status of a file in loop. Check status every interval seconds
 
 	const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -77,11 +77,32 @@ export async function checkExtractionStatusLoop(file_id, interval){
 	const status_check_loop = async () => {
 		const extractions_data = await checkExtractionStatus(file_id);
 		console.log(extractions_data);
-		if (extractions_data["Status"] === "Done"){
-			console.log("Extraction completed for file");
-			extraction_status = true;
+		const extractions_data_status = extractions_data["Status"];
+		const extractions_data_extractor = extractions_data[extractor];
+		const extractions_data_extractor_message = extractions_data_extractor.split(".");
+
+		if (extractions_data_status === "Done"){
+			if (extractions_data_extractor === "DONE"){
+				console.log("Extraction completed for file");
+				extraction_status = true;
+			}
+			else if (extractions_data_extractor_message[0] === "StatusMessage") {
+				// check the status message from extractor
+				const extractor_message = extractions_data_extractor_message[1].split(":");
+				if (extractor_message === "error") {
+					console.error("Error in extraction %s", extractor);
+					extraction_status = false;
+				}
+				else {
+					console.log("check extraction status after %s ms", interval);
+					await sleep(interval);
+					await status_check_loop();
+				}
+
+			}
+
 		}
-		else {
+		else if (extractions_data_status === "Processing") {
 			console.log("check extraction status after %s ms", interval);
 			await sleep(interval);
 			await status_check_loop();
@@ -90,10 +111,7 @@ export async function checkExtractionStatusLoop(file_id, interval){
 	if (file_id !== null){
 		await status_check_loop();
 	}
-	if (extraction_status === false) {
-		await status_check_loop();
-	}
-	else if (extraction_status === true) {
+	else {
 		return extraction_status;
 	}
 }
