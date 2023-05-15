@@ -9,7 +9,7 @@ import {DELETE_FILE} from "../actions/file";
 
 const defaultState = {files: [], about: {}, datasets: [], status: ""};
 
-const datasetReducer = (state=defaultState, action) => {
+const dataset = (state=defaultState, action) => {
 	switch(action.type) {
 		case RECEIVE_FILES_IN_DATASET:
 			return Object.assign({}, state, {files: action.files});
@@ -42,4 +42,4 @@ const datasetReducer = (state=defaultState, action) => {
 	}
 };
 
-export default datasetReducer;
+export default dataset;
