@@ -45,43 +45,53 @@ export function createUploadExtract(file) {
 				// submit uploaded file for extraction
 				if (file.type == "text/plain"){
 					const rct_extraction_json = submitForExtraction(file_json.id, config.rct_extractor);
-					// check every 5s for extraction status
-					const rct_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
-					if (rct_extraction_status === true){
-						console.log("RCT extraction status true");
-						//dispatch(extractionStatus(EXTRACTION_STATUS, true));
+					if (rct_extraction_json !== null && rct_extraction_json["status"] === "OK") {
+						// check every 5s for extraction status
+						const rct_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
+						if (rct_extraction_status === true){
+							console.log("RCT extraction status true");
+							dispatch(extractionStatus(EXTRACTION_STATUS, true));
 
-					}
-					else {
-						console.error("RCT extraction status false");
-						//dispatch(extractionStatus(EXTRACTION_STATUS, false));
-					}
-				}
-				else if (file.type == "application/pdf") {
-					const pdf_extraction_json = await submitForExtraction(file_json.id, config.pdf_extractor);
-					const pdf_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
-					if (pdf_extraction_status === true){
-						console.log("pdf extraction done");
-						const text_file_name = file_name + '.txt';
-						const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/file", text_file_name);
-						if (extracted_txt_file !== null && typeof extracted_txt_file.id === "string") {
-							const rct_extraction_json = await submitForExtraction(extracted_txt_file.id, config.rct_extractor);
-							// check every 5s for extraction status
-							const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, 5000);
-							if (rct_extraction_status === true){
-								console.log("RCT extraction status true");
-								//dispatch(extractionStatus(EXTRACTION_STATUS, true));
-
-							}
-							else {
-								console.error("RCT extraction status false");
-								//dispatch(extractionStatus(EXTRACTION_STATUS, false));
-							}
+						}
+						else {
+							console.error("RCT extraction status false");
+							dispatch(extractionStatus(EXTRACTION_STATUS, false));
 						}
 					}
 					else {
-						console.error("Pdf extraction status false");
+						console.error("RCT extraction status false", rct_extraction_json);
+						dispatch(extractionStatus(EXTRACTION_STATUS, false));
 					}
+
+				}
+				else if (file.type == "application/pdf") {
+					const pdf_extraction_json = await submitForExtraction(file_json.id, config.pdf_extractor);
+					if (pdf_extraction_json !== null && pdf_extraction_json["status"] === "OK") {
+						const pdf_extraction_status = await checkExtractionStatusLoop(file_json.id, 5000);
+						if (pdf_extraction_status === true){
+							console.log("pdf extraction done");
+							const text_file_name = file_name + '.txt';
+							const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/file", text_file_name);
+							if (extracted_txt_file !== null && typeof extracted_txt_file.id === "string") {
+								const rct_extraction_json = await submitForExtraction(extracted_txt_file.id, config.rct_extractor);
+								// check every 5s for extraction status
+								const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, 5000);
+								if (rct_extraction_status === true){
+									console.log("RCT extraction status true");
+									dispatch(extractionStatus(EXTRACTION_STATUS, true));
+
+								}
+								else {
+									console.error("RCT extraction status false");
+									dispatch(extractionStatus(EXTRACTION_STATUS, false));
+								}
+							}
+						}
+						else {
+							console.error("Pdf extraction status false");
+						}
+					}
+
 					// add extracted output files to dataset state
 					//const filesInDataset = listFilesInDatasetRequest(dataset_json["id"]);
 					//Object.values(filesInDataset).map(file => dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file)));
