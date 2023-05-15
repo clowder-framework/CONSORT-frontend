@@ -1,7 +1,10 @@
+//import {useDispatch} from "react-redux";
+
 import {dataURItoFile, downloadResource, getHeader} from "./common";
 import config from "../app.config";
+import {SET_MESSAGE, setMessage} from "../actions/client";
 
-
+//const dispatch = useDispatch();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
@@ -44,16 +47,19 @@ async function extractionRequest(file_id,body_data) {
 		if (response.status === 200) {
 			// return {"status":"OK","job_id":"string"}
 			console.log("submit to extraction successful");
+			//dispatch(setMessage(SET_MESSAGE, "Extraction completed"));
 		} else if (response.status === 409){
 			// TODO handle error
 			console.log("submit to extraction error", extraction_response);
 			console.log("submit for extraction after 30s");
+			//dispatch(setMessage(SET_MESSAGE, "Submit for extraction after 30s"));
 			await sleep(30000);
 			await extractionRequest_loop();
 		}
 		else {
 			// TODO handle error
 			console.log("submit to extraction error", extraction_response);
+			//dispatch(setMessage(SET_MESSAGE, "Extraction failed"));
 			extraction_response.status = "FAIL";
 		}
 		return extraction_response;
@@ -63,21 +69,6 @@ async function extractionRequest(file_id,body_data) {
 	extraction_response = await extractionRequest_loop();
 	return extraction_response;
 
-}
-
-
-export async function fetchFileMetadata(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
-	let response = await fetch(url, {mode: "cors", headers: getHeader()});
-	if (response.status === 200) {
-		return await response.json();
-	} else if (response.status === 401) {
-		// TODO handle error
-		return {};
-	} else {
-		// TODO handle error
-		return {};
-	}
 }
 
 
@@ -105,6 +96,7 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 		if (extractions_data_status === "Done"){
 			if (extractions_data_extractor === "DONE"){
 				console.log("Extraction completed for file");
+				//dispatch(setMessage(SET_MESSAGE, "Extraction complete"));
 				extraction_status = true;
 			}
 			else if (extractions_data_extractor_message[0] === "StatusMessage") {
@@ -112,10 +104,14 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 				const extractor_message = extractions_data_extractor_message[1].split(":");
 				if (extractor_message[0] === "error") {
 					console.error("Error in extraction %s", extractor);
+					const client_message = extractor + " failed with error " + extractor_message[1];
+					//dispatch(setMessage(SET_MESSAGE, client_message));
 					extraction_status = false;
 				}
 				else {
 					console.log("check extraction status after %s ms", interval);
+					const client_message = extractor + extractor_message[0] + extractor_message[1];
+					//dispatch(setMessage(SET_MESSAGE, client_message));
 					await sleep(interval);
 					await status_check_loop();
 				}
@@ -125,6 +121,8 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 		}
 		else if (extractions_data_status === "Processing") {
 			console.log("check extraction status after %s ms", interval);
+			const client_message = extractor + extractions_data_extractor_message[0] + extractions_data_extractor_message[1]
+			//dispatch(setMessage(SET_MESSAGE, client_message));
 			await sleep(interval);
 			await status_check_loop();
 		}
@@ -240,3 +238,19 @@ export async function getPreviewResources(preview) {
 	preview_config.resource = await downloadResource(resourceURL);
 	return preview_config;
 }
+
+
+export async function fetchFileMetadata(id) {
+	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
+	let response = await fetch(url, {mode: "cors", headers: getHeader()});
+	if (response.status === 200) {
+		return await response.json();
+	} else if (response.status === 401) {
+		// TODO handle error
+		return {};
+	} else {
+		// TODO handle error
+		return {};
+	}
+}
+
