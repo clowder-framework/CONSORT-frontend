@@ -9,15 +9,8 @@ import {ADD_FILE_TO_DATASET, addFileToDataset, CREATE_DATASETS, createDataset} f
 
 // set message for client display
 export const SET_MESSAGE = "SET_MESSAGE";
-export function setMessage(type, message) {
-	return (dispatch) => {
-		dispatch({
-			type: type,
-			message: message
-		});
-	};
-}
-// export const setMessage = (type, message) => ({type: type, message: message});
+export const setMessage = (type, message) => ({type: type, message: message});
+
 
 // createUploadExtract thunk function
 export function createUploadExtract(file) {
