@@ -23,7 +23,7 @@ export function createUploadExtract(file) {
 				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
 				if (file.type == "text/plain"){
-					const rct_extraction_submission = submitForExtraction(file_json.id, config.rct_extractor);
+					const rct_extraction_submission = await submitForExtraction(file_json.id, config.rct_extractor);
 					if (rct_extraction_submission) {
 						// check every 5s for extraction status
 						const rct_extraction_status = await checkExtractionStatusLoop(file_json.id, config.rct_extractor, 5000);
