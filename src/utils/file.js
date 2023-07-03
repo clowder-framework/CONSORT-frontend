@@ -46,14 +46,14 @@ async function extractionRequest(file_id,body_data) {
 			console.log("submit to extraction successful");
 		} else if (response.status === 409){
 			// TODO handle error
-			console.log("submit to extraction error", extraction_response);
+			console.error("submit to extraction error", extraction_response);
 			console.log("submit for extraction after 30s");
 			await sleep(30000);
 			await extractionRequest_loop();
 		}
 		else {
 			// TODO handle error
-			console.log("submit to extraction error", extraction_response);
+			console.error("submit to extraction error", extraction_response);
 			extraction_response.status = "FAIL";
 		}
 		return extraction_response;
@@ -84,10 +84,27 @@ export async function fetchFileMetadata(id) {
 export async function checkExtractionStatus(file_id){
 	// Clowder API call to check extraction status of a file
 	const extractions_status_url = `${config.hostname}/clowder/api/extractions/${file_id}/status`;
-	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:getHeader()});
-	let extractions_data = await extractions_response.json();
-	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
-	return extractions_data;
+	let header = getHeader();
+	header.append("Accept", "*/*");
+	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:header});
+	if (response.status === 200){
+		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
+		return await response.json();
+	} else if (response.status === 401) {
+		// TODO handle error
+		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		return {};
+	} else if (response.status === 500){
+		// TODO handle error
+		console.error("Extraction Status Error %s %s", extractions_status_url, response);
+		return {};
+	}
+	else {
+		// TODO handle error
+		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		return {};
+	}
+
 }
 
 export async function checkExtractionStatusLoop(file_id, extractor, interval){
