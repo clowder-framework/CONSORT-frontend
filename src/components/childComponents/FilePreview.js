@@ -9,10 +9,7 @@ import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
 import Thumbnail from "../previewers/Thumbnail";
 import {getPreviewResources} from "../../utils/file";
-import TopBar from "./TopBar";
 import PreviewDrawerLeft from "./PreviewDrawerLeft";
-import Intro from "./Intro";
-import CreateAndUpload from "./CreateAndUpload";
 
 
 export default function FilePreview() {
