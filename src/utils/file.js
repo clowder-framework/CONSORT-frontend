@@ -246,7 +246,8 @@ export async function getPreviewsRequest(file_id) {
 
 export async function getPreviewResources(preview) {
 	// get all file preview resources
-	const preview_config = {}
+	const preview_config = {};
+	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 	preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
 	preview_config.fileid = preview["pv_id"];
@@ -254,11 +255,16 @@ export async function getPreviewResources(preview) {
 	preview_config.fileType = preview["pv_contenttype"];
 
 	// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-	// /clowder/file vs clowder/api/file
+	// /clowder/files vs clowder/api/files
 	// TODO Temp fix insert /api/
 	let pv_routes = preview["pv_route"];
 	if (!pv_routes.includes("/api/")) {
-		pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
+		try{
+			let routes = pv_routes.split("files/");
+			pv_routes = routes[0] + 'api/files/' + routes[1];
+		} catch (e) {
+			console.log("Incorrect Preview url %s", pv_routes);
+		}
 	}
 	preview_config.pv_route = pv_routes;
 	const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
