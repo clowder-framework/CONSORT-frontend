@@ -149,3 +149,35 @@ export async function downloadDataset(datasetId, filename = null) {
 	}
 
 }
+
+
+export async function getDatasetMetadata(dataset_id) {
+	// function to get the user defined metadata for dataset
+	const metadata_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/usermetadatajson`;
+	const metadata_response = await fetch(metadata_url, {method:"GET", headers:getHeader(), mode: "cors"});
+	return metadata_response.json();
+}
+
+
+export async function setDatasetMetadata(dataset_id, content) {
+	// function to set the user defined metadata for dataset
+	const metadata_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/usermetadatajson`;
+	let authHeader = getHeader();
+	authHeader.append('Accept', 'application/json');
+	authHeader.append('Content-Type', 'application/json');
+	const body = JSON.stringify(content);
+	const response = await fetch(metadata_url, {method:"POST", mode:"cors", headers:authHeader, body:body});
+	if (response.status === 200) {
+		console.log("Set metadata for dataset");
+		return await response.json();
+	}
+	else if (response.status === 401) {
+		// handle error
+		console.log("Metadata for dataset failed");
+		return null;
+	} else {
+		// handle error
+		console.log("Metadata for dataset failed");
+		return null;
+	}
+}
