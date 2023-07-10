@@ -117,35 +117,43 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 		console.log(extractions_data);
 		const extractions_data_status = extractions_data["Status"];
 		const extractions_data_extractor = extractions_data[extractor];
-		const extractions_data_extractor_message = extractions_data_extractor.split(".");
+
 
 		if (extractions_data_status === "Done"){
 			if (extractions_data_extractor === "DONE"){
 				console.log("Extraction completed for file");
 				extraction_status = true;
 			}
-			else if (extractions_data_extractor_message[0] === "StatusMessage") {
-				// check the status message from extractor
-				const extractor_message = extractions_data_extractor_message[1].split(":");
-				if (extractor_message[0] === "error") {
-					console.error("Error in extraction %s", extractor);
+			else {
+				try {
+					const extractions_data_extractor_message = extractions_data_extractor.split(".");
+					if (extractions_data_extractor_message[0] === "StatusMessage") {
+						// check the status message from extractor
+						const extractor_message = extractions_data_extractor_message[1].split(":");
+						if (extractor_message[0] === "error") {
+							console.error("Error in extraction %s", extractor);
+							extraction_status = false;
+						}
+						else {
+							console.log("check extraction status after %s ms", interval);
+							await sleep(interval);
+							await status_check_loop();
+						}
+
+					}
+				} catch (e) {
+					console.error("Error in extraction %s %s", extractor, e);
 					extraction_status = false;
 				}
-				else {
-					console.log("check extraction status after %s ms", interval);
-					await sleep(interval);
-					await status_check_loop();
-				}
-
 			}
-
 		}
 		else if (extractions_data_status === "Processing") {
 			console.log("check extraction status after %s ms", interval);
 			await sleep(interval);
 			await status_check_loop();
 		}
-	}
+	} // status_check_loop end
+
 	if (file_id !== null){
 		await status_check_loop();
 		return extraction_status;
