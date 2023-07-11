@@ -1,13 +1,13 @@
 import {
 	RECEIVE_FILES_IN_DATASET,
-	RECEIVE_DATASET_ABOUT,
+	RECEIVE_DATASET_ABOUT, SET_DATASET_METADATA,
 	RECEIVE_DATASETS,
 	DELETE_DATASET,
 	CREATE_DATASETS, ADD_FILE_TO_DATASET
 } from "../actions/dataset";
-import {DELETE_FILE} from "../actions/file";
+import {DELETE_FILE, SET_EXTRACTION_STATUS} from "../actions/file";
 
-const defaultState = {files: [], about: {}, datasets: [], status: ""};
+const defaultState = {files: [], about: {}, datasets: [], status: "", metadata: {}};
 
 const datasetReducer = (state=defaultState, action) => {
 	switch(action.type) {
@@ -37,6 +37,8 @@ const datasetReducer = (state=defaultState, action) => {
 				datasets: state.datasets.filter(dataset => dataset.id !== action.dataset.id),
 				status: action.dataset.status
 			});
+		case SET_DATASET_METADATA:
+			return Object.assign({}, state, {metadata: action.metadata});
 		default:
 			return state;
 	}
