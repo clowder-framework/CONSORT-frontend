@@ -15,8 +15,10 @@ import PreviewDrawerLeft from "./PreviewDrawerLeft";
 export default function FilePreview() {
 
 	const filePreviews = useSelector((state) => state.file.previews);
-
 	const [previews, setPreviews] = useState([]); // state for file previews
+	const datasetMetadata = useSelector((state) => state.dataset.metadata);
+	const [metadata, setMetadata] = useState({}); // state for dataset metadata
+
 	// useEffect on filePreviews to download preview resources
 	useEffect( async ()=> {
 		if (filePreviews !== undefined && filePreviews.length > 0) {
@@ -28,7 +30,16 @@ export default function FilePreview() {
 				setPreviews(previewsTemp); // set previews
 			});
 		}
-	}, [filePreviews])
+	}, [filePreviews]);
+
+	// useEffect on datasetMetadata to load preview leftdrawer metadata
+	useEffect( async ()=> {
+		if (datasetMetadata !== undefined) {
+			console.log("datasetMetadata", datasetMetadata)
+			setMetadata(datasetMetadata); // set dataset metadata
+		}
+	}, [datasetMetadata])
+
 
 	return (
 		<>
@@ -62,7 +73,7 @@ export default function FilePreview() {
 											<div key={preview["fileid"]}>
 												<Grid container spacing={2} direction="row">
 													<Grid item xs={3} >
-														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]}/>
+														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={metadata}/>
 													</Grid>
 													<Grid item xs={9} >
 														<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
