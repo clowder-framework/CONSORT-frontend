@@ -215,11 +215,14 @@ export async function downloadFile(fileId, filename = null) {
 			anchor.click();
 			document.body.removeChild(anchor);
 		}
+		return await response.json();
 	} else if (response.status === 401) {
 		// TODO
 		console.log(response.json());
+		return {};
 	} else {
 		console.log(response.json());
+		return {};
 	}
 
 }
@@ -270,4 +273,28 @@ export async function getPreviewResources(preview) {
 	const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
 	preview_config.resource = await downloadResource(resourceURL);
 	return preview_config;
+}
+
+
+export async function readJsonFile(id) {
+	await downloadFile(id, "results.json");
+	const getData=()=>{
+		fetch('results.json'
+			,{
+				headers : {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json'
+				}
+			}
+		)
+			.then(function(response){
+				console.log(response);
+			})
+			.then(function(data) {
+				console.log(data);
+				return data;
+			});
+	}
+	const metadata = getData();
+	return metadata;
 }
