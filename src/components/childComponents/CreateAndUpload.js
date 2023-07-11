@@ -13,6 +13,8 @@ import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
+import {postDatasetMetadata} from "../../actions/dataset";
+import {readJsonFile} from "../../utils/file";
 
 
 export default function CreateAndUpload() {
@@ -26,11 +28,11 @@ export default function CreateAndUpload() {
 	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
-	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
-
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
+	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
+	const datasetMetadata = (datasetId, json) => dispatch(postDatasetMetadata(datasetId, json));
 
 
 	const onDropFile = (file) => {
@@ -39,7 +41,7 @@ export default function CreateAndUpload() {
 		dispatch(createUploadExtract(file));
 	};
 
-	// useEffect on filesInDataset for preview generation
+	// useEffect on extractionStatus for preview generation
 	useEffect(async () => {
 		if (extractionStatus !== null && extractionStatus === true) {
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
@@ -52,6 +54,12 @@ export default function CreateAndUpload() {
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					listFilePreviews(htmlFile.id);
+					const metadata_output_filename = file_name + '_metadata' + '.json'
+					const metadataFile = await getFileInDataset(dataset_id, "application/json", metadata_output_filename);
+					if (metadataFile !== null && typeof metadataFile.id === "string") {
+						const metadata = readJsonFile(metadataFile.id);
+						datasetMetadata(dataset_id, metadata);
+					}
 					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
 					setSpinner(false); // stop display of spinner
@@ -72,7 +80,6 @@ export default function CreateAndUpload() {
 			setSpinner(false); // stop display of spinner
 		}
 	}, [extractionStatus]);
-	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start
 
 
 	// onDrop function to trigger createUploadExtract action dispatch
