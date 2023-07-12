@@ -101,7 +101,7 @@ export function setDatasetMetadata(type, json) {
 	};
 }
 export function postDatasetMetadata(id, metadata) {
-	let url = `${config.hostname}/clowder/api/datasets/${id}/usermetadatajson?superAdmin=true`;
+	let url = `${config.hostname}/clowder/api/datasets/${id}/metadata.jsonld`;
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
@@ -112,8 +112,7 @@ export function postDatasetMetadata(id, metadata) {
 				if (response.status === 200) {
 					dispatch(setDatasetMetadata(SET_DATASET_METADATA, metadata));
 				} else {
-					//dispatch(setDatasetMetadata(SET_DATASET_METADATA, {}));  // uncomment once POST works
-					dispatch(setDatasetMetadata(SET_DATASET_METADATA, metadata));
+					dispatch(setDatasetMetadata(SET_DATASET_METADATA, {}));
 				}
 			});
 	};
