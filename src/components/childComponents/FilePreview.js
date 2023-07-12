@@ -35,7 +35,6 @@ export default function FilePreview() {
 	// useEffect on datasetMetadata to load preview leftdrawer metadata
 	useEffect( async ()=> {
 		if (datasetMetadata !== undefined) {
-			console.log("datasetMetadata", datasetMetadata)
 			setMetadata(datasetMetadata); // set dataset metadata
 		}
 	}, [datasetMetadata])
