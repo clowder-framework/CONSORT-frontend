@@ -15,9 +15,10 @@ export default function PreviewDrawerLeft(props) {
 	let items_missed = '';
 	let checklist = '';
 	if (metadata !== undefined){
-		extractor = metadata["extractor"];
-		items_missed = metadata["items_missed"];
-		checklist = metadata["checklist"];
+		let content = metadata["content"][0];
+		extractor = content["extractor"];
+		items_missed = content["items_missed"];
+		checklist = content["checklist"];
 	}
 
 
