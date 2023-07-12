@@ -42,15 +42,33 @@ export default function PreviewDrawerLeft(props) {
 				anchor="left"
 			>
 				<Toolbar>
-					<Box variant="contained" color="primary-light">
-						<Typography>Items Missed</Typography>
-						<Typography>{items_missed}</Typography>
+					<Box variant="contained" color="secondary">
+						<Typography variant="h3">Items Missed</Typography>
+						<Typography align="center">{items_missed}</Typography>
 					</Box>
 					<Button onClick={onDownload} variant="contained" color="primary" startIcon={<DownloadIcon />}>
 						Export
 					</Button>
 				</Toolbar>
 				<Divider />
+
+				<List
+					sx={{ width: drawerWidth, }}
+					component="nav"
+					aria-labelledby="item-checklist"
+					subheader={
+						<ListSubheader component="div" id="item-checklist-subheader">
+							CONSORT Checklist Items
+						</ListSubheader>
+					}
+					variant="permanent"
+					anchor="left"
+				>
+
+
+				</List>
+
+
 
 			</Drawer>
 
