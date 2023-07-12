@@ -116,7 +116,7 @@ export function fetchFilePreviews(id) {
 		if (previews_list !== undefined && previews_list !== null) {
 			dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, previews_list));
 		} else {
-			dispatch(receiveFileMetadataJsonld(RECEIVE_PREVIEWS, []));
+			dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, []));
 		}
 	}
 }
