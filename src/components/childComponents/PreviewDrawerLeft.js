@@ -11,9 +11,15 @@ const drawerWidth = 240;
 export default function PreviewDrawerLeft(props) {
 	const {fileId, fileSrc, metadata, ...other} = props;
 	console.log(metadata);
-	const extractor = metadata["extractor"];
-	const items_missed = metadata["items_missed"];
-	const checklist = metadata["checklist"];
+	let extractor = '';
+	let items_missed = '';
+	let checklist = '';
+	if (metadata !== undefined){
+		extractor = metadata["extractor"];
+		items_missed = metadata["items_missed"];
+		checklist = metadata["checklist"];
+	}
+
 
 	const onDownload = () => {
 		downloadFile(fileId, "results.html").then(r => console.log(r));
@@ -37,7 +43,7 @@ export default function PreviewDrawerLeft(props) {
 				<Toolbar>
 					<Box variant="contained" color="primary-light">
 						<Typography>Items Missed</Typography>
-						<Typography>${items_missed}</Typography>
+						<Typography>{items_missed}</Typography>
 					</Box>
 					<Button onClick={onDownload} variant="contained" color="primary" startIcon={<DownloadIcon />}>
 						Export
