@@ -11,10 +11,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
-import {getFileInDataset} from "../../utils/dataset";
+import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
-import {postDatasetMetadata} from "../../actions/dataset";
-import {readJsonFile} from "../../utils/file";
+import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
 
 
 export default function CreateAndUpload() {
@@ -32,7 +31,7 @@ export default function CreateAndUpload() {
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
 	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
-	const datasetMetadata = (datasetId, json) => dispatch(postDatasetMetadata(datasetId, json));
+	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 
 
 	const onDropFile = (file) => {
@@ -51,15 +50,12 @@ export default function CreateAndUpload() {
 				setLoadingText("Checking extraction status");
 				const html_output_filename = file_name + '_predicted' + '.html'
 				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename);
+
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					listFilePreviews(htmlFile.id);
-					const metadata_output_filename = file_name + '_metadata' + '.json'
-					const metadataFile = await getFileInDataset(dataset_id, "application/json", metadata_output_filename);
-					if (metadataFile !== null && typeof metadataFile.id === "string") {
-						const metadata = readJsonFile(metadataFile.id);
-						datasetMetadata(dataset_id, metadata);
-					}
+					const metadata = await getDatasetMetadata(dataset_id);
+					datasetMetadata(metadata); // get only the latest metadata from list
 					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
 					setSpinner(false); // stop display of spinner
