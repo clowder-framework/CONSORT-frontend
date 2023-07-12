@@ -152,10 +152,12 @@ export async function downloadDataset(datasetId, filename = null) {
 
 
 export async function getDatasetMetadata(dataset_id) {
-	// function to get the user defined metadata for dataset
-	const metadata_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/usermetadatajson`;
+	// returns the latest metadata for the dataset
+	const metadata_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld`;
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:getHeader(), mode: "cors"});
-	return metadata_response.json();
+	let metadata_response_json = await metadata_response.json();
+	// return the first item of metadata list
+	return metadata_response_json[0];
 }
 
 
