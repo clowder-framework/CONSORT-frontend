@@ -95,7 +95,7 @@ export function setDatasetMetadata(type, json) {
 	return (dispatch) => {
 		dispatch({
 			type: type,
-			about: json,
+			metadata: json,
 			receivedAt: Date.now(),
 		});
 	};
