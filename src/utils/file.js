@@ -215,14 +215,11 @@ export async function downloadFile(fileId, filename = null) {
 			anchor.click();
 			document.body.removeChild(anchor);
 		}
-		return await response.json();
 	} else if (response.status === 401) {
 		// TODO
 		console.log(response.json());
-		return {};
 	} else {
 		console.log(response.json());
-		return {};
 	}
 
 }
