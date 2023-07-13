@@ -272,26 +272,3 @@ export async function getPreviewResources(preview) {
 	return preview_config;
 }
 
-
-export async function readJsonFile(id) {
-	await downloadFile(id, "results.json");
-	const getData=()=>{
-		fetch('results.json'
-			,{
-				headers : {
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
-				}
-			}
-		)
-			.then(function(response){
-				console.log(response);
-			})
-			.then(function(data) {
-				console.log(data);
-				return data;
-			});
-	}
-	const metadata = getData();
-	return metadata;
-}
