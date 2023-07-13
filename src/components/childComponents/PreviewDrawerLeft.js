@@ -1,5 +1,5 @@
 // Preview LeftDrawer Component
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useState} from 'react';
 import {Box, Button, Typography} from "@material-ui/core";
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,6 +17,7 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import {downloadFile} from "../../utils/file";
 
+
 const drawerWidth = 440;
 
 export default function PreviewDrawerLeft(props) {
@@ -24,15 +25,35 @@ export default function PreviewDrawerLeft(props) {
 	let extractor = "";
 	let items_missed = "";
 	let checklist = [];
-	if (metadata !== undefined){
+
+	if (metadata !== undefined && metadata.content !== undefined){
+		console.log(metadata);
 		let content = metadata["content"][0];
 		extractor = content["extractor"];
 		items_missed = content["items_missed"];
 		checklist = content["checklist"];
 	}
 
-	const [open, setOpen] = useState(true);
-	const handleClick = () => { setOpen(!open); };
+	const [openSection, setOpenSection] = useState([]);
+
+	const handleClick = (section) => {
+		if (openSection.includes(section)) {
+			setOpenSection(openSection.filter(sid => sid !== section));
+		} else {
+			let newOpenSection = [...openSection];
+			newOpenSection.push(section);
+			setOpenSection(newOpenSection);
+		}
+	}
+
+	const isOpen = (section) => {
+		if(section in openSection){
+			return true;
+		} else{
+			return false;
+		}
+	}
+
 
 	const onDownload = () => {
 		downloadFile(fileId, "results.html").then(r => console.log(r));
@@ -53,7 +74,7 @@ export default function PreviewDrawerLeft(props) {
 				variant="permanent"
 				anchor="left"
 			>
-				<Toolbar sx={{ justifyContent: "space-between" }}>
+				<Toolbar sx={{ width: drawerWidth, justifyContent: "space-between" }}>
 					<Box variant="contained" color="primary">
 						<Typography variant="h6">Items Missed</Typography>
 						<Typography align="center">{items_missed}</Typography>
@@ -78,21 +99,21 @@ export default function PreviewDrawerLeft(props) {
 				>
 					{
 						checklist.length > 0 ?
-							checklist.map((check_item) => {
+							checklist.map((check_item, index) => {
 								return (
 									<>
-										<ListItemButton onClick={handleClick}>
+										<ListItemButton component="section" key={index} onClick={handleClick(check_item.section)}>
 											<ListItemText primary={check_item.section} />
-											{open ? <ExpandLess /> : <ExpandMore />}
+											{isOpen(check_item.section) ? <ExpandLess /> : <ExpandMore />}
 										</ListItemButton>
-										<Collapse in={open} timeout="auto" unmountOnExit>
+										<Collapse in={isOpen(check_item.section)} timeout="auto" unmountOnExit>
 											<List component="items" disablePadding>
 												{
 													check_item.items.length > 0 ?
-														check_item.items.map((item) => {
+														check_item.items.map((item, index) => {
 															const found = item.found === "Yes" ? true : false;
 															return (
-																<ListItemButton sx={{ pl: 4 }}>
+																<ListItemButton sx={{ pl: 4 }} key={item.item}>
 																	<ListItemText primary={item.item} />
 																	{found ? <CheckIcon color="green" /> : <CancelIcon color="red" />}
 																</ListItemButton>
