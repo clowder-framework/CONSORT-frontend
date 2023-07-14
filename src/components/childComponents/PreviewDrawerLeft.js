@@ -94,7 +94,7 @@ export default function PreviewDrawerLeft(props) {
 															return (
 																<ListItemButton sx={{ pl: 4 }}>
 																	<ListItemText primary={item.item} />
-																	{found ? <CheckIcon color="green" /> : <CancelIcon color="red" />}
+																	{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																</ListItemButton>
 															);
 														})
