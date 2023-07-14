@@ -255,15 +255,21 @@ export async function getPreviewResources(preview) {
 	preview_config.fileType = preview["pv_contenttype"];
 
 	// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-	// /clowder/files vs clowder/api/files
-	// TODO Temp fix insert /api/
+	// clowder/files vs clowder/api/files
+	// Temp fix insert /api/
 	let pv_routes = preview["pv_route"];
 	if (!pv_routes.includes("/api/")) {
 		try{
 			let routes = pv_routes.split("files/");
-			pv_routes = routes[0] + 'api/files/' + routes[1];
+			if (preview_config.url.includes("localhost")){
+				// if running in local, the pv_route will not have clowder path
+				pv_routes = routes[0] + 'clowder/api/files/' + routes[1];
+			}
+			else{
+				pv_routes = routes[0] + 'api/files/' + routes[1];
+			}
 		} catch (e) {
-			console.log("Incorrect Preview url %s", pv_routes);
+			console.error("Incorrect Preview url %s", pv_routes);
 		}
 	}
 	preview_config.pv_route = pv_routes;
