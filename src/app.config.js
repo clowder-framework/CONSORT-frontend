@@ -7,7 +7,9 @@ let apikey = process.env.APIKEY;
 config["hostname"] = hostname;
 config["apikey"] = apikey;
 // space id for Consort Client
-config["space"] = "645177dfe4b03d8d787951ea";
+//config["space"] = "645177dfe4b03d8d787951ea";
+// space id for localhost clowder
+config["space"] = "642300e0e4b03344ce8db877";
 // setting extract to true will trigger extractions on files automatically
 config["extract"] = false;
 // extractor name for RCT Transparency extractor. Triggers on text and runs the consort model on the text file

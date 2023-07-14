@@ -247,7 +247,7 @@ export async function getPreviewsRequest(file_id) {
 export async function getPreviewResources(preview) {
 	// get all file preview resources
 	const preview_config = {};
-	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
+	//console.log(preview); //{p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 	preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
 	preview_config.fileid = preview["pv_id"];
@@ -269,6 +269,7 @@ export async function getPreviewResources(preview) {
 	preview_config.pv_route = pv_routes;
 	const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
 	preview_config.resource = await downloadResource(resourceURL);
+	console.log("prview config resource", preview_config.resource);
 	return preview_config;
 }
 
