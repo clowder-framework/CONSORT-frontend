@@ -13,9 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export of html preview file. [#24](https://github.com/clowder-framework/CONSORT-frontend/issues/24)
 - All client actions are recorded in a space. [#29](https://github.com/clowder-framework/CONSORT-frontend/issues/29)
 - Client can handle pdf file uploads and triggers appropriate extractors. [#31](https://github.com/clowder-framework/CONSORT-frontend/issues/31)
+- Client checks the extraction status and repeat extraction submission if needed. [#34](https://github.com/clowder-framework/CONSORT-frontend/issues/34)
 - Render metadata in Html file preview. [#39](https://github.com/clowder-framework/CONSORT-frontend/issues/39)
-### Changed
 
+### Changed
+- Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
 
 ### Fixed
 
