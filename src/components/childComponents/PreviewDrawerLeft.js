@@ -113,9 +113,9 @@ export default function PreviewDrawerLeft(props) {
 														check_item.items.map((item, index) => {
 															const found = item.found === "Yes" ? true : false;
 															return (
-																<ListItemButton sx={{ pl: 4 }} key={item.item}>
+																<ListItemButton sx={{ pl: 4 }} key={index}>
 																	<ListItemText primary={item.item} />
-																	{found ? <CheckIcon color="green" /> : <CancelIcon color="red" />}
+																	{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																</ListItemButton>
 															);
 														})
