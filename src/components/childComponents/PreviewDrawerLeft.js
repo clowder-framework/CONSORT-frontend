@@ -106,7 +106,7 @@ export default function PreviewDrawerLeft(props) {
 											<ListItemText primary={check_item.section} />
 											{isOpen(check_item.section) ? <ExpandLess /> : <ExpandMore />}
 										</ListItemButton>
-										<Collapse in={isOpen(check_item.section)} timeout="auto" unmountOnExit>
+										<Collapse in={() => {isOpen(check_item.section);}} timeout="auto" unmountOnExit>
 											<List component="items" disablePadding>
 												{
 													check_item.items.length > 0 ?
