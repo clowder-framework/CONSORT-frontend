@@ -24,16 +24,14 @@ export async function downloadResource(url) {
 
 	if (response.status === 200) {
 		let blob = await response.blob();
-		console.log(response.body);
-		console.log(blob);
 		return window.URL.createObjectURL(blob);
 	} else if (response.status === 401) {
 		// TODO handle error
-		console.error("DownloadResource Error", response.status);
+		console.error("Download Resource Error", response.status);
 		return null;
 	} else {
 		// TODO handle error
-		console.error("DownloadResource Error", response.status);
+		console.error("Download Resource Error", response.status);
 		return null;
 	}
 }
