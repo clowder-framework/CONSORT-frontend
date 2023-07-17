@@ -1,5 +1,5 @@
 // Preview LeftDrawer Component
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, Typography} from "@material-ui/core";
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,36 +22,36 @@ const drawerWidth = 440;
 
 export default function PreviewDrawerLeft(props) {
 	const {fileId, fileSrc, metadata, ...other} = props;
-	let extractor = "";
-	let items_missed = "";
-	let checklist = [];
 
-	if (metadata !== undefined && metadata.content !== undefined){
-		console.log(metadata);
-		let content = metadata["content"][0];
-		extractor = content["extractor"];
-		items_missed = content["items_missed"];
-		checklist = content["checklist"];
-	}
-
+	const [extractor, setExtractor] = useState('');
+	const [content, setContent] = useState({});
+	const [itemsMissed, setItemsMissed] = useState('');
+	const [checklist, setChecklist] = useState([]);
 	const [openSection, setOpenSection] = useState([]);
 
-	const handleClick = (section) => {
-		if (openSection.includes(section)) {
-			setOpenSection(openSection.filter(sid => sid !== section));
-		} else {
-			let newOpenSection = [...openSection];
-			newOpenSection.push(section);
-			setOpenSection(newOpenSection);
+	useEffect(() => {
+		if (metadata !== undefined && metadata.content !== undefined){
+			let content = metadata["content"][0];
+			setContent(content);
+			setExtractor(content["extractor"]);
+			setItemsMissed(content["items_missed"]);
+			setChecklist(content["checklist"]);
 		}
-	}
+	},[]);
+
+
+	const handleClick = (section) => {
+		setOpenSection(prevOpenSection => {
+			if (prevOpenSection.includes(section)) {
+				return prevOpenSection.filter(sid => sid !== section);
+			} else {
+				return [...prevOpenSection, section];
+			}
+		});
+	};
 
 	const isOpen = (section) => {
-		if(section in openSection){
-			return true;
-		} else{
-			return false;
-		}
+		return section in openSection;
 	}
 
 
@@ -77,7 +77,7 @@ export default function PreviewDrawerLeft(props) {
 				<Toolbar sx={{ width: drawerWidth, justifyContent: "space-between" }}>
 					<Box variant="contained" color="primary">
 						<Typography variant="h6">Items Missed</Typography>
-						<Typography align="center">{items_missed}</Typography>
+						<Typography align="center">{itemsMissed}</Typography>
 					</Box>
 					<Button onClick={onDownload} variant="contained" color="primary" startIcon={<DownloadIcon />}>
 						Export
@@ -102,7 +102,7 @@ export default function PreviewDrawerLeft(props) {
 							checklist.map((check_item, index) => {
 								return (
 									<>
-										<ListItemButton component="section" key={index} onClick={handleClick(check_item.section)}>
+										<ListItemButton component="section" key={index} onClick={() => {handleClick(check_item.section);}}>
 											<ListItemText primary={check_item.section} />
 											{isOpen(check_item.section) ? <ExpandLess /> : <ExpandMore />}
 										</ListItemButton>
