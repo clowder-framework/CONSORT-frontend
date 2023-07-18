@@ -1,5 +1,5 @@
 // Preview LeftDrawer Component
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, Typography} from "@material-ui/core";
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
