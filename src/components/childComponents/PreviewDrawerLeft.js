@@ -21,15 +21,21 @@ const drawerWidth = 440;
 
 export default function PreviewDrawerLeft(props) {
 	const {fileId, fileSrc, metadata, ...other} = props;
-	let extractor = "";
-	let items_missed = "";
-	let checklist = [];
-	if (metadata !== undefined){
-		let content = metadata["content"][0];
-		extractor = content["extractor"];
-		items_missed = content["items_missed"];
-		checklist = content["checklist"];
-	}
+	const [extractor, setExtractor] = useState('');
+	const [content, setContent] = useState({});
+	const [itemsMissed, setItemsMissed] = useState('');
+	const [checklist, setChecklist] = useState([]);
+	const [openSection, setOpenSection] = useState([]);
+
+	useEffect(() => {
+		if (metadata !== undefined && metadata.content !== undefined){
+			let content = metadata["content"][0];
+			setContent(content);
+			setExtractor(content["extractor"]);
+			setItemsMissed(content["items_missed"]);
+			setChecklist(content["checklist"]);
+		}
+	},[]);
 
 	const [open, setOpen] = useState(true);
 	const handleClick = () => { setOpen(!open); };
@@ -56,7 +62,7 @@ export default function PreviewDrawerLeft(props) {
 				<Toolbar sx={{ justifyContent: "space-between" }}>
 					<Box variant="contained" color="primary">
 						<Typography variant="h6">Items Missed</Typography>
-						<Typography align="center">{items_missed}</Typography>
+						<Typography align="center">{itemsMissed}</Typography>
 					</Box>
 					<Button onClick={onDownload} variant="contained" color="primary" startIcon={<DownloadIcon />}>
 						Export
