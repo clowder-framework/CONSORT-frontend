@@ -17,7 +17,7 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import {downloadFile} from "../../utils/file";
 
-const drawerWidth = 440;
+const drawerWidth = 400;
 
 export default function PreviewDrawerLeft(props) {
 	const {fileId, fileSrc, metadata, ...other} = props;
@@ -25,7 +25,7 @@ export default function PreviewDrawerLeft(props) {
 	const [content, setContent] = useState({});
 	const [itemsMissed, setItemsMissed] = useState('');
 	const [checklist, setChecklist] = useState([]);
-	const [openSection, setOpenSection] = useState([]);
+	const [openSections, setOpenSections] = useState([]);
 
 	useEffect(() => {
 		if (metadata !== undefined && metadata.content !== undefined){
@@ -37,8 +37,20 @@ export default function PreviewDrawerLeft(props) {
 		}
 	},[]);
 
-	const [open, setOpen] = useState(true);
-	const handleClick = () => { setOpen(!open); };
+	const handleClick = (name) => {
+		setOpenSections(prevOpenSections => {
+			if (prevOpenSections.includes(name)) {
+				return prevOpenSections.filter(section => section !== name);
+			} else {
+				return [...prevOpenSections, name];
+			}
+		});
+	};
+
+	const isOpen = (name) => {
+		return openSections.includes(name);
+	}
+
 
 	const onDownload = () => {
 		downloadFile(fileId, "results.html").then(r => console.log(r));
@@ -84,21 +96,22 @@ export default function PreviewDrawerLeft(props) {
 				>
 					{
 						checklist.length > 0 ?
-							checklist.map((check_item) => {
+							checklist.map((check_item, index) => {
+
 								return (
 									<>
-										<ListItemButton onClick={handleClick}>
+										<ListItemButton key={index} onClick={() => {handleClick(check_item.section)}}>
 											<ListItemText primary={check_item.section} />
-											{open ? <ExpandLess /> : <ExpandMore />}
+											{isOpen(check_item.section) ? <ExpandLess /> : <ExpandMore />}
 										</ListItemButton>
-										<Collapse in={open} timeout="auto" unmountOnExit>
-											<List component="items" disablePadding>
+										<Collapse in={isOpen(check_item.section)} timeout="auto" unmountOnExit>
+											<List disablePadding>
 												{
 													check_item.items.length > 0 ?
-														check_item.items.map((item) => {
+														check_item.items.map((item, index) => {
 															const found = item.found === "Yes" ? true : false;
 															return (
-																<ListItemButton sx={{ pl: 4 }}>
+																<ListItemButton key={index} sx={{ pl: 4 }}>
 																	<ListItemText primary={item.item} />
 																	{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																</ListItemButton>
