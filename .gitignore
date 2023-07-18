@@ -34,5 +34,4 @@ yarn-error.log*
 .env
 
 #package file
-package-lock.json
 /server/var/db/
