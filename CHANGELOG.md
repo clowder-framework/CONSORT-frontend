@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
-- PreviewDrawer component displayes number of items missed per section. [#43](https://github.com/clowder-framework/CONSORT-frontend/issues/43)
+- PreviewDrawer component displays number of items missed per section. [#43](https://github.com/clowder-framework/CONSORT-frontend/issues/43)
 
 ### Fixed
 
