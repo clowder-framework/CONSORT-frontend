@@ -4,7 +4,7 @@ import {Box, Button, Typography} from "@material-ui/core";
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
-import {List} from "@mui/material";
+import {Badge, List} from "@mui/material";
 import ListItemButton from '@mui/material/ListItemButton';
 import ListSubheader from '@mui/material/ListSubheader';
 import ListItemText from '@mui/material/ListItemText';
@@ -49,6 +49,10 @@ export default function PreviewDrawerLeft(props) {
 
 	const isOpen = (name) => {
 		return openSections.includes(name);
+	}
+
+	const isMissed = (missed) => {
+		return missed > 0;
 	}
 
 
@@ -97,11 +101,13 @@ export default function PreviewDrawerLeft(props) {
 					{
 						checklist.length > 0 ?
 							checklist.map((check_item, index) => {
+								const missed = parseInt(check_item.missed);
 
 								return (
 									<>
 										<ListItemButton key={index} onClick={() => {handleClick(check_item.section)}}>
 											<ListItemText primary={check_item.section} />
+											{isMissed(missed) ? <Badge badgeContent={missed} style={{color:"red", marginRight:"5"}} /> : <CheckIcon style={{color:"green"}} />}
 											{isOpen(check_item.section) ? <ExpandLess /> : <ExpandMore />}
 										</ListItemButton>
 										<Collapse in={isOpen(check_item.section)} timeout="auto" unmountOnExit>
@@ -112,7 +118,7 @@ export default function PreviewDrawerLeft(props) {
 															const found = item.found === "Yes" ? true : false;
 															return (
 																<ListItemButton key={index} sx={{ pl: 4 }}>
-																	<ListItemText primary={item.item} />
+																	<ListItemText primary={item.item} secondary={item.topic}/>
 																	{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																</ListItemButton>
 															);
