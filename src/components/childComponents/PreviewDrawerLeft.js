@@ -4,7 +4,8 @@ import {Box, Button, Typography} from "@material-ui/core";
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
-import {Badge, List} from "@mui/material";
+import {Badge, List, ListItemSecondaryAction} from "@mui/material";
+import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListSubheader from '@mui/material/ListSubheader';
 import ListItemText from '@mui/material/ListItemText';
@@ -105,11 +106,14 @@ export default function PreviewDrawerLeft(props) {
 
 								return (
 									<>
-										<ListItemButton key={index} onClick={() => {handleClick(check_item.section)}}>
-											<ListItemText primary={check_item.section} />
-											{isMissed(missed) ? <Badge badgeContent={missed} style={{color:"red", marginRight:"5"}} /> : <CheckIcon style={{color:"green"}} />}
-											{isOpen(check_item.section) ? <ExpandLess /> : <ExpandMore />}
-										</ListItemButton>
+										<ListItem key={index} divider>
+											<ListItemButton onClick={() => {handleClick(check_item.section)}}>
+												<ListItemText primary={check_item.section} />
+												{isMissed(missed) ? <Badge badgeContent={missed} max={35} color={"primary"} /> : <CheckIcon style={{color:"green"}} />}
+												{isOpen(check_item.section) ? <ExpandLess sx={{ml:"20px"}} /> : <ExpandMore sx={{ml:"20px"}}/>}
+											</ListItemButton>
+										</ListItem>
+
 										<Collapse in={isOpen(check_item.section)} timeout="auto" unmountOnExit>
 											<List disablePadding>
 												{
