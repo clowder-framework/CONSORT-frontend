@@ -9,6 +9,28 @@
 		<link rel="stylesheet" href="/css/home.css">
 	</head>
 	<body>
+        <header class="topbar">
+            <nav class="topanv">
+                <a class="navbar-brand" href="https://consort.clowderframework.org/clowder/">
+                    <img src="../public/logo.png">
+                </a>
+                <div class="row align-right">
+                    <a role="button" class="white-background-button" href="https://consort.clowderframework.org/clowder/">FAQ</a>
+                    <a role="button" class="white-background-button" href="https://consort.clowderframework.org/clowder/">Contact Us</a>
+                    <% if (user.name || user.username) { %>
+                        <ul>
+                            <li class="user"><%= user.name || user.username %></li>
+                            <li>
+                                <form action="/logout" method="post">
+                                    <button class="logout" type="submit">Sign out</button>
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                </form>
+                            </li>
+                        </ul>
+                    <% } %>
+                </div>
+            </nav>
+        </header>
 		<section class="todohome">
 			<header>
 				<h1>Consort</h1>
