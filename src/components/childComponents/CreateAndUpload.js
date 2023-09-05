@@ -71,12 +71,24 @@ export default function CreateAndUpload() {
 
 
 	// onDrop function to trigger createUploadExtract action dispatch
-	const onDrop = useCallback(acceptedFiles => {
-		// this callback will be called after files get dropped, we will get the acceptedFiles. If you want, you can even access the rejected files too
-		acceptedFiles.map(file => onDropFile(file));
+	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+		// this callback will be called after files get dropped.
 		setLoading(true);
+		try {
+			acceptedFiles.map(file => {
+				onDropFile(file)
+			})
+			rejectedFiles.map(file => {
+				setLoadingText("File rejected");
+				setSpinner(false); // stop display of spinner
+			})
+		}
+		catch(error) {
+			setLoadingText("Upload failed", error)
+			setSpinner(false); // stop display of spinner
+		}
 	}, [mouseHover]);
-	// TODO have a dependancy here - mouse hover or dropped file action
+
 
 	const goToPreviewRoute = () => {
 		setLoading(false); // stop display of Overlay
