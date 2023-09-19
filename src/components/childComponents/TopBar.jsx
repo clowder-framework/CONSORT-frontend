@@ -44,7 +44,7 @@ export default function TopBar() {
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.appBar}>
 				<Toolbar className={classes.toolBar}>
-					<img className={classes.logo} src="../../public/assets/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
+					<img className={classes.logo} src="/public/assets/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
 					<Typography className={classes.toolBarItem}>
 						<Link href="/" target="_blank" className={classes.toolBarlink}>
 							Home</Link>
