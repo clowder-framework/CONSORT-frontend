@@ -46,19 +46,19 @@ export default function TopBar() {
 				<Toolbar className={classes.toolBar}>
 					<img className={classes.logo} src="/public/assets/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
 					<Typography className={classes.toolBarItem}>
-						<Link href="/client/src/public" target="_blank" className={classes.toolBarlink}>
+						<Link href="/src/public" target="_blank" className={classes.toolBarlink}>
 							Home</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<Link href="/client/src/public" target="_blank" className={classes.toolBarlink}>
+						<Link href="/src/public" target="_blank" className={classes.toolBarlink}>
 							Help</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<Link href="/client/src/public" target="_blank" className={classes.toolBarlink}>
+						<Link href="/src/public" target="_blank" className={classes.toolBarlink}>
 							Explore</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<Link href="/client/src/public" target="_blank" className={classes.toolBarlink}>
+						<Link href="/src/public" target="_blank" className={classes.toolBarlink}>
 							Create</Link>
 					</Typography>
 				</Toolbar>
