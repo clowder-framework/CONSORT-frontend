@@ -4,6 +4,7 @@ var db = require('../db');
 
 var ensureLoggedIn = ensureLogIn();
 
+
 var router = express.Router();
 
 /* GET home page. */
