@@ -49,7 +49,7 @@ export default {
 		new webpack.NoEmitOnErrorsPlugin(),
 		new HtmlWebpackPlugin({
 			template: "src/index.ejs",
-			favicon: "./src/public/favicon.ico",
+			favicon: "./src/public/assets/favicon.ico",
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true
