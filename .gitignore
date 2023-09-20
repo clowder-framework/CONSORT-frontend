@@ -1,5 +1,5 @@
 # IDEA/Webstorm project files
-.idea/
+*.idea/
 *.iml
 
 #VSCode metadata
@@ -31,7 +31,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # env file
-.env
+*.env
 
 #package file
 /server/var/db/
+/dist
