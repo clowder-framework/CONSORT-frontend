@@ -3,7 +3,7 @@ var mkdirp = require('mkdirp');
 
 mkdirp.sync('./var/db');
 
-var db = new sqlite3.Database('./var/db/todos.db');
+var db = new sqlite3.Database('./var/db/sessions.db');
 
 db.serialize(function() {
   db.run("CREATE TABLE IF NOT EXISTS users ( \
@@ -13,7 +13,7 @@ db.serialize(function() {
     salt BLOB, \
     name TEXT \
   )");
-  
+
   db.run("CREATE TABLE IF NOT EXISTS federated_credentials ( \
     id INTEGER PRIMARY KEY, \
     user_id INTEGER NOT NULL, \
@@ -21,13 +21,7 @@ db.serialize(function() {
     subject TEXT NOT NULL, \
     UNIQUE (provider, subject) \
   )");
-  
-  db.run("CREATE TABLE IF NOT EXISTS todos ( \
-    id INTEGER PRIMARY KEY, \
-    owner_id INTEGER NOT NULL, \
-    title TEXT NOT NULL, \
-    completed INTEGER \
-  )");
+
 });
 
 module.exports = db;
