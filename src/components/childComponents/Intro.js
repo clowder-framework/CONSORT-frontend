@@ -15,7 +15,7 @@ export default function Intro() {
 				</Typography>
 			</div>
 			<div className="icons">
-				<img className="spirit-consort-logo" src="../../public/spirit-consort-logo.png" alt="spirit-consort-logo-sm"/>
+				<img className="spirit-consort-logo" src="../../public/assets/spirit-consort-logo.png" alt="spirit-consort-logo-sm"/>
 			</div>
 
 		</div>
