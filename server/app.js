@@ -51,6 +51,9 @@ app.use(function(req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
+app.use('/home/',express.static('../dist'));
+app.use('/public',express.static('../dist/public'));
+app.use('/public', express.static('public'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
