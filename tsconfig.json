@@ -51,11 +51,11 @@
   },
   // The files TypeScript should type check
   "include": [
-	"./src"
+	"src"
   ],
   // The files to not type check
   "exclude": [
-	"client/node_modules",
+	"node_modules",
 	"dist",
 	"build"
   ]

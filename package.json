@@ -20,7 +20,7 @@
 		"prebuild": "npm run clean-dist && npm run lint",
 		"build": "babel-node tools/build.js",
 		"test:watch": "npm run test -- --watch",
-		"analyze-bundle": "babel-node tools/analyzeBundle.js",
+		"analyze-bundle": "babel-node ./tools/analyzeBundle.js",
 		"lint": "npx eslint src --quiet",
 		"lint:fix": "npm run lint -- --fix",
 		"codegen": "./node_modules/.bin/openapi -i https://consort.clowderframework.org/clowder/swagger -o src/openapi/v1",
