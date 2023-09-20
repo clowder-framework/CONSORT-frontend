@@ -1,3 +1,4 @@
+// Not needed
 var sqlite3 = require('sqlite3');
 var mkdirp = require('mkdirp');
 
@@ -13,7 +14,7 @@ db.serialize(function() {
     salt BLOB, \
     name TEXT \
   )");
-  
+
   db.run("CREATE TABLE IF NOT EXISTS federated_credentials ( \
     id INTEGER PRIMARY KEY, \
     user_id INTEGER NOT NULL, \
@@ -21,7 +22,7 @@ db.serialize(function() {
     subject TEXT NOT NULL, \
     UNIQUE (provider, subject) \
   )");
-  
+
   db.run("CREATE TABLE IF NOT EXISTS todos ( \
     id INTEGER PRIMARY KEY, \
     owner_id INTEGER NOT NULL, \
