@@ -7,14 +7,14 @@ module.exports = function (config) {
 		browsers: ["Chrome", "Firefox", "ChromeHeadless"],
 		singleRun: true,
 		colors: true,
-		basePath: "client",
+		basePath: "",
 		frameworks: ["jasmine", "sinon"],
 		preprocessors: {
 			"test/**/*.test.js": ["webpack", "sourcemap"],
 			"test/**/*.test.jsx": ["webpack", "sourcemap"]
 		},
 		files: [
-			"client/node_modules/babel-polyfill/dist/polyfill.js",
+			"node_modules/babel-polyfill/dist/polyfill.js",
 			{pattern: "test/**/*.test.js"},
 			{pattern: "test/**/*.test.jsx"},
 		],
