@@ -1,11 +1,18 @@
+import axios from "axios"
 import config from "../app.config";
 
 
 // construct header
 export function getHeader() {
-	const headers = new Headers({
-		"X-API-Key": config.apikey
-	});
+	// const headers = new Headers({
+	// 	"X-API-Key": config.apikey
+	// });
+	const get_header = {method:'GET', url:"http://localhost:3000/client"};
+	const headers = axios.request(get_header).then(function (response){
+						return new Headers({
+							"X-API-Key": response.data.options.headers.apikey
+						});
+					});
 
 	return headers;
 

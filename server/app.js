@@ -61,25 +61,31 @@ app.use('/public', express.static('public'));
 
 
 app.get('/client', ensureLoggedIn, function (req, res, next){
-	// load build directory only if logged in
-	app.use('/home/',express.static('../dist'));
-	app.use('/public',express.static('../dist/public'));
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;
+	// Option 1
 	var options = {
 		headers:{
 			'hostname': CLOWDER_REMOTE_HOSTNAME,
 			'apikey': APIKEY
 		}
 	}
+	res.json(options); // Use this in src/utils/common in getHeader() method.
+
+	// Option 2
 	const headers = new Headers({
 		"X-API-Key": APIKEY
 	});
 	// try to set headers in the response
-	res.header(headers);
-	// try to send headers as a parameter for index.html file to use.
-	res.sendFile(path.join(__dirname, '../dist', 'index.html'), options);
+	res.header(headers);  // not sure on how to get this value in client side
+});
+
+app.get('/home', ensureLoggedIn, function (req, res, next){
+	// load build directory only if logged in
+	app.use('/home/',express.static('../dist'));
+	app.use('/public',express.static('../dist/public'));
+	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 // catch 404 and forward to error handler
