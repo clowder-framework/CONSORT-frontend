@@ -2,11 +2,20 @@ import {dataURItoFile, downloadResource, getHeader} from "./common";
 import config from "../app.config";
 
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
 export async function submitForExtraction(file_id, extractor_name){
+	// submits file for extraction and returns true if extraction is successful, else returns false
 	const body = {"extractor": extractor_name};
 	const extraction_response = await extractionRequest(file_id, body);
-	// return {"status":"OK","job_id":"string"}
-	return extraction_response;
+	console.log(extraction_response);
+	if (extraction_response !== null && extraction_response.status === "OK") {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 
@@ -17,27 +26,43 @@ async function extractionRequest(file_id,body_data) {
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
-	let response = await fetch(extractions_url, {
-		method: "POST",
-		mode: "cors",
-		headers: authHeader,
-		body: body,
-	});
 
-	if (response.status === 200) {
-		// return {"status":"OK","job_id":"string"}
-		console.log("submit to extraction successful");
-		return response.json();
+	let extraction_response = null;
 
-	} else if (response.status === 401) {
-		// TODO handle error
-		console.log("submit to extraction error");
-		return {};
-	} else {
-		// TODO handle error
-		console.log("submit to extraction error");
-		return {};
+	const extractionRequest_loop = async () => {
+
+		let response = await fetch(extractions_url, {
+			method: "POST",
+			mode: "cors",
+			headers: authHeader,
+			body: body,
+		});
+		extraction_response = await response.json(); // JSONObj {"status":"OK","job_id":"string"}
+		//const extraction_response_text = await response.text();
+		console.log(extraction_response);
+		//console.log(extraction_response_text);
+		if (response.status === 200) {
+			// return {"status":"OK","job_id":"string"}
+			console.log("submit to extraction successful");
+		} else if (response.status === 409){
+			// TODO handle error
+			console.log("submit to extraction error", extraction_response);
+			console.log("submit for extraction after 30s");
+			await sleep(30000);
+			await extractionRequest_loop();
+		}
+		else {
+			// TODO handle error
+			console.log("submit to extraction error", extraction_response);
+			extraction_response.status = "FAIL";
+		}
+		return extraction_response;
+
 	}
+
+	extraction_response = await extractionRequest_loop();
+	return extraction_response;
+
 }
 
 
@@ -63,6 +88,54 @@ export async function checkExtractionStatus(file_id){
 	let extractions_data = await extractions_response.json();
 	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
 	return extractions_data;
+}
+
+export async function checkExtractionStatusLoop(file_id, extractor, interval){
+	// check extraction status of a file in loop. Check status every interval seconds
+
+	let extraction_status = false;
+
+	const status_check_loop = async () => {
+		const extractions_data = await checkExtractionStatus(file_id);
+		console.log(extractions_data);
+		const extractions_data_status = extractions_data["Status"];
+		const extractions_data_extractor = extractions_data[extractor];
+		const extractions_data_extractor_message = extractions_data_extractor.split(".");
+
+		if (extractions_data_status === "Done"){
+			if (extractions_data_extractor === "DONE"){
+				console.log("Extraction completed for file");
+				extraction_status = true;
+			}
+			else if (extractions_data_extractor_message[0] === "StatusMessage") {
+				// check the status message from extractor
+				const extractor_message = extractions_data_extractor_message[1].split(":");
+				if (extractor_message[0] === "error") {
+					console.error("Error in extraction %s", extractor);
+					extraction_status = false;
+				}
+				else {
+					console.log("check extraction status after %s ms", interval);
+					await sleep(interval);
+					await status_check_loop();
+				}
+
+			}
+
+		}
+		else if (extractions_data_status === "Processing") {
+			console.log("check extraction status after %s ms", interval);
+			await sleep(interval);
+			await status_check_loop();
+		}
+	}
+	if (file_id !== null){
+		await status_check_loop();
+		return extraction_status;
+	}
+	else {
+		return extraction_status;
+	}
 }
 
 

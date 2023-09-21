@@ -1,7 +1,8 @@
+// dataset actions
 import config from "../app.config";
 import {getHeader} from "../utils/common";
-import {createEmptyDatasetRequest, getDatasetsRequest, uploadFileToDatasetRequest} from "../utils/dataset";
-import {submitForExtraction} from "../utils/file";
+import {createEmptyDatasetRequest, getDatasetsRequest} from "../utils/dataset";
+
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -20,25 +21,6 @@ export const createDataset = (type, json) => ({type: type, datasets: json});
 // add file to dataset action
 export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
 export const addFileToDataset = (type, file_json) => ({type: type, files: file_json});
-
-// createUploadExtract thunk function
-export function createUploadExtract(file, extractor_name) {
-	return async function createUploadExtractThunk(dispatch) {
-		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
-		// Clowder API call to create empty dataset
-		const dataset_json = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
-		if (dataset_json !== undefined) {
-			dispatch(createDataset(CREATE_DATASETS, dataset_json));
-			// upload file to dataset
-			const file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
-			if (file_json !== undefined){
-				const extraction_json = submitForExtraction(file_json.id, extractor_name)
-				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
-			}
-		}
-	};
-}
-
 
 
 // createEmptyDataset thunk function
@@ -61,6 +43,7 @@ export function receiveFilesInDataset(type, json) {
 		});
 	};
 }
+
 
 export function fetchFilesInDataset(id) {
 	let url = `${config.hostname}/clowder/api/datasets/${id}/files?superAdmin=true`;

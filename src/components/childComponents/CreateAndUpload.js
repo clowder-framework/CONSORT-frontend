@@ -10,9 +10,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
-import {createUploadExtract} from "../../actions/dataset";
-import {checkExtractionStatus} from "../../utils/file";
-import {checkHtmlInDatasetRequest} from "../../utils/dataset";
+import {createUploadExtract} from "../../actions/client";
+import {getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 
 
@@ -22,7 +21,8 @@ export default function CreateAndUpload() {
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
-	const [loading_text , setLoadingText] = useState("Processing"); // loading overlay text.
+	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
+	const [filename, setFilename] = useState(''); // uploaded filename
 	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
@@ -30,53 +30,48 @@ export default function CreateAndUpload() {
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
-
-	const extractor_name = "ncsa.rctTransparencyExtractor"
+	const extractionStatus = useSelector(state => state.file.extractionStatus);
 
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
-		dispatch(createUploadExtract(file, extractor_name));
+		setFilename(file.name);
+		dispatch(createUploadExtract(file));
 	};
 
 	// useEffect on filesInDataset for preview generation
-	useEffect(async()=> {
-		if (filesInDataset !== undefined && filesInDataset.length > 0) {
-			const file_id = filesInDataset[0].id;
+	useEffect(async () => {
+		if (extractionStatus !== null && extractionStatus === true) {
+			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
-			const loop = async () => {
+			const html_file_loop = async () => {
 				setLoadingText("Checking extraction status");
-				const extraction_status = await checkExtractionStatus(file_id);
-				console.log(extraction_status);
-				if (extraction_status["Status"] === "Done" && extraction_status[extractor_name] === "DONE") {
-					setLoadingText("Generating html file");
-					const htmlFile = await checkHtmlInDatasetRequest(dataset_id);
-					console.log(htmlFile);
-					if (typeof htmlFile.id === "string") {
-						// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-						listFilePreviews(htmlFile.id);
-						setLoadingText("Extraction completed");
-						setPreview(false)  // Continue button activated
-						setSpinner(false); // stop display of spinner
-					} else {
-						console.log("check html file after 5s");
-						setTimeout(loop, 5000);
-					}
+				const html_output_filename = file_name + '_predicted' + '.html'
+				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename);
+				if (htmlFile !== null && typeof htmlFile.id === "string") {
+					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
+					listFilePreviews(htmlFile.id);
+					setLoadingText("Extraction completed");
+					setPreview(false)  // Continue button activated
+					setSpinner(false); // stop display of spinner
 				} else {
-					console.log("check extraction status after 5s");
-					setTimeout(loop, 5000);
+					console.log("check html file after 5s");
+					setTimeout(html_file_loop, 5000);
 				}
 			};
 
-			if (file_id !== null){
-				await loop(); // call the loop to check extractions
-			}
-			else{
-				console.error("file does not exist");
+			if (dataset_id !== null) {
+				await html_file_loop(); // call the loop to check extractions
+			} else {
+				console.error("Dataset does not exist");
 			}
 		}
-	}, [filesInDataset]);
+		else if (extractionStatus === false){
+			setLoadingText("Error in extraction");
+			setSpinner(false); // stop display of spinner
+		}
+	}, [extractionStatus]);
 	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start
 
 
@@ -110,8 +105,8 @@ export default function CreateAndUpload() {
 	return (
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
-				<div className="mousehoverdrop" onMouseEnter={()=> setMouseHover(true)} >
-					<Dropfile onDrop={onDrop} accept={{"text/plain":[".txt"]}}/>
+				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
+					<Dropfile onDrop={onDrop} accept={{"text/plain": [".txt"], "application/pdf": [".pdf"]}}/>
 				</div>
 			</LoadingOverlay>
 

@@ -1,8 +1,8 @@
+// file actions
+
 import config from "../app.config";
 import {getHeader} from "../utils/common";
-import {getDatasetsRequest} from "../utils/dataset";
 import {getPreviewsRequest} from "../utils/file";
-import {RECEIVE_DATASETS, receiveDatasets} from "./dataset";
 
 
 export const RECEIVE_FILE_METADATA = "RECEIVE_FILE_METADATA";
@@ -15,6 +15,7 @@ export function receiveFileMetadata(type, json){
 		});
 	};
 }
+
 export function fetchFileMetadata(id) {
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
 	return (dispatch) => {
@@ -87,6 +88,16 @@ export function fetchFileMetadataJsonld(id) {
 	};
 }
 
+export const SET_EXTRACTION_STATUS = "SET_EXTRACTION_STATUS";
+export function setExtractionStatus(type, status) {
+	return (dispatch) => {
+		dispatch({
+			type: type,
+			extractionStatus: status
+		});
+	};
+}
+
 export const RECEIVE_PREVIEWS = "RECEIVE_PREVIEWS";
 export function receiveFilePreviews(type, json) {
 	return (dispatch) => {
@@ -102,7 +113,7 @@ export function fetchFilePreviews(id) {
 	return async function fetchFilePreviewsThunk(dispatch) {
 		const previews_list = await getPreviewsRequest(id) // list of previews
 		// [{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]
-		if (previews_list !== undefined) {
+		if (previews_list !== undefined && previews_list !== null) {
 			dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, previews_list));
 		} else {
 			dispatch(receiveFileMetadataJsonld(RECEIVE_PREVIEWS, []));
