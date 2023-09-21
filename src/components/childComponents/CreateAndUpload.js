@@ -10,8 +10,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import Dropfile from "./Dropfile";
-import {createUploadExtract} from "../../actions/dataset";
-import {checkExtractionStatus} from "../../utils/file";
+import {createUploadExtract} from "../../actions/client";
 import {getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 
@@ -23,6 +22,7 @@ export default function CreateAndUpload() {
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
+	const [filename, setFilename] = useState(''); // uploaded filename
 	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
@@ -30,18 +30,19 @@ export default function CreateAndUpload() {
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
+	const extractionStatus = useSelector(state => state.file.extractionStatus);
 
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
+		setFilename(file.name);
 		dispatch(createUploadExtract(file));
 	};
 
 	// useEffect on filesInDataset for preview generation
 	useEffect(async () => {
-		if (filesInDataset !== undefined && filesInDataset.length > 0) {
-			const file_id = filesInDataset[0].id;
-			const file_name = filesInDataset[0].filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
+		if (extractionStatus !== null && extractionStatus === true) {
+			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
 			const html_file_loop = async () => {
@@ -60,13 +61,17 @@ export default function CreateAndUpload() {
 				}
 			};
 
-			if (file_id !== null) {
+			if (dataset_id !== null) {
 				await html_file_loop(); // call the loop to check extractions
 			} else {
-				console.error("file does not exist");
+				console.error("Dataset does not exist");
 			}
 		}
-	}, [filesInDataset]);
+		else if (extractionStatus === false){
+			setLoadingText("Error in extraction");
+			setSpinner(false); // stop display of spinner
+		}
+	}, [extractionStatus]);
 	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start
 
 
