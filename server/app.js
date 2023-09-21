@@ -9,6 +9,10 @@ var csrf = require('csurf');
 var passport = require('passport');
 var logger = require('morgan');
 
+var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
+
+var ensureLoggedIn = ensureLogIn();
+
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
 var SQLiteStore = require('connect-sqlite3')(session);
@@ -51,9 +55,32 @@ app.use(function(req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
-app.use('/home/',express.static('../dist'));
-app.use('/public',express.static('../dist/public'));
+//app.use('/home/',express.static('../dist'));
+//app.use('/public',express.static('../dist/public'));
 app.use('/public', express.static('public'));
+
+
+app.get('/client', ensureLoggedIn, function (req, res, next){
+	// load build directory only if logged in
+	app.use('/home/',express.static('../dist'));
+	app.use('/public',express.static('../dist/public'));
+	// get env variables for header
+	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
+	var APIKEY = process.env.APIKEY;
+	var options = {
+		headers:{
+			'hostname': CLOWDER_REMOTE_HOSTNAME,
+			'apikey': APIKEY
+		}
+	}
+	const headers = new Headers({
+		"X-API-Key": APIKEY
+	});
+	// try to set headers in the response
+	res.header(headers);
+	// try to send headers as a parameter for index.html file to use.
+	res.sendFile(path.join(__dirname, '../dist', 'index.html'), options);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
