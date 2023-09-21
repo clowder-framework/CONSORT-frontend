@@ -4,7 +4,12 @@ import config from "../app.config";
 
 export async function submitForExtraction(file_id, extractor_name){
 	const body = {"extractor": extractor_name};
+	//const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 	const extraction_response = await extractionRequest(file_id, body);
+	// if (extraction_response === null) {
+	// 	await sleep(5000);
+	//
+	// }
 	// return {"status":"OK","job_id":"string"}
 	return extraction_response;
 }
@@ -32,11 +37,11 @@ async function extractionRequest(file_id,body_data) {
 	} else if (response.status === 401) {
 		// TODO handle error
 		console.log("submit to extraction error");
-		return {};
+		return null;
 	} else {
 		// TODO handle error
-		console.log("submit to extraction error");
-		return {};
+		console.log("submit to extraction error", response.status);
+		return null;
 	}
 }
 
@@ -63,6 +68,36 @@ export async function checkExtractionStatus(file_id){
 	let extractions_data = await extractions_response.json();
 	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
 	return extractions_data;
+}
+
+export async function checkExtractionStatusLoop(file_id, interval){
+	// check extraction status of a file in loop. Check status every interval seconds
+
+	const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+	let extraction_status = false;
+
+	const status_check_loop = async () => {
+		const extractions_data = await checkExtractionStatus(file_id);
+		console.log(extractions_data);
+		if (extractions_data["Status"] === "Done"){
+			console.log("Extraction completed for file");
+			extraction_status = true;
+		}
+		else {
+			console.log("check extraction status after %s ms", interval);
+			await sleep(interval);
+			await status_check_loop();
+		}
+	}
+	if (file_id !== null){
+		await status_check_loop();
+	}
+	if (extraction_status === false) {
+		await status_check_loop();
+	}
+	else if (extraction_status === true) {
+		return extraction_status;
+	}
 }
 
 

@@ -87,6 +87,16 @@ export function fetchFileMetadataJsonld(id) {
 	};
 }
 
+export const EXTRACTION_STATUS = "EXTRACTION_STATUS";
+export function getExtractionStatus(type, status) {
+	return (dispatch) => {
+		dispatch({
+			type: type,
+			extraction_status: status
+		});
+	};
+}
+
 export const RECEIVE_PREVIEWS = "RECEIVE_PREVIEWS";
 export function receiveFilePreviews(type, json) {
 	return (dispatch) => {
@@ -102,7 +112,7 @@ export function fetchFilePreviews(id) {
 	return async function fetchFilePreviewsThunk(dispatch) {
 		const previews_list = await getPreviewsRequest(id) // list of previews
 		// [{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]
-		if (previews_list !== undefined) {
+		if (previews_list !== undefined && previews_list !== null) {
 			dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, previews_list));
 		} else {
 			dispatch(receiveFileMetadataJsonld(RECEIVE_PREVIEWS, []));
