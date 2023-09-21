@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
 
 ### Fixed
-
+- Display of error messages on uploading files in dropzone. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
 
 ### Security
 
