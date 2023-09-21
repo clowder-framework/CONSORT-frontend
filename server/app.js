@@ -55,6 +55,12 @@ app.use(function(req, res, next) {
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
+
+// redirect any other route back to home route /
+// app.use((req,res,next)=>{
+// 	res.redirect('/');
+// });
+
 //app.use('/home/',express.static('../dist'));
 //app.use('/public',express.static('../dist/public'));
 app.use('/public', express.static('public'));
