@@ -1,3 +1,4 @@
+// Option 3
 // api endpoint for server call
 import React, {useState, createContext, useEffect} from 'react';
 // can headers be passed as context?
