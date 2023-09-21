@@ -89,6 +89,36 @@ export function fetchDatasetAbout(id) {
 	};
 }
 
+
+export const SET_DATASET_METADATA = "SET_DATASET_METADATA";
+export function setDatasetMetadata(type, json) {
+	return (dispatch) => {
+		dispatch({
+			type: type,
+			metadata: json,
+			receivedAt: Date.now(),
+		});
+	};
+}
+export function postDatasetMetadata(id, metadata) {
+	let url = `${config.hostname}/clowder/api/datasets/${id}/metadata.jsonld`;
+	let authHeader = getHeader();
+	authHeader.append('Accept', 'application/json');
+	authHeader.append('Content-Type', 'application/json');
+	const body = JSON.stringify(metadata);
+	return (dispatch) => {
+		return fetch(url, {method:"POST", mode: "cors", headers: authHeader, body:body})
+			.then((response) => {
+				if (response.status === 200) {
+					dispatch(setDatasetMetadata(SET_DATASET_METADATA, metadata));
+				} else {
+					dispatch(setDatasetMetadata(SET_DATASET_METADATA, {}));
+				}
+			});
+	};
+}
+
+
 export const DELETE_DATASET = "DELETE_DATASET";
 
 export function deleteDataset(datasetId) {
