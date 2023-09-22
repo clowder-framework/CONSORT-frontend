@@ -29,9 +29,9 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 	// Clowder API call to create empty dataset
 	const url = `${config.hostname}/clowder/api/datasets/createempty`;
 	let authHeader = getHeader('application/json', 'application/json');
-	//authHeader.append('Accept', 'application/json');
-	//authHeader.append('Content-Type', 'application/json');
-	const body_data = {"name": dataset_name, "description": dataset_description, "space": [config.space]};
+	(await authHeader).append('Accept', 'application/json');
+	(await authHeader).append('Content-Type', 'application/json');
+	const body_data = {"name": dataset_name, "description": dataset_description, "space": config.space};
 	const body = JSON.stringify(body_data);
 	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {
@@ -41,10 +41,14 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 	}
 	else if (response.status === 401) {
 		// handle error
+		const responseJson = await response.json();
+		console.log(responseJson);
 		console.log("Creation of dataset failed");
 		return null;
 	} else {
 		// handle error
+		const responseJson = await response.json();
+		console.log(responseJson);
 		console.log("Creation of dataset failed");
 		return null;
 	}

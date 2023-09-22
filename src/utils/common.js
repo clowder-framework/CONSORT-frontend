@@ -12,20 +12,16 @@ export function getHostname(){
 }
 
 // construct header
-export function getHeader(accept , content_type) {
-	const headers = new Headers({
-		"X-API-Key": config.apikey,
-		"Accept" : accept,
-		"Content-Type": content_type
-	});
-	return headers;
-	// return axios.request(getClient).then(function (response) {
-	// 	return new Headers({
-	// 		"X-API-Key": response.data.headers.apikey,
-	// 		"Accept" : 'application/json',
-	// 		"Content-Type": 'application/json'
-	// 	});
+export async function getHeader(accept , content_type) {
+	// const headers = new Headers({
+	// 	"X-API-Key": config.apikey,
 	// });
+	// return headers;
+	return axios.request(getClient).then(function (response) {
+		return new Headers({
+			"X-API-Key": response.data.headers.apikey.toString()
+		});
+	});
 
 	// const headers = new Headers({
 	// 	"Authorization": cookies.get("Authorization"),

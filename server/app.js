@@ -77,6 +77,8 @@ app.get('/client', ensureLoggedIn, function (req, res, next){
 			'apikey': APIKEY
 		}
 	}
+	//res.header("Access-Control-Allow-Origin", "*");
+	//res.header("Access-Control-Allow-Headers", "content-type, x-api-key");
 	res.json(options); // Use this in src/utils/common in getHeader() method.
 
 	// // Option 2
