@@ -15,7 +15,7 @@ export function createUploadExtract(file) {
 		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 		const file_description = file.type;
 		const dataset_json = await createEmptyDatasetRequest(file_name, file_description); // returns the dataset ID {id:xxx}
-		if (dataset_json !== undefined || dataset_json !== null) {
+		if (dataset_json !== undefined && dataset_json !== null) {
 			dispatch(createDataset(CREATE_DATASETS, dataset_json));
 			// upload input file to dataset
 			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
