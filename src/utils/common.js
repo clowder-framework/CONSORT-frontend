@@ -1,5 +1,4 @@
 import axios from "axios"
-import config from "../app.config";
 
 
 // construct header
@@ -7,14 +6,14 @@ export function getHeader() {
 	// const headers = new Headers({
 	// 	"X-API-Key": config.apikey
 	// });
-	const get_header = {method:'GET', url:"http://localhost:3000/client"};
-	const headers = axios.request(get_header).then(function (response){
-						return new Headers({
-							"X-API-Key": response.data.options.headers.apikey
-						});
-					});
 
-	return headers;
+	const get_header = {method:'GET', url:"http://localhost:3000/client"};
+	// I think the url would stay localhost even if deployed coz it is calling the server /client endpoint
+	return axios.request(get_header).then(function (response) {
+		return new Headers({
+			"X-API-Key": response.data.headers.apikey
+		});
+	});
 
 	// const headers = new Headers({
 	// 	"Authorization": cookies.get("Authorization"),
