@@ -85,7 +85,7 @@ export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file
 	const extractions_status_url = `${clientInfo.hostname}/clowder/api/extractions/${file_id}/status`;
 	let authHeader = getHeader(clientInfo);
-	authheader.append("Accept", "*/*");
+	authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:authHeader});
 	if (response.status === 200){
 		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
