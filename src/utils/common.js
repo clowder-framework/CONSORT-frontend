@@ -1,27 +1,27 @@
-import axios from "axios"
+// import axios from "axios"
 import config from "../app.config";
 
 // get client endpoint
 const getClient = {method:'GET', url:"http://localhost:3000/client"};
 
 // get hostname
-export function getHostname(){
-	return axios.request(getClient).then(function (response) {
-		return response.data.headers.hostname
-	});
-}
+// export function getHostname(){
+// 	return axios.request(getClient).then(function (response) {
+// 		return response.data.headers.hostname
+// 	});
+// }
 
 // construct header
 export async function getHeader(accept , content_type) {
-	// const headers = new Headers({
-	// 	"X-API-Key": config.apikey,
-	// });
-	// return headers;
-	return axios.request(getClient).then(function (response) {
-		return new Headers({
-			"X-API-Key": response.data.headers.apikey.toString()
-		});
+	const headers = new Headers({
+		"X-API-Key": config.apikey,
 	});
+	return headers;
+	// return axios.request(getClient).then(function (response) {
+	// 	return new Headers({
+	// 		"X-API-Key": response.data.headers.apikey.toString()
+	// 	});
+	// });
 
 	// const headers = new Headers({
 	// 	"Authorization": cookies.get("Authorization"),
