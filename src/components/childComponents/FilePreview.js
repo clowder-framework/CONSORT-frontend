@@ -13,6 +13,7 @@ import TopBar from "./TopBar";
 import PreviewDrawerLeft from "./PreviewDrawerLeft";
 import Intro from "./Intro";
 import CreateAndUpload from "./CreateAndUpload";
+import {getClientInfo} from "../../utils/common";
 
 
 export default function FilePreview() {
@@ -26,7 +27,8 @@ export default function FilePreview() {
 			const previewsTemp = [];
 			filePreviews[0].map(async (preview) => {
 				// get all preview resources
-				const preview_config = await getPreviewResources(preview);
+				const clientInfo = await getClientInfo()
+				const preview_config = await getPreviewResources(preview, clientInfo);
 				previewsTemp.push(preview_config);
 				setPreviews(previewsTemp); // set previews
 			});

@@ -1,14 +1,14 @@
-import {dataURItoFile, downloadResource, getHeader} from "./common";
+import {dataURItoFile, downloadResource, getClientInfo, getHeader} from "./common";
 import config from "../app.config";
 
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-export async function submitForExtraction(file_id, extractor_name){
+export async function submitForExtraction(file_id, extractor_name, clientInfo){
 	// submits file for extraction and returns true if extraction is successful, else returns false
 	const body = {"extractor": extractor_name};
-	const extraction_response = await extractionRequest(file_id, body);
+	const extraction_response = await extractionRequest(file_id, body, clientInfo);
 	console.log(extraction_response);
 	if (extraction_response !== null && extraction_response.status === "OK") {
 		return true;
@@ -19,11 +19,11 @@ export async function submitForExtraction(file_id, extractor_name){
 }
 
 
-async function extractionRequest(file_id,body_data) {
+async function extractionRequest(file_id,body_data, clientInfo) {
 	// Clowder API call to submit a file for extraction
-	const extractions_url = `${config.hostname}/clowder/api/files/${file_id}/extractions`;
+	const extractions_url = `${clientInfo.hostname}/clowder/api/files/${file_id}/extractions`;
 	const body = JSON.stringify(body_data);
-	let authHeader = getHeader();
+	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
 
@@ -81,22 +81,23 @@ export async function fetchFileMetadata(id) {
 }
 
 
-export async function checkExtractionStatus(file_id){
+export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file
-	const extractions_status_url = `${config.hostname}/clowder/api/extractions/${file_id}/status`;
-	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:getHeader()});
+	const extractions_status_url = `${clientInfo.hostname}/clowder/api/extractions/${file_id}/status`;
+	let authHeader = getHeader(clientInfo);
+	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:authHeader});
 	let extractions_data = await extractions_response.json();
 	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
 	return extractions_data;
 }
 
-export async function checkExtractionStatusLoop(file_id, extractor, interval){
+export async function checkExtractionStatusLoop(file_id, extractor, interval, clientInfo){
 	// check extraction status of a file in loop. Check status every interval seconds
 
 	let extraction_status = false;
 
 	const status_check_loop = async () => {
-		const extractions_data = await checkExtractionStatus(file_id);
+		const extractions_data = await checkExtractionStatus(file_id, clientInfo);
 		console.log(extractions_data);
 		const extractions_data_status = extractions_data["Status"];
 		const extractions_data_extractor = extractions_data[extractor];
@@ -175,8 +176,10 @@ export async function downloadFile(fileId, filename = null) {
 	if (!filename) {
 		filename = `${fileId}.zip`;
 	}
-	let endpoint = `${config.hostname}/clowder/api/files/${fileId}/blob?superAdmin=true`;
-	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: await getHeader()});
+	const clientInfo = await getClientInfo();
+	let endpoint = `${clientInfo.hostname}/clowder/api/files/${fileId}/blob?superAdmin=true`;
+	let authHeader = getHeader(clientInfo);
+	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
 
 	if (response.status === 200) {
 		let blob = await response.blob();
@@ -200,9 +203,10 @@ export async function downloadFile(fileId, filename = null) {
 }
 
 
-export async function getPreviewsRequest(file_id) {
-	const previews_url = `${config.hostname}/clowder/api/files/${file_id}/getPreviews?superAdmin=true`;
-	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:getHeader()});
+export async function getPreviewsRequest(file_id, clientInfo) {
+	const previews_url = `${clientInfo.hostname}/clowder/api/files/${file_id}/getPreviews?superAdmin=true`;
+	let authHeader = getHeader(clientInfo)
+	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:authHeader});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 	let previews_list = [];
 	if (previews_response.status === 200) {
@@ -219,11 +223,11 @@ export async function getPreviewsRequest(file_id) {
 }
 
 
-export async function getPreviewResources(preview) {
+export async function getPreviewResources(preview, clientInfo) {
 	// get all file preview resources
 	const preview_config = {}
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
-	preview_config.url = `${config.hostname}${preview["pv_route"]}?superAdmin=true`;
+	preview_config.url = `${clientInfo.hostname}${preview["pv_route"]}?superAdmin=true`;
 	preview_config.fileid = preview["pv_id"];
 	preview_config.previewer = `/public${preview["p_path"]}/`;
 	preview_config.fileType = preview["pv_contenttype"];
@@ -236,7 +240,7 @@ export async function getPreviewResources(preview) {
 		pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
 	}
 	preview_config.pv_route = pv_routes;
-	const resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
-	preview_config.resource = await downloadResource(resourceURL);
+	const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
+	preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	return preview_config;
 }
