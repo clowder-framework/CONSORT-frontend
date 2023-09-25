@@ -33,4 +33,5 @@ COPY package-lock.json ./
 COPY --from=consort-build /usr/src/app/dist/ /app/dist
 COPY server/ ./
 RUN npm install
+RUN npm install --build-from-source sqlite3
 CMD ["npm", "run", "start"]
