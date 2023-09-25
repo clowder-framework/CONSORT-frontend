@@ -28,12 +28,10 @@ export default function CreateAndUpload() {
 	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
-	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
-
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
-	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
+	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 
 
@@ -56,8 +54,8 @@ export default function CreateAndUpload() {
 				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename, clientInfo);
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					listFilePreviews(htmlFile.id);
-					const metadata = await getDatasetMetadata(dataset_id);
+					listFilePreviews(htmlFile.id, clientInfo);
+					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
 					datasetMetadata(metadata); // get only the latest metadata from list
 					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
