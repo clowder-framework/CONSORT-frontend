@@ -44,23 +44,16 @@ export default function TopBar() {
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.appBar}>
 				<Toolbar className={classes.toolBar}>
-					<img className={classes.logo} src="../../public/assets/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
-					<Typography className={classes.toolBarItem}>
+					<img className={classes.logo} src="../../public/assets/logo.png" alt="logo" width="150" height="50"/>
+					<Typography className={classes.toolBarItem} sx={{horizontalAlign:'left'}}>
 						<Link href="/" target="_blank" className={classes.toolBarlink}>
 							Home</Link>
 					</Typography>
-					<Typography className={classes.toolBarItem}>
-						<Link href="/" target="_blank" className={classes.toolBarlink}>
+					<Typography className={classes.toolBarItem} >
+						<Link href="/" target="_blank" className={classes.toolBarlink} sx={{marginRight:"100px"}}>
 							Help</Link>
 					</Typography>
-					<Typography className={classes.toolBarItem}>
-						<Link href="/" target="_blank" className={classes.toolBarlink}>
-							Explore</Link>
-					</Typography>
-					<Typography className={classes.toolBarItem}>
-						<Link href="/" target="_blank" className={classes.toolBarlink}>
-							Create</Link>
-					</Typography>
+					<img className={classes.logo} align="right" src="../../public/assets/clowder-logo-sm.svg" alt="clowder-logo-sm"/>
 				</Toolbar>
 			</AppBar>
 		</div>
