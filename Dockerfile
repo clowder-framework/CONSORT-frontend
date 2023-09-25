@@ -31,6 +31,7 @@ WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
 COPY --from=consort-build /usr/src/app/dist/ /dist
+COPY src/public /dist/public
 COPY server/ /app/
 RUN npm install
 RUN npm install --build-from-source sqlite3
