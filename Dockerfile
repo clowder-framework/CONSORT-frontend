@@ -30,7 +30,7 @@ FROM node:14.21.2
 WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./
-COPY --from=consort-build /usr/src/app/dist/ /app/dist
+COPY --from=consort-build /usr/src/app/dist/ /dist
 COPY server/ /app/
 RUN npm install
 RUN npm install --build-from-source sqlite3
