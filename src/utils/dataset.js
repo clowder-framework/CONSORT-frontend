@@ -27,7 +27,7 @@ export async function getDatasetsRequest(title, limit) {
 
 export async function createEmptyDatasetRequest(dataset_name, dataset_description) {
 	// Clowder API call to create empty dataset
-	const url = `${config.hostname}/clowder/api/datasets/createempty`;
+	const url = `${hostname}/clowder/api/datasets/createempty`;
 	let authHeader = getHeader('application/json', 'application/json');
 	(await authHeader).append('Accept', 'application/json');
 	(await authHeader).append('Content-Type', 'application/json');
