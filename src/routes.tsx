@@ -1,14 +1,11 @@
 import React, {useContext} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
-import {ApiContext} from "./components/ApiContext";
 import Dashboard from "./components/Dashboard";
 import Preview from "./components/Preview";
 
 
 export const AppRoutes = (): JSX.Element => {
-	const header = useContext(ApiContext);
-	// pass header value to all components
 	return (
 		<BrowserRouter>
 			<Routes>
