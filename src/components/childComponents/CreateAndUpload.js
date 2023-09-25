@@ -9,11 +9,12 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
-import {getFileInDataset} from "../../utils/dataset";
+import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
-import {getClientInfo} from "../../utils/common";
+import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
 
 
 export default function CreateAndUpload() {
@@ -32,6 +33,8 @@ export default function CreateAndUpload() {
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
+	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
+	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 
 
 	const onDropFile = (file) => {
@@ -40,7 +43,7 @@ export default function CreateAndUpload() {
 		dispatch(createUploadExtract(file));
 	};
 
-	// useEffect on filesInDataset for preview generation
+	// useEffect on extractionStatus for preview generation
 	useEffect(async () => {
 		if (extractionStatus !== null && extractionStatus === true) {
 			const clientInfo = await getClientInfo();
@@ -53,7 +56,9 @@ export default function CreateAndUpload() {
 				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename, clientInfo);
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					listFilePreviews(htmlFile.id, clientInfo);
+					listFilePreviews(htmlFile.id);
+					const metadata = await getDatasetMetadata(dataset_id);
+					datasetMetadata(metadata); // get only the latest metadata from list
 					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
 					setSpinner(false); // stop display of spinner
@@ -74,7 +79,6 @@ export default function CreateAndUpload() {
 			setSpinner(false); // stop display of spinner
 		}
 	}, [extractionStatus]);
-	// TODO how to make this dependency better? Now filesInDataset.id throws an error on start
 
 
 	// onDrop function to trigger createUploadExtract action dispatch

@@ -1,6 +1,5 @@
 import React, {useEffect, useState, Component} from "react";
 import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tabs, Typography} from "@material-ui/core";
-import TopBar from "./childComponents/TopBar";
 import FilePreview from "./childComponents/FilePreview";
 
 function Preview() {

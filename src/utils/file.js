@@ -46,14 +46,14 @@ async function extractionRequest(file_id,body_data, clientInfo) {
 			console.log("submit to extraction successful");
 		} else if (response.status === 409){
 			// TODO handle error
-			console.log("submit to extraction error", extraction_response);
+			console.error("submit to extraction error", extraction_response);
 			console.log("submit for extraction after 30s");
 			await sleep(30000);
 			await extractionRequest_loop();
 		}
 		else {
 			// TODO handle error
-			console.log("submit to extraction error", extraction_response);
+			console.error("submit to extraction error", extraction_response);
 			extraction_response.status = "FAIL";
 		}
 		return extraction_response;
@@ -85,10 +85,26 @@ export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file
 	const extractions_status_url = `${clientInfo.hostname}/clowder/api/extractions/${file_id}/status`;
 	let authHeader = getHeader(clientInfo);
-	const extractions_response = await fetch(extractions_status_url, {method:"GET", headers:authHeader});
-	let extractions_data = await extractions_response.json();
-	//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
-	return extractions_data;
+	authheader.append("Accept", "*/*");
+	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:authHeader});
+	if (response.status === 200){
+		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
+		return await response.json();
+	} else if (response.status === 401) {
+		// TODO handle error
+		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		return {};
+	} else if (response.status === 500){
+		// TODO handle error
+		console.error("Extraction Status Error %s %s", extractions_status_url, response);
+		return {};
+	}
+	else {
+		// TODO handle error
+		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		return {};
+	}
+
 }
 
 export async function checkExtractionStatusLoop(file_id, extractor, interval, clientInfo){
@@ -101,35 +117,43 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval, cl
 		console.log(extractions_data);
 		const extractions_data_status = extractions_data["Status"];
 		const extractions_data_extractor = extractions_data[extractor];
-		const extractions_data_extractor_message = extractions_data_extractor.split(".");
+
 
 		if (extractions_data_status === "Done"){
 			if (extractions_data_extractor === "DONE"){
 				console.log("Extraction completed for file");
 				extraction_status = true;
 			}
-			else if (extractions_data_extractor_message[0] === "StatusMessage") {
-				// check the status message from extractor
-				const extractor_message = extractions_data_extractor_message[1].split(":");
-				if (extractor_message[0] === "error") {
-					console.error("Error in extraction %s", extractor);
+			else {
+				try {
+					const extractions_data_extractor_message = extractions_data_extractor.split(".");
+					if (extractions_data_extractor_message[0] === "StatusMessage") {
+						// check the status message from extractor
+						const extractor_message = extractions_data_extractor_message[1].split(":");
+						if (extractor_message[0] === "error") {
+							console.error("Error in extraction %s", extractor);
+							extraction_status = false;
+						}
+						else {
+							console.log("check extraction status after %s ms", interval);
+							await sleep(interval);
+							await status_check_loop();
+						}
+
+					}
+				} catch (e) {
+					console.error("Error in extraction %s %s", extractor, e);
 					extraction_status = false;
 				}
-				else {
-					console.log("check extraction status after %s ms", interval);
-					await sleep(interval);
-					await status_check_loop();
-				}
-
 			}
-
 		}
 		else if (extractions_data_status === "Processing") {
 			console.log("check extraction status after %s ms", interval);
 			await sleep(interval);
 			await status_check_loop();
 		}
-	}
+	} // status_check_loop end
+
 	if (file_id !== null){
 		await status_check_loop();
 		return extraction_status;
@@ -225,7 +249,8 @@ export async function getPreviewsRequest(file_id, clientInfo) {
 
 export async function getPreviewResources(preview, clientInfo) {
 	// get all file preview resources
-	const preview_config = {}
+	const preview_config = {};
+	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 	preview_config.url = `${clientInfo.hostname}${preview["pv_route"]}?superAdmin=true`;
 	preview_config.fileid = preview["pv_id"];
@@ -233,14 +258,26 @@ export async function getPreviewResources(preview, clientInfo) {
 	preview_config.fileType = preview["pv_contenttype"];
 
 	// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-	// /clowder/file vs clowder/api/file
-	// TODO Temp fix insert /api/
+	// clowder/files vs clowder/api/files
+	// Temp fix insert /api/
 	let pv_routes = preview["pv_route"];
 	if (!pv_routes.includes("/api/")) {
-		pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`;
+		try{
+			let routes = pv_routes.split("files/");
+			if (preview_config.url.includes("localhost")){
+				// if running in local, the pv_route will not have clowder path
+				pv_routes = routes[0] + 'clowder/api/files/' + routes[1];
+			}
+			else{
+				pv_routes = routes[0] + 'api/files/' + routes[1];
+			}
+		} catch (e) {
+			console.error("Incorrect Preview url %s", pv_routes);
+		}
 	}
 	preview_config.pv_route = pv_routes;
 	const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
 	preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	return preview_config;
 }
+
