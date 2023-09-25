@@ -59,7 +59,8 @@ export function createUploadExtract(file) {
 								const rct_extraction_submission = await submitForExtraction(extracted_txt_file.id, config.rct_extractor, clientInfo);
 								if (rct_extraction_submission === true){
 									// check every 5s for extraction status
-									const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, config.rct_extractor, 5000, clientInfo);
+									//const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, config.rct_extractor, 5000, clientInfo);
+									const rct_extraction_status = true;
 									if (rct_extraction_status === true){
 										console.log("RCT extraction status true");
 										dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, true));
