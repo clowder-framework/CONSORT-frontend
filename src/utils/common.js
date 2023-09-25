@@ -4,6 +4,13 @@ import config from "../app.config";
 // get client endpoint
 const getClient = {method:'GET', url:"http://localhost:3000/client"};
 
+export function getClientInfo(){
+	return axios.request(getClient).then(function (response) {
+		return response.data.headers
+	});
+}
+
+// TODO remove this method
 // get hostname
 export function getHostname(){
 	return axios.request(getClient).then(function (response) {
@@ -12,24 +19,18 @@ export function getHostname(){
 }
 
 // construct header
-export async function getHeader(accept , content_type) {
-	// const headers = new Headers({
-	// 	"X-API-Key": config.apikey,
-	// });
-	// return headers;
-	return axios.request(getClient).then(function (response) {
-		return new Headers({
-			"X-API-Key": response.data.headers.apikey.toString()
-		});
+export function getHeader(clientInfo) {
+	const headers = new Headers({
+		"X-API-Key": clientInfo.apikey
 	});
-
+	return headers;
 	// const headers = new Headers({
 	// 	"Authorization": cookies.get("Authorization"),
 	// });
 }
 
-export async function downloadResource(url) {
-	let authHeader = getHeader();
+export async function downloadResource(url, clientInfo) {
+	let authHeader = getHeader(clientInfo);
 	let response = await fetch(url, {
 		method: "GET",
 		mode: "cors",
