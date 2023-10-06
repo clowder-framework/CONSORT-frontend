@@ -7,6 +7,7 @@ import ESLintPlugin from "eslint-webpack-plugin";
 
 // eslint-disable-next-line no-console
 console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${process.env.CLOWDER_REMOTE_HOSTNAME}`);
+const PUBLIC_PATH = '/rctcheck';
 
 export default {
 	mode: "development",
@@ -27,7 +28,7 @@ export default {
 	target: "web",
 	output: {
 		path: path.resolve(__dirname, "dist"),
-		publicPath: "",
+		publicPath: PUBLIC_PATH,
 		filename: "bundle.js"
 	},
 	plugins: [
@@ -38,6 +39,7 @@ export default {
 				"CLOWDER_REMOTE_HOSTNAME": JSON.stringify(process.env.CLOWDER_REMOTE_HOSTNAME),
 				"APIKEY": JSON.stringify(process.env.APIKEY),
 				"KeycloakBaseURL": JSON.stringify(process.env.KeycloakBaseURL),
+				"PUBLIC_PATH": JSON.stringify(PUBLIC_PATH)
 			},
 			__DEV__: true
 		}),
