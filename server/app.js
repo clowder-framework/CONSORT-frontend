@@ -53,20 +53,20 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/', indexRouter);
-app.use('/', authRouter);
+app.use('/rctcheck', indexRouter);
+app.use('/rctcheck', authRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{
 // 	res.redirect('/');
 // });
 
-app.use('/home/',express.static('../dist'));
-app.use('/public',express.static('../dist/public'));
-app.use('/public', express.static('public'));
+app.use('rctcheck/home/',express.static('../dist'));
+app.use('rctcheck/public',express.static('../dist/public'));
+app.use('rctcheck/public', express.static('public'));
 
 
-app.get('/client', ensureLoggedIn, function (req, res, next){
+app.get('rctcheck/client', ensureLoggedIn, function (req, res, next){
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;
