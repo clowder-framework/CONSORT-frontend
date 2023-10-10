@@ -130,7 +130,7 @@ router.get('/login/federated/cilogon', passport.authenticate('oauth2'));
     automatically created and their Google account is linked.  When an existing
     user returns, they are signed in to their linked account.
 */
-router.get('/oauth2/redirect/cilogon', passport.authenticate('oauth2', {
+router.get('/oauth2/redirect', passport.authenticate('oauth2', {
 	successReturnToOrRedirect: '/',
 	failureRedirect: '/login'
 }));

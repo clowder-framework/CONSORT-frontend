@@ -53,20 +53,23 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/rctcheck', indexRouter);
-app.use('/rctcheck', authRouter);
+const baseUrl = process.env.BASE_URL;
+app.use(baseUrl, indexRouter);
+app.use(baseUrl, authRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{
 // 	res.redirect('/');
 // });
 
-app.use('rctcheck/home/',express.static('../dist'));
-app.use('rctcheck/public',express.static('../dist/public'));
-app.use('rctcheck/public', express.static('public'));
+// Serve static files from the public folder with the base URL
+app.use(baseUrl, express.static('public'));
+app.use('home',express.static('../dist'));
+app.use('public',express.static('../dist/public'));
+app.use('public', express.static('public'));
 
 
-app.get('rctcheck/client', ensureLoggedIn, function (req, res, next){
+app.get('client', ensureLoggedIn, function (req, res, next){
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;
