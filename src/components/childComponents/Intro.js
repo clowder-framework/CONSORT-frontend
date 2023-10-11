@@ -10,12 +10,9 @@ export default function Intro() {
 				</Typography>
 			</div>
 			<div className="minor-text">
-				<Typography variant="h6" palette="primary.light">
-					Check up your clinical trial quality before submission
+				<Typography variant="h6" palette="primary.light" >
+					Review your clinical trial quality before submission
 				</Typography>
-			</div>
-			<div className="icons">
-				<img className="spirit-consort-logo" src="../../public/spirit-consort-logo.png" alt="spirit-consort-logo-sm"/>
 			</div>
 
 		</div>

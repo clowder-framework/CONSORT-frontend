@@ -9,6 +9,7 @@ import TerserPlugin from "terser-webpack-plugin";
 
 // eslint-disable-next-line no-console
 console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${process.env.CLOWDER_REMOTE_HOSTNAME}`);
+const PUBLIC_PATH = '';
 
 export default {
 	mode: "production",
@@ -27,7 +28,7 @@ export default {
 	target: "web", // necessary per https://webpack.github.io/docs/testing.html#compile-and-test
 	output: {
 		path: path.resolve(__dirname, "dist"),
-		publicPath: "",
+		publicPath: PUBLIC_PATH,
 		filename: "[name].[chunkhash].js"
 	},
 	plugins: [
@@ -45,6 +46,7 @@ export default {
 				"CLOWDER_REMOTE_HOSTNAME": JSON.stringify(process.env.CLOWDER_REMOTE_HOSTNAME),
 				"APIKEY": JSON.stringify(process.env.APIKEY),
 				"KeycloakBaseURL": JSON.stringify(process.env.KeycloakBaseURL),
+				"PUBLIC_PATH": JSON.stringify(PUBLIC_PATH)
 			},
 			__DEV__: false
 		}),
@@ -55,7 +57,7 @@ export default {
 		// Generate HTML file that contains references to generated bundles. See here for how this works: https://github.com/ampedandwired/html-webpack-plugin#basic-usage
 		new HtmlWebpackPlugin({
 			template: "src/index.ejs",
-			favicon: "./src/public/favicon.ico",
+			favicon: "./src/public/assets/favicon.ico",
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,

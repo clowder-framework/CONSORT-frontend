@@ -1,10 +1,11 @@
-import {getHeader} from "./common";
+import {getHeader, getHostname} from "./common";
 import config from "../app.config";
 
+const hostname = await getHostname()
 
 export async function getDatasetsRequest(title, limit) {
 	// Clowder API to get dataset list
-	let url = `${config.hostname}/clowder/api/datasets&limit=${limit}`;
+	let url = `${hostname}/clowder/api/datasets&limit=${limit}`;
 	if (title) url = `${url}&title=${title}`;
 	const response = await fetch(url, {mode: "cors", headers: getHeader()});
 	if (response.status === 200) {
@@ -24,13 +25,13 @@ export async function getDatasetsRequest(title, limit) {
 }
 
 
-export async function createEmptyDatasetRequest(dataset_name, dataset_description) {
+export async function createEmptyDatasetRequest(dataset_name, dataset_description, clientInfo) {
 	// Clowder API call to create empty dataset
-	const url = `${config.hostname}/clowder/api/datasets/createempty`;
-	let authHeader = getHeader();
+	const url = `${clientInfo.hostname}/clowder/api/datasets/createempty`;
+	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
-	const body_data = {"name": dataset_name, "description": dataset_description, "space": [config.space]};
+	const body_data = {"name": dataset_name, "description": dataset_description, "space": config.space};
 	const body = JSON.stringify(body_data);
 	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {
@@ -40,22 +41,26 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 	}
 	else if (response.status === 401) {
 		// handle error
+		const responseJson = await response.json();
+		console.log(responseJson);
 		console.log("Creation of dataset failed");
 		return null;
 	} else {
 		// handle error
+		const responseJson = await response.json();
+		console.log(responseJson);
 		console.log("Creation of dataset failed");
 		return null;
 	}
 }
 
 
-export async function uploadFileToDatasetRequest(dataset_id, file) {
+export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 	// Clowder API call to upload file to dataset
-	const upload_to_dataset_url = `${config.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=${config.extract}`;
+	const upload_to_dataset_url = `${clientInfo.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=${config.extract}`;
 	let body = new FormData();
 	body.append("File" ,file);
-	let authHeader = getHeader();
+	let authHeader = getHeader(clientInfo);
 	let response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
@@ -77,19 +82,20 @@ export async function uploadFileToDatasetRequest(dataset_id, file) {
 }
 
 
-export async function listFilesInDatasetRequest(dataset_id) {
+export async function listFilesInDatasetRequest(dataset_id, clientInfo) {
 	// function to get a list of all files in clowder dataset
-	const listFiles_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
+	const listFiles_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
 	// get the list of files in dataset
-	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:getHeader(), mode: "cors"});
+	let authHeader = getHeader(clientInfo);
+	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:authHeader, mode: "cors"});
 	return listFiles_response.json();
 }
 
 
-export async function getFileInDataset(dataset_id, file_type, file_name=null){
+export async function getFileInDataset(dataset_id, file_type, file_name=null, clientInfo){
 	// function to check if a specific file is present in dataset and return the file
 	// filter files on file type and filename and select the first item in filtered array.
-	let fileObjects = await listFilesInDatasetRequest(dataset_id);
+	let fileObjects = await listFilesInDatasetRequest(dataset_id, clientInfo);
 	console.log("getFileInDataset", dataset_id, file_type, file_name);
 	console.log("fileObjects", fileObjects);
 	let files = [];
@@ -126,7 +132,7 @@ export async function downloadDataset(datasetId, filename = null) {
 	} else {
 		filename = `${datasetId}.zip`;
 	}
-	let endpoint = `${config.hostname}/clowder/api/datasets/${datasetId}/download`;
+	let endpoint = `${hostname}/clowder/api/datasets/${datasetId}/download`;
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: await getHeader()});
 
 	if (response.status === 200) {
@@ -151,10 +157,11 @@ export async function downloadDataset(datasetId, filename = null) {
 }
 
 
-export async function getDatasetMetadata(dataset_id) {
+export async function getDatasetMetadata(dataset_id, clientInfo) {
 	// returns the latest metadata for the dataset
-	const metadata_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld`;
-	const metadata_response = await fetch(metadata_url, {method:"GET", headers:getHeader(), mode: "cors"});
+	const metadata_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld`;
+	let authHeader = getHeader(clientInfo);
+	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
 	// return the first item of metadata list
 	return metadata_response_json[0];

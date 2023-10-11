@@ -1,8 +1,9 @@
 // dataset actions
 import config from "../app.config";
-import {getHeader} from "../utils/common";
+import {getHeader, getHostname} from "../utils/common";
 import {createEmptyDatasetRequest, getDatasetsRequest} from "../utils/dataset";
 
+const hostname = await getHostname()
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -46,7 +47,7 @@ export function receiveFilesInDataset(type, json) {
 
 
 export function fetchFilesInDataset(id) {
-	let url = `${config.hostname}/clowder/api/datasets/${id}/files?superAdmin=true`;
+	let url = `${hostname}/clowder/api/datasets/${id}/files?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -74,7 +75,7 @@ export function receiveDatasetAbout(type, json) {
 }
 
 export function fetchDatasetAbout(id) {
-	let url = `${config.hostname}/clowder/api/datasets/${id}?superAdmin=true`;
+	let url = `${hostname}/clowder/api/datasets/${id}?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -122,7 +123,7 @@ export function postDatasetMetadata(id, metadata) {
 export const DELETE_DATASET = "DELETE_DATASET";
 
 export function deleteDataset(datasetId) {
-	let url = `${config.hostname}/clowder/api/datasets/${datasetId}?superAdmin=true`;
+	let url = `${hostname}/clowder/api/datasets/${datasetId}?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
 		.then((response) => {

@@ -9,6 +9,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
@@ -30,7 +31,7 @@ export default function CreateAndUpload() {
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
-	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
+	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 
 
@@ -43,18 +44,18 @@ export default function CreateAndUpload() {
 	// useEffect on extractionStatus for preview generation
 	useEffect(async () => {
 		if (extractionStatus !== null && extractionStatus === true) {
+			const clientInfo = await getClientInfo();
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
 			const html_file_loop = async () => {
 				setLoadingText("Checking extraction status");
 				const html_output_filename = file_name + '_predicted' + '.html'
-				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename);
-
+				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename, clientInfo);
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					listFilePreviews(htmlFile.id);
-					const metadata = await getDatasetMetadata(dataset_id);
+					listFilePreviews(htmlFile.id, clientInfo);
+					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
 					datasetMetadata(metadata); // get only the latest metadata from list
 					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
@@ -115,10 +116,10 @@ export default function CreateAndUpload() {
 
 			<div className="radio-buttons-group-div">
 				<RadioGroup defaultValue="consort" name="radio-buttons-group" row>
-					<FormControlLabel value="consort" control={<Radio/>} label="Trial results"/>
-					<img className="consort-logo" src="../../public/consort-logo.png" alt="consort-logo-sm"/>
-					<FormControlLabel value="spirit" control={<Radio/>} label="Trial protocol"/>
-					<img className="spirit-logo" src="../../public/spirit-logo.png" alt="spirit-logo-sm"/>
+					<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
+					<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm"/>
+					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
+					<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm"/>
 				</RadioGroup>
 			</div>
 			<div className="preview-button align-right">
