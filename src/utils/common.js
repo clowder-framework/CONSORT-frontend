@@ -2,7 +2,7 @@ import axios from "axios"
 import config from "../app.config";
 
 // get client endpoint
-const getClient = {method:'GET', url:"http://localhost:3000/client"};
+const getClient = {method:'GET', url:"/client"};
 
 export function getClientInfo(){
 	return axios.request(getClient).then(function (response) {
