@@ -53,9 +53,9 @@ app.use(function(req, res, next) {
   next();
 });
 
-const baseUrl = process.env.BASE_URL;
-app.use(baseUrl, indexRouter);
-app.use(baseUrl, authRouter);
+//const baseUrl = process.env.BASE_URL;
+app.use('/', indexRouter);
+app.use('/', authRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{
@@ -63,13 +63,13 @@ app.use(baseUrl, authRouter);
 // });
 
 // Serve static files from the public folder with the base URL
-app.use(baseUrl, express.static('public'));
-app.use('home',express.static('../dist'));
-app.use('public',express.static('../dist/public'));
-app.use('public', express.static('public'));
+//app.use(baseUrl, express.static('public'));
+app.use('/home',express.static('../dist'));
+app.use('/public',express.static('../dist/public'));
+app.use('/public', express.static('public'));
 
 
-app.get('client', ensureLoggedIn, function (req, res, next){
+app.get('/client', function (req, res, next){
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;

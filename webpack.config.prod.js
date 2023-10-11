@@ -9,7 +9,7 @@ import TerserPlugin from "terser-webpack-plugin";
 
 // eslint-disable-next-line no-console
 console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${process.env.CLOWDER_REMOTE_HOSTNAME}`);
-const PUBLIC_PATH = '/rctcheck';
+const PUBLIC_PATH = '';
 
 export default {
 	mode: "production",
