@@ -11,7 +11,7 @@ const baseUrl = process.env.BASE_URL;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	if (!req.user) { return res.render('login', {baseUrl: baseUrl}); }
+	if (!req.user) { return res.render('home'); }
 	next();
 }, function(req, res, next) {
 	res.render('home', { user: req.user });
