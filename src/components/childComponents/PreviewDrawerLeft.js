@@ -27,6 +27,7 @@ export default function PreviewDrawerLeft(props) {
 	const [itemsMissed, setItemsMissed] = useState('');
 	const [checklist, setChecklist] = useState([]);
 	const [openSections, setOpenSections] = useState([]);
+	const [reportFileID, setReportFileID] = useState('');
 
 	useEffect(() => {
 		if (metadata !== undefined && metadata.content !== undefined){
@@ -35,6 +36,7 @@ export default function PreviewDrawerLeft(props) {
 			setExtractor(content["extractor"]);
 			setItemsMissed(content["items_missed"]);
 			setChecklist(content["checklist"]);
+			setReportFileID(content["extracted_files"][1]["file_id"])
 		}
 	},[]);
 
@@ -58,7 +60,7 @@ export default function PreviewDrawerLeft(props) {
 
 
 	const onDownload = () => {
-		downloadFile(fileId, "results.html").then(r => console.log(r));
+		downloadFile(reportFileID, "results.pdf").then(r => console.log(r));
 	}
 
 	return (
