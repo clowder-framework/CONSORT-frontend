@@ -158,13 +158,22 @@ export async function downloadDataset(datasetId, filename = null) {
 
 
 export async function getDatasetMetadata(dataset_id, clientInfo) {
-	// returns the latest metadata for the dataset
+	// returns the metadata for the dataset
 	const metadata_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld`;
 	let authHeader = getHeader(clientInfo);
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
-	// return the first item of metadata list
-	return metadata_response_json[0];
+	return metadata_response_json;
+}
+
+
+export async function getDatasetExtractorMetadata(dataset_id, extractor_name, clientInfo){
+	// returns the metadata for the dataset for extractors specified in config
+	const metadata_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`;
+	let authHeader = getHeader(clientInfo);
+	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
+	let metadata_response_json = await metadata_response.json();
+	return metadata_response_json;
 }
 
 
