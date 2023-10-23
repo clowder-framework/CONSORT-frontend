@@ -13,6 +13,6 @@ config["extract"] = false;
 // extractor name for RCT Transparency extractor. Triggers on text and runs the consort model on the text file
 config["rct_extractor"] = "ncsa.rctTransparencyExtractor";
 // extractor name for pdf2text extractor based on Allen AI tool. Triggers on pdf and converts pdf to xml, json and text files
-config["pdf_extractor"] = "extractors-pdf2text";
+config["pdf_extractor"] = "pdf2text-extractor";
 
 export default config;
