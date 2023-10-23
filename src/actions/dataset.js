@@ -101,6 +101,8 @@ export function setDatasetMetadata(type, json) {
 		});
 	};
 }
+
+
 export function postDatasetMetadata(id, metadata) {
 	let url = `${config.hostname}/clowder/api/datasets/${id}/metadata.jsonld`;
 	let authHeader = getHeader();

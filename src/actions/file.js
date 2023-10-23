@@ -112,6 +112,7 @@ export function receiveFilePreviews(type, json) {
 export function fetchFilePreviews(id, clientInfo) {
 	return async function fetchFilePreviewsThunk(dispatch) {
 		const previews_list = await getPreviewsRequest(id, clientInfo) // list of previews
+		console.log("preview", previews_list);
 		// [{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]
 		if (previews_list !== undefined && previews_list !== null) {
 			dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, previews_list));
