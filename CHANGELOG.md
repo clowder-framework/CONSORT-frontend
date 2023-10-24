@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Render metadata in Html file preview. [#39](https://github.com/clowder-framework/CONSORT-frontend/issues/39)
 - Express server calling react client. [#49](https://github.com/clowder-framework/CONSORT-frontend/issues/49)
 - Dockerize frontend. [#51](https://github.com/clowder-framework/CONSORT-frontend/issues/51)
+- Get correct metadata and render pdf or html file. [#59](https://github.com/clowder-framework/CONSORT-frontend/issues/59)
 
 ### Changed
 - Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)

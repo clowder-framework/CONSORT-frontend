@@ -54,9 +54,21 @@ export default function CreateAndUpload() {
 				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename, clientInfo);
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					listFilePreviews(htmlFile.id, clientInfo);
 					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
-					datasetMetadata(metadata); // get only the latest metadata from list
+
+					if (metadata.length > 1){
+						// get pdf preview
+						const pdf_extractor_metadata = metadata[1]["content"][0]
+						const pdf_extractor_extracted_files = pdf_extractor_metadata["extracted_files"]
+						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"]
+						listFilePreviews(pdf_input_file, clientInfo);
+
+					}
+					else{
+						listFilePreviews(htmlFile.id, clientInfo);
+					}
+					datasetMetadata(metadata);
+
 					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
 					setSpinner(false); // stop display of spinner

@@ -30,8 +30,8 @@ export default function PreviewDrawerLeft(props) {
 	const [reportFileID, setReportFileID] = useState('');
 
 	useEffect(() => {
-		if (metadata !== undefined && metadata.content !== undefined){
-			let content = metadata["content"][0];
+		if (metadata !== undefined){
+			let content = metadata;
 			setContent(content);
 			setExtractor(content["extractor"]);
 			setItemsMissed(content["items_missed"]);
