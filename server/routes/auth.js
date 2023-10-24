@@ -131,7 +131,7 @@ router.get('/login/federated/cilogon', passport.authenticate('oauth2'));
     user returns, they are signed in to their linked account.
 */
 router.get('/oauth2/redirect/cilogon', passport.authenticate('oauth2', {
-	successReturnToOrRedirect: '/',
+	successReturnToOrRedirect: '/home',
 	failureRedirect: '/login'
 }));
 

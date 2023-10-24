@@ -82,12 +82,12 @@ app.get('/client', function (req, res, next){
 	res.json(options); // Use this in src/utils/common in getHeader() method.
 });
 
-// app.get('/home', ensureLoggedIn, function (req, res, next){
-// 	// load build directory only if logged in
-// 	app.use('/home/',express.static('../dist'));
-// 	app.use('/public',express.static('../dist/public'));
-// 	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
-// });
+app.get('/home', ensureLoggedIn, function (req, res, next){
+	// load build directory only if logged in
+	//app.use('/home/',express.static('../dist'));
+	//app.use('/public',express.static('../dist/public'));
+	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
