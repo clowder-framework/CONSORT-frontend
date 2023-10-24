@@ -39,7 +39,6 @@ async function extractionRequest(file_id,body_data, clientInfo) {
 		});
 		extraction_response = await response.json(); // JSONObj {"status":"OK","job_id":"string"}
 		//const extraction_response_text = await response.text();
-		console.log(extraction_response);
 		//console.log(extraction_response_text);
 		if (response.status === 200) {
 			// return {"status":"OK","job_id":"string"}
@@ -195,7 +194,7 @@ export async function uploadFile(formData, selectedDatasetId) {
 }
 
 
-export async function downloadFile(fileId, filename = null) {
+export async function downloadAndSaveFile(fileId, filename = null) {
 
 	if (!filename) {
 		filename = `${fileId}.zip`;
@@ -223,7 +222,27 @@ export async function downloadFile(fileId, filename = null) {
 	} else {
 		console.log(response.json());
 	}
+}
 
+
+export async function getFileBlob(fileId) {
+	// Get fileBlob
+	const clientInfo = await getClientInfo();
+	let endpoint = `${clientInfo.hostname}/clowder/api/files/${fileId}/blob?superAdmin=true`;
+	let authHeader = getHeader(clientInfo);
+	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
+
+	if (response.status === 200) {
+		let blob = await response.blob();
+		return blob;
+	} else if (response.status === 401) {
+		// TODO
+		console.log(response.json());
+		return null;
+	} else {
+		console.log(response.json());
+		return null;
+	}
 }
 
 
