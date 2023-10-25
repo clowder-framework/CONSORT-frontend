@@ -10,14 +10,22 @@
 </head>
 <body>
 <nav class="nav">
-    <a class="navbar-brand" href="https://consort.clowderframework.org/clowder/">
-        <img src="assets/logo.png">
-    </a>
-    <div class="row align-right">
-        <a role="button" class="white-background-button" href="https://consort.clowderframework.org/clowder/">FAQ</a>
-        <a role="button" class="white-background-button" href="https://consort.clowderframework.org/clowder/">Contact Us</a>
+    <div class="row">
+        <a class="navbar-brand" href="https://consort.clowderframework.org/clowder/">
+            <img src="assets/logo.png">
+        </a>
+        <p class="user"><%= user.name || user.username %></p>
+        <form action="logout" method="post">
+            <button class="logout" type="submit">Sign out</button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        </form>
+        <div class="row align-right">
+            <a role="button" class="white-background-button" href="https://consort.clowderframework.org/clowder/">FAQ</a>
+            <a role="button" class="white-background-button" href="https://consort.clowderframework.org/clowder/">Contact Us</a>
+        </div>
     </div>
 </nav>
+
 <section class="home">
     <header>
         <h1>Consort</h1>
