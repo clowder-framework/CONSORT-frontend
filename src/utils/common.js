@@ -1,6 +1,27 @@
 import axios from "axios"
 import config from "../app.config";
 
+// get user endpoint
+const getUserMethod = {method:'GET', url:"/user"};
+
+export function getUserInfo(){
+	return axios.request(getUserMethod).then(function (response) {
+		return response.data.userinfo
+	});
+}
+
+// logout
+export const onTapLogout = async () => {
+	const userinfo = await getUserInfo();
+	let bodyFormData = new FormData();
+	bodyFormData.append('_csrf', userinfo.token);
+	await axios.post('/logout', bodyFormData)
+		.then(res => {
+			console.log('response ', res);
+		})
+}
+
+
 // get client endpoint
 const getClient = {method:'GET', url:"/client"};
 

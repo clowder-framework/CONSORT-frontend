@@ -82,6 +82,17 @@ app.get('/client', function (req, res, next){
 	res.json(options); // Use this in src/utils/common in getHeader() method.
 });
 
+app.get('/user', function (req, res, next){
+	// get user session token
+	var options = {
+		userinfo:{
+			'username': req.user.name,
+			'token': req.csrfToken()
+		}
+	}
+	res.json(options); // Use this in src/utils/common
+});
+
 app.get('/home', ensureLoggedIn, function (req, res, next){
 	// load build directory only if logged in
 	//app.use('/home/',express.static('../dist'));

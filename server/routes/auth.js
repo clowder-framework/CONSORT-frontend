@@ -149,10 +149,12 @@ router.get('/oauth2/redirect/cilogon', passport.authenticate('oauth2', {
  * This route logs the user out.
  */
 router.post('/logout', function(req, res, next) {
-  req.logout(function(err) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
+    req.logout(function(err) {
+	    if (err) { return next(err); }
+	    res.redirect('/');
+    });
+	res.clearCookie('connect.sid');
+	//res.send({isAuth: req.isAuthenticated(), user: req.user})
 });
 
 module.exports = router;
