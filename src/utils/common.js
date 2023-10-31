@@ -15,7 +15,7 @@ export const onTapLogout = async () => {
 	//const userinfo = await getUserInfo();
 	//let bodyFormData = new FormData();
 	//bodyFormData.append('_csrf', userinfo.token);
-	await axios.post('/logout')
+	await axios.post('/logout', {}, {withCredentials:true})
 		.then(res => {
 			console.log('response ', res);
 		})
