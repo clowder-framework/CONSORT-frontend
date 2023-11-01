@@ -29,26 +29,13 @@ export default function FilePreview() {
 	useEffect( async ()=> {
 		if (filePreviews !== undefined && filePreviews.length > 0) {
 			const previewsTemp = [];
-			// get either pdf preview / html preview
-			if (filePreviews.length === 1){
-				// only html preview
-				filePreviews[0].map(async (preview) => {
-					const clientInfo = await getClientInfo()
-					const preview_config = await getPreviewResources(preview, clientInfo);
-					previewsTemp.push(preview_config);
-					setPreviews(previewsTemp); // set previews
-				});
-			}
-			else {
-				// both pdf and html preview. Get pdf preview
-				filePreviews[1].map(async (preview) => {
-					const clientInfo = await getClientInfo()
-					const preview_config = await getPreviewResources(preview, clientInfo);
-					previewsTemp.push(preview_config);
-					setPreviews(previewsTemp); // set previews
-				});
-			}
-
+			// only html preview
+			filePreviews[0].map(async (preview) => {
+				const clientInfo = await getClientInfo()
+				const preview_config = await getPreviewResources(preview, clientInfo);
+				previewsTemp.push(preview_config);
+				setPreviews(previewsTemp); // set previews
+			});
 		}
 	}, [filePreviews]);
 
