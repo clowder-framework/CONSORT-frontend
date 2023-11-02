@@ -149,7 +149,6 @@ router.get('/oauth2/redirect/cilogon', passport.authenticate('oauth2', {
  * This route logs the user out.
  */
 router.post('/logout', function(req, res, next) {
-    //req.data= {"_csrf": res.locals._csrf};
 	req.logout(function(err) {
 	    if (err) { return next(err); }
 	    res.redirect('/');
