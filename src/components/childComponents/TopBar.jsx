@@ -1,7 +1,6 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, Link, Toolbar, Typography,} from '@material-ui/core';
-import {onTapLogout} from "../../utils/common";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -40,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TopBar() {
 	const classes = useStyles();
-	//const userInfo = await getUserInfo();
 	return (
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.appBar}>
