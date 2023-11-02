@@ -55,9 +55,6 @@ export default function TopBar() {
 						<Link href="/" target="_blank" className={classes.toolBarlink} sx={{marginRight: "100px"}}>
 							Help</Link>
 					</Typography>
-					<Typography className={classes.toolBarItem} >
-						<button onClick={onTapLogout}>Logout</button>
-					</Typography>
 					<img className={classes.logo} align="right" src="../../public/assets/clowder-logo-sm.svg"
 						 alt="clowder-logo-sm"/>
 				</Toolbar>
