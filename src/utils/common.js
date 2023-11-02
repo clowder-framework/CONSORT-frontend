@@ -31,7 +31,6 @@ export function getClientInfo(){
 	});
 }
 
-// TODO remove this method
 // get hostname
 export function getHostname(){
 	return axios.request(getClient).then(function (response) {
@@ -45,9 +44,6 @@ export function getHeader(clientInfo) {
 		"X-API-Key": clientInfo.apikey
 	});
 	return headers;
-	// const headers = new Headers({
-	// 	"Authorization": cookies.get("Authorization"),
-	// });
 }
 
 export async function downloadResource(url, clientInfo) {
