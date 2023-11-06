@@ -21,7 +21,7 @@ export async function submitForExtraction(file_id, extractor_name, clientInfo){
 
 async function extractionRequest(file_id,body_data, clientInfo) {
 	// Clowder API call to submit a file for extraction
-	const extractions_url = `${clientInfo.hostname}/clowder/api/files/${file_id}/extractions`;
+	const extractions_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/extractions`;
 	const body = JSON.stringify(body_data);
 	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
@@ -83,7 +83,7 @@ export async function fetchFileMetadata(id) {
 
 export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file
-	const extractions_status_url = `${clientInfo.hostname}/clowder/api/extractions/${file_id}/status`;
+	const extractions_status_url = `${clientInfo.hostname}${clientInfo.prefix}/api/extractions/${file_id}/status`;
 	let authHeader = getHeader(clientInfo);
 	authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:authHeader});
@@ -201,7 +201,7 @@ export async function downloadFile(fileId, filename = null) {
 		filename = `${fileId}.zip`;
 	}
 	const clientInfo = await getClientInfo();
-	let endpoint = `${clientInfo.hostname}/clowder/api/files/${fileId}/blob?superAdmin=true`;
+	let endpoint = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${fileId}/blob?superAdmin=true`;
 	let authHeader = getHeader(clientInfo);
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
 
@@ -228,7 +228,7 @@ export async function downloadFile(fileId, filename = null) {
 
 
 export async function getPreviewsRequest(file_id, clientInfo) {
-	const previews_url = `${clientInfo.hostname}/clowder/api/files/${file_id}/getPreviews?superAdmin=true`;
+	const previews_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/getPreviews?superAdmin=true`;
 	let authHeader = getHeader(clientInfo)
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:authHeader});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
@@ -252,7 +252,7 @@ export async function getPreviewResources(preview, clientInfo) {
 	const preview_config = {};
 	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
-	preview_config.url = `${clientInfo.hostname}${preview["pv_route"]}?superAdmin=true`;
+	preview_config.url = `${clientInfo.hostname}${clientInfo.prefix}${preview["pv_route"]}?superAdmin=true`;
 	preview_config.fileid = preview["pv_id"];
 	preview_config.previewer = `/public${preview["p_path"]}/`;
 	preview_config.fileType = preview["pv_contenttype"];
@@ -264,19 +264,14 @@ export async function getPreviewResources(preview, clientInfo) {
 	if (!pv_routes.includes("/api/")) {
 		try{
 			let routes = pv_routes.split("files/");
-			if (preview_config.url.includes("localhost")){
-				// if running in local, the pv_route will not have clowder path
-				pv_routes = routes[0] + 'clowder/api/files/' + routes[1];
-			}
-			else{
-				pv_routes = routes[0] + 'api/files/' + routes[1];
-			}
+			// add api endpoint in url
+			pv_routes = routes[0] + 'api/files/' + routes[1];
 		} catch (e) {
 			console.error("Incorrect Preview url %s", pv_routes);
 		}
 	}
 	preview_config.pv_route = pv_routes;
-	const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
+	const resourceURL = `${clientInfo.hostname}${clientInfo.prefix}${pv_routes}?superAdmin=true`;
 	preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	return preview_config;
 }
