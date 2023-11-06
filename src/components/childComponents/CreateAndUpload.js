@@ -15,11 +15,15 @@ import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {fetchFilePreviews} from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
+import config from "../../app.config";
 
 
 export default function CreateAndUpload() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	const pdfExtractor = config.pdf_extractor;
+	const rctExtractor = config.rct_extractor;
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
@@ -55,14 +59,15 @@ export default function CreateAndUpload() {
 				if (htmlFile !== null && typeof htmlFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
-
-					if (metadata.length > 1){
+					// get the metadata content list
+					const contentList = metadata.map(item => item.content[0]);
+					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
+					const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
+					if (pdfExtractorContent){
 						// get pdf preview
-						const pdf_extractor_metadata = metadata[1]["content"][0]
-						const pdf_extractor_extracted_files = pdf_extractor_metadata["extracted_files"]
+						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"]
 						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"]
 						listFilePreviews(pdf_input_file, clientInfo);
-
 					}
 					else{
 						listFilePreviews(htmlFile.id, clientInfo);
