@@ -54,11 +54,20 @@ var db = require('../db');
 //   });
 // }));
 
+const CIlogon_idp = [
+	{"EntityID":"https://idp.ncsa.illinois.edu/idp/shibboleth","OrganizationName":"National Center for Supercomputing Applications","DisplayName":"National Center for Supercomputing Applications","RandS":true},
+	{"EntityID":"urn:mace:incommon:uiuc.edu","OrganizationName":"University of Illinois at Urbana-Champaign","DisplayName":"University of Illinois Urbana-Champaign","RandS":true},
+	{"EntityID":"urn:mace:incommon:unc.edu","OrganizationName":"University of North Carolina at Chapel Hill","DisplayName":"University of North Carolina at Chapel Hill","RandS":true},
+	{"EntityID":"https://idp.uark.edu/idp/shibboleth","OrganizationName":"University of Arkansas","DisplayName":"University of Arkansas","RandS":true},
+	{"EntityID":"https://idp.login.iu.edu/idp/shibboleth","OrganizationName":"Indiana University","DisplayName":"Indiana University","RandS":true}
+]
+const encodedEntityIDs = CIlogon_idp.map(item => encodeURIComponent(item.EntityID));
+const concatenatedEntityIDs = encodedEntityIDs.join(',');
 
 // authenticate use CILogon
 passport.use(new OAuth2Strategy({
 	state: true,
-	authorizationURL: 'https://cilogon.org/authorize',
+	authorizationURL: 'https://cilogon.org/authorize?idphint='+concatenatedEntityIDs,
 	tokenURL: 'https://cilogon.org/oauth2/token',
 	clientID: process.env.CILOGON_CLIENT_ID,
 	clientSecret: process.env.CILOGON_CLIENT_SECRET,
@@ -131,7 +140,7 @@ router.get('/login/federated/cilogon', passport.authenticate('oauth2'));
     user returns, they are signed in to their linked account.
 */
 router.get('/oauth2/redirect/cilogon', passport.authenticate('oauth2', {
-	successReturnToOrRedirect: '/',
+	successReturnToOrRedirect: '/home',
 	failureRedirect: '/login'
 }));
 
@@ -140,10 +149,12 @@ router.get('/oauth2/redirect/cilogon', passport.authenticate('oauth2', {
  * This route logs the user out.
  */
 router.post('/logout', function(req, res, next) {
-  req.logout(function(err) {
-    if (err) { return next(err); }
-    res.redirect('/');
-  });
+	req.logout(function(err) {
+	    if (err) { return next(err); }
+	    res.redirect('/');
+    });
+	res.clearCookie('connect.sid');
+	//res.send({isAuth: req.isAuthenticated(), user: req.user})
 });
 
 module.exports = router;

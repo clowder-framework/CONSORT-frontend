@@ -18,11 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Express server calling react client. [#49](https://github.com/clowder-framework/CONSORT-frontend/issues/49)
 - Dockerize frontend. [#51](https://github.com/clowder-framework/CONSORT-frontend/issues/51)
 - Get correct metadata and render pdf or html file. [#59](https://github.com/clowder-framework/CONSORT-frontend/issues/59)
+- CLOWDER_PREFIX environment variable for prefix url. [#65](https://github.com/clowder-framework/CONSORT-frontend/issues/65)
 
 ### Changed
 - Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
 - PreviewDrawer component displays number of items missed per section. [#43](https://github.com/clowder-framework/CONSORT-frontend/issues/43)
 - Pdf report file is downloaded after preview generated. [#47](https://github.com/clowder-framework/CONSORT-frontend/issues/47)
+- CILogon with specific IDP entities. [#50](https://github.com/clowder-framework/CONSORT-frontend/issues/50)
 
 ### Fixed
 - Display of error messages on uploading files in dropzone. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)

@@ -1,11 +1,11 @@
-import {getHeader, getHostname} from "./common";
+import {getClientInfo, getHeader, getHostname} from "./common";
 import config from "../app.config";
 
-const hostname = await getHostname()
+const clientInfo = await getClientInfo();
 
 export async function getDatasetsRequest(title, limit) {
 	// Clowder API to get dataset list
-	let url = `${hostname}/clowder/api/datasets&limit=${limit}`;
+	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets&limit=${limit}`;
 	if (title) url = `${url}&title=${title}`;
 	const response = await fetch(url, {mode: "cors", headers: getHeader()});
 	if (response.status === 200) {
@@ -27,7 +27,7 @@ export async function getDatasetsRequest(title, limit) {
 
 export async function createEmptyDatasetRequest(dataset_name, dataset_description, clientInfo) {
 	// Clowder API call to create empty dataset
-	const url = `${clientInfo.hostname}/clowder/api/datasets/createempty`;
+	const url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/createempty`;
 	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
@@ -57,7 +57,7 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 
 export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 	// Clowder API call to upload file to dataset
-	const upload_to_dataset_url = `${clientInfo.hostname}/clowder/api/uploadToDataset/${dataset_id}?extract=${config.extract}`;
+	const upload_to_dataset_url = `${clientInfo.hostname}${clientInfo.prefix}/api/uploadToDataset/${dataset_id}?extract=${config.extract}`;
 	let body = new FormData();
 	body.append("File" ,file);
 	let authHeader = getHeader(clientInfo);
@@ -84,7 +84,7 @@ export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 
 export async function listFilesInDatasetRequest(dataset_id, clientInfo) {
 	// function to get a list of all files in clowder dataset
-	const listFiles_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/listFiles`;
+	const listFiles_url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${dataset_id}/listFiles`;
 	// get the list of files in dataset
 	let authHeader = getHeader(clientInfo);
 	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:authHeader, mode: "cors"});
@@ -132,7 +132,7 @@ export async function downloadDataset(datasetId, filename = null) {
 	} else {
 		filename = `${datasetId}.zip`;
 	}
-	let endpoint = `${hostname}/clowder/api/datasets/${datasetId}/download`;
+	let endpoint = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${datasetId}/download`;
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: await getHeader()});
 
 	if (response.status === 200) {
@@ -159,7 +159,7 @@ export async function downloadDataset(datasetId, filename = null) {
 
 export async function getDatasetMetadata(dataset_id, clientInfo) {
 	// returns the metadata for the dataset
-	const metadata_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld`;
+	const metadata_url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${dataset_id}/metadata.jsonld`;
 	let authHeader = getHeader(clientInfo);
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
@@ -169,7 +169,7 @@ export async function getDatasetMetadata(dataset_id, clientInfo) {
 
 export async function getDatasetExtractorMetadata(dataset_id, extractor_name, clientInfo){
 	// returns the metadata for the dataset for extractors specified in config
-	const metadata_url = `${clientInfo.hostname}/clowder/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`;
+	const metadata_url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`;
 	let authHeader = getHeader(clientInfo);
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
@@ -179,7 +179,7 @@ export async function getDatasetExtractorMetadata(dataset_id, extractor_name, cl
 
 export async function setDatasetMetadata(dataset_id, content) {
 	// function to set the user defined metadata for dataset
-	const metadata_url = `${config.hostname}/clowder/api/datasets/${dataset_id}/usermetadatajson`;
+	const metadata_url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${dataset_id}/usermetadatajson`;
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
