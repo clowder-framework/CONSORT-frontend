@@ -225,27 +225,6 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 }
 
 
-export async function getFileBlob(fileId) {
-	// Get fileBlob
-	const clientInfo = await getClientInfo();
-	let endpoint = `${clientInfo.hostname}/clowder/api/files/${fileId}/blob?superAdmin=true`;
-	let authHeader = getHeader(clientInfo);
-	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
-
-	if (response.status === 200) {
-		let blob = await response.blob();
-		return blob;
-	} else if (response.status === 401) {
-		// TODO
-		console.log(response.json());
-		return null;
-	} else {
-		console.log(response.json());
-		return null;
-	}
-}
-
-
 export async function getPreviewsRequest(file_id, clientInfo) {
 	const previews_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/getPreviews?superAdmin=true`;
 	let authHeader = getHeader(clientInfo)
