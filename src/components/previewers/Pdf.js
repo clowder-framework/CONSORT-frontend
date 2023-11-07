@@ -35,27 +35,28 @@ export default function Pdf(props) {
 	}
 
 	return (
-		<div>
-			<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
-				<Page pageNumber={pageNumber} />
-			</Document>
-			<p>
-				Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
-			</p>
-			<button
-				type="button"
-				disabled={pageNumber <= 1}
-				onClick={previousPage}
-			>
-				Previous
-			</button>
-			<button
-				type="button"
-				disabled={pageNumber >= numPages}
-				onClick={nextPage}
-			>
-				Next
-			</button>
-		</div>
+		<iframe id={fileId} src={pdfSrc} style={{"width":"100%", "height":"1000px"}} />
+		// <div>
+		// 	<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
+		// 		<Page pageNumber={pageNumber} />
+		// 	</Document>
+		// 	<p>
+		// 		Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
+		// 	</p>
+		// 	<button
+		// 		type="button"
+		// 		disabled={pageNumber <= 1}
+		// 		onClick={previousPage}
+		// 	>
+		// 		Previous
+		// 	</button>
+		// 	<button
+		// 		type="button"
+		// 		disabled={pageNumber >= numPages}
+		// 		onClick={nextPage}
+		// 	>
+		// 		Next
+		// 	</button>
+		// </div>
 	);
 }
