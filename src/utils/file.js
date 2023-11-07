@@ -218,9 +218,9 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 		}
 	} else if (response.status === 401) {
 		// TODO
-		console.log(response.json());
+		console.error(response.json());
 	} else {
-		console.log(response.json());
+		console.error(response.json());
 	}
 }
 
