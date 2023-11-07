@@ -7,13 +7,9 @@ function Preview() {
 		<>
 			<div className="outer-container">
 				<div className="inner-container">
-					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "2rem", justifyContent:"flex-start" }}>
-						<Grid item xs={10} >
-							<Box className="filePreview">
-								<FilePreview />
-							</Box>
-						</Grid>
-					</Grid>
+					<Box className="filePreview">
+						<FilePreview />
+					</Box>
 				</div>
 			</div>
 		</>
