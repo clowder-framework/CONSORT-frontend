@@ -1,13 +1,13 @@
 // Preview Pdf file
 import React, { useState } from "react";
 //import pdfjsLib;
-import { pdfjs } from 'react-pdf';
-import { Document, Page } from 'react-pdf';
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-	'pdfjs-dist/build/pdf.worker.min.js',
-	import.meta.url,
-).toString();
+// import { pdfjs } from 'react-pdf';
+// import { Document, Page } from 'react-pdf';
+//
+// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+// 	'pdfjs-dist/build/pdf.worker.min.js',
+// 	import.meta.url,
+// ).toString();
 
 export default function Pdf(props) {
 	const {fileId, pdfSrc, ...other} = props;
