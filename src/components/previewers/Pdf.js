@@ -1,7 +1,7 @@
 // Preview Pdf file
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.js";
 
 
 export default function Pdf(props) {
