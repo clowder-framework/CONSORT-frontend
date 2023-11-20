@@ -11,7 +11,7 @@
 		"preinstall": "node tools/nodeVersionCheck.js",
 		"start-message": "babel-node tools/startMessage.js",
 		"prestart": "npm-run-all --parallel start-message",
-		"start": "npm run build && (cp -r src/public  dist/public ) && (cd server && npm start)",
+		"start": "npm-run-all --parallel open:src",
 		"open:src": "babel-node tools/srcServer.js",
 		"open:dist": "babel-node tools/distServer.js",
 		"lint:watch": "npm run lint --watch",
