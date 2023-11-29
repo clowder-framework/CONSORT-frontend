@@ -1,81 +1,94 @@
-// Preview Pdf file
+// Preview Pdf file using react-pdf package
 import React, { useEffect, useRef, useState } from "react";
-// import {
-// 	DocumentContext,
-// 	DocumentWrapper,
-// 	Overlay,
-// 	PageWrapper,
-// 	RENDER_TYPE,
-// 	ScrollContext,
-// } from '@allenai/pdf-components';
-
-
 import { pdfjs , Document, Page } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import samplePDF from "../../../ard.pdf"
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function Pdf(props) {
 	const {fileId, pdfSrc, ...other} = props;
 
-	// Using react-pdf
 	const canvas = useRef();
 	const [isRendered, setIsRendered] = useState();
 	const [numPages, setNumPages] = useState(null);
+	const [pageNumber, setPageNumber] = useState(1);
 	const [scale, setScale] = useState(1);
 
 	function onDocumentLoadSuccess({ numPages }) {
 		setNumPages(numPages);
+		setPageNumber(1);
 	}
 
 	function onRenderSuccess() {
 		setIsRendered(true);
 	}
 
-	function degreesToRadians(degrees) {
-		return degrees * (Math.PI / 180);
+	function changePage(offset) {
+		setPageNumber(prevPageNumber => prevPageNumber + offset);
 	}
+
+	function previousPage() {
+		changePage(-1);
+	}
+
+	function nextPage() {
+		changePage(1);
+	}
+
 
 	useEffect(() => {
 		if (!isRendered || !canvas.current) {
 			return;
 		}
-
 		let context = canvas.current.getContext('2d');
 		let { width, height } = canvas.current;
+		//console.log(context, width, height);
 
+		// context highlights
+		// context.globalCompositeOperation = 'source-over';  // change composition operation for drawing new shapes
+		// context.textAlign = 'center';
+		// context.font = 'bold 50px sans-serif';
+		// context.fillStyle = 'rgb(255, 99, 71)';
+		// context.fillText('FILL TEXT', 20, 50, 500);
+		// context.rect(10, 10, 150, 100);
+		// context.fill();
+
+		//context.restore();
 		context.save();
-		// testing canvas draw
-		const angle = 45;
-		context.translate(width / 2, height / 2);
-		context.rotate(degreesToRadians(angle));
-		context.globalCompositeOperation = 'multiply';
-		context.textAlign = 'center';
-		context.font = '30px sans-serif';
-		context.fillStyle = 'rgba(0, 0, 0, .25)';
-		context.fillText('Acme Inc', 0, 0);
-		//left: calc(var(--scale-factor)*41.00px); top: calc(var(--scale-factor)*505.72px); font-size: calc(var(--scale-factor)*9.00px); font-family: sans-serif; transform: scaleX(1.01551);
-
-		context.restore();
 	}, [isRendered]);
 
 	return (
-		<Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess}>
-			{Array.from(
-				new Array(numPages),
-				(el, index) => (
-					<Page
-						key={`page_${index + 1}`}
-						pageNumber={index + 1}
-						canvasRef={canvas}
-						onRenderSuccess={onRenderSuccess}
-						renderTextLayer={true}
-						renderAnnotationLayer={false}
-					/>
-				),
-			)}
-		</Document>
+		<>
+			<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
+				<Page
+					key={`page_${pageNumber + 1}`}
+					pageNumber={pageNumber}
+					canvasRef={canvas}
+					onRenderSuccess={onRenderSuccess}
+					renderTextLayer={true}
+					renderAnnotationLayer={false}
+				/>
+			</Document>
+			<div>
+				<p>
+					Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
+				</p>
+				<button
+					type="button"
+					disabled={pageNumber <= 1}
+					onClick={previousPage}
+				>
+					Previous
+				</button>
+				<button
+					type="button"
+					disabled={pageNumber >= numPages}
+					onClick={nextPage}
+				>
+					Next
+				</button>
+			</div>
+		</>
 	);
 
 }
