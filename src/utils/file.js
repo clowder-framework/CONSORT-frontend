@@ -39,7 +39,6 @@ async function extractionRequest(file_id,body_data, clientInfo) {
 		});
 		extraction_response = await response.json(); // JSONObj {"status":"OK","job_id":"string"}
 		//const extraction_response_text = await response.text();
-		console.log(extraction_response);
 		//console.log(extraction_response_text);
 		if (response.status === 200) {
 			// return {"status":"OK","job_id":"string"}
@@ -195,7 +194,7 @@ export async function uploadFile(formData, selectedDatasetId) {
 }
 
 
-export async function downloadFile(fileId, filename = null) {
+export async function downloadAndSaveFile(fileId, filename = null) {
 
 	if (!filename) {
 		filename = `${fileId}.zip`;
@@ -219,11 +218,10 @@ export async function downloadFile(fileId, filename = null) {
 		}
 	} else if (response.status === 401) {
 		// TODO
-		console.log(response.json());
+		console.error(response.json());
 	} else {
-		console.log(response.json());
+		console.error(response.json());
 	}
-
 }
 
 

@@ -135,7 +135,7 @@ export default function CreateAndUpload() {
 				<RadioGroup defaultValue="consort" name="radio-buttons-group" row>
 					<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
 					<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm"/>
-					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
+					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" disabled={true}/>
 					<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm"/>
 				</RadioGroup>
 			</div>

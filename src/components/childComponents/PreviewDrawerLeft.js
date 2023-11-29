@@ -16,7 +16,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckIcon from '@mui/icons-material/Check';
 
-import {downloadFile} from "../../utils/file";
+import {downloadAndSaveFile} from "../../utils/file";
 
 const drawerWidth = 400;
 
@@ -60,7 +60,7 @@ export default function PreviewDrawerLeft(props) {
 
 
 	const onDownload = () => {
-		downloadFile(reportFileID, "results.pdf").then(r => console.log(r));
+		downloadAndSaveFile(reportFileID, "results.pdf").then(r => console.log(r));
 	}
 
 	return (
