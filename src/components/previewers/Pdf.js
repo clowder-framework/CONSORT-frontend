@@ -19,37 +19,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 export default function Pdf(props) {
 	const {fileId, pdfSrc, ...other} = props;
 
-	// Using AllenAI
-	// const { pageDimensions, numPages } = React.useContext(DocumentContext);
-	// const { setScrollRoot } = React.useContext(ScrollContext);
-	//
-	// // ref for the div in which the Document component renders
-	// const pdfContentRef = React.createRef();
-	//
-	// // ref for the scrollable region where the pages are rendered
-	// const pdfScrollableRef = React.createRef();
-	//
-	// const samplePdfUrl = 'https://arxiv.org/pdf/2112.07873.pdf';
-	//
-	// return (
-	// 	<div>
-	// 		<div className="reader__container">
-	// 			<DocumentWrapper
-	// 				className="reader__main"
-	// 				file={samplePdfUrl}
-	// 				inputRef={pdfContentRef}
-	// 				renderType={RENDER_TYPE.SINGLE_CANVAS}>
-	// 				<div className="reader__page-list" ref={pdfScrollableRef}>
-	// 					{Array.from({ length: numPages }).map((_, i) => (
-	// 						<PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
-	// 						</PageWrapper>
-	// 					))}
-	// 				</div>
-	// 			</DocumentWrapper>
-	// 		</div>
-	// 	</div>
-	// );
-
 	// Using react-pdf
 	const canvas = useRef();
 	const [isRendered, setIsRendered] = useState();
