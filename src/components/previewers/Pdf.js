@@ -101,6 +101,7 @@ export default function Pdf(props) {
 		// context highlights styling
 		context.globalCompositeOperation = 'hard-light';  // change composition operation for drawing new shapes
 		context.strokeStyle = 'rgb(255, 99, 71)';
+		context.lineWidth = 2;
 
 		// Draw rectangles based on coordinates
 		for (let i = 0; i < highlightCoordinates.length; i++) {
