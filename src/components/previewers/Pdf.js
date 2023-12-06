@@ -8,7 +8,7 @@ import samplePDF from '../../../main.pdf';
 import json from "../../../main-metadata.json";
 
 export default function Pdf(props) {
-	const {fileId, pdfSrc, ...other} = props;
+	const {fileId, pdfSrc, metadata, ...other} = props;
 
 	const [content, setContent] = useState({});
 	const [allSentences, setAllSentences] = useState([]);
@@ -19,19 +19,33 @@ export default function Pdf(props) {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageHighlightCoordinates, setPageHighlightCoordinates] = useState([]);
 
-
 	useEffect(() => {
-		let content = json['content'][0];
-		let checklist = content['checklist'];
-		setContent(content);
-		let sentences_list = []
-		checklist.forEach((section) => {
-			section.items.forEach((item) => {
-				let sentences = item.sentences || [];
-				sentences_list.push(...sentences);
+		if (metadata == undefined){
+			let content = json['content'][0];
+			let checklist = content['checklist'];
+			setContent(content);
+			let sentences_list = []
+			checklist.forEach((section) => {
+				section.items.forEach((item) => {
+					let sentences = item.sentences || [];
+					sentences_list.push(...sentences);
+				});
 			});
-		});
-		setAllSentences(sentences_list);
+			setAllSentences(sentences_list);
+		}
+		if (metadata !== undefined){
+			let content = metadata;
+			setContent(content);
+			let checklist = content['checklist'];
+			let sentences_list = []
+			checklist.forEach((section) => {
+				section.items.forEach((item) => {
+					let sentences = item.sentences || [];
+					sentences_list.push(...sentences);
+				});
+			});
+			setAllSentences(sentences_list);
+		}
 
 	}, []);
 
@@ -63,8 +77,9 @@ export default function Pdf(props) {
 			}
 		});
 		pageCoords = pageCoords.filter(element => element !== undefined); // remove all undefined elements
+		console.log("pageCoords:", pageCoords);
 		let highlightCoordinates = [];
-		// TODO remove below line. Get the first 3 elements of pageCoords for testing
+		// For testing. Get the first 3 elements of pageCoords for testing
 		let coordinateLists = pageCoords.slice(0,3);
 
 		coordinateLists.forEach(coordinateList => {
@@ -95,6 +110,7 @@ export default function Pdf(props) {
 			return;
 		}
 		const highlightCoordinates = getPageHighlights();
+		console.log(highlightCoordinates);
 		let context = canvas.current.getContext('2d');
 		let { width, height } = canvas.current;
 
