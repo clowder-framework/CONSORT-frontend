@@ -19,6 +19,9 @@ import config from "../../app.config";
 
 export default function FilePreview() {
 
+	const pdfExtractor = config.pdf_extractor;
+	const rctExtractor = config.rct_extractor;
+
 	const filePreviews = useSelector((state) => state.file.previews);
 	const [previews, setPreviews] = useState([]); // state for file previews
 	const datasetMetadata = useSelector((state) => state.dataset.metadata);
@@ -40,6 +43,7 @@ export default function FilePreview() {
 				});
 			}
 			else {
+				// TODO only one file preview will be set. Can remove the else portion
 				// both pdf and html preview. Get pdf preview
 				filePreviews[1].map(async (preview) => {
 					const clientInfo = await getClientInfo()
@@ -55,19 +59,15 @@ export default function FilePreview() {
 	// useEffect on datasetMetadata to load preview leftdrawer metadata
 	useEffect( async ()=> {
 		if (datasetMetadata !== undefined) {
-			datasetMetadata.forEach((metadata) => {
-				let content = metadata["content"][0];
-				let extractor = content["extractor"];
-				if (config.rct_extractor === extractor){
-					console.log("RCT extraction metadata", content);
-					setRCTMetadata(content); // set RCT extraction metadata
-				}
-				else if (config.pdf_extractor === extractor){
-					console.log("PDF extraction metadata", content);
-					setPDFMetadata(content); // set PDF extraction metadata
-				}
-
-			});
+			const contentList = datasetMetadata.map(item => item.content[0]);
+			const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
+			const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
+			if (pdfExtractorContent){
+				setPDFMetadata(pdfExtractorContent);
+			}
+			if (rctExtractorContent){
+				setRCTMetadata(rctExtractorContent);
+			}
 		}
 	}, [datasetMetadata])
 

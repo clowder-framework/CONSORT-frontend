@@ -10,13 +10,6 @@ export function getClientInfo(){
 	});
 }
 
-// get hostname
-export function getHostname(){
-	return axios.request(getClient).then(function (response) {
-		return response.data.headers.hostname
-	});
-}
-
 // construct header
 export function getHeader(clientInfo) {
 	const headers = new Headers({

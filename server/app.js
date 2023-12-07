@@ -73,9 +73,11 @@ app.get('/client', function (req, res, next){
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;
+	var PREFIX = process.env.CLOWDER_PREFIX;
 	var options = {
 		headers:{
 			'hostname': CLOWDER_REMOTE_HOSTNAME,
+			'prefix': PREFIX,
 			'apikey': APIKEY
 		}
 	}
