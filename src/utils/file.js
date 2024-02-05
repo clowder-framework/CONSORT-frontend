@@ -269,7 +269,9 @@ export async function getPreviewResources(preview, clientInfo) {
 		}
 	}
 	preview_config.pv_route = pv_routes;
-	const resourceURL = `${clientInfo.hostname}${clientInfo.prefix}${pv_routes}?superAdmin=true`;
+	//const resourceURL = `${clientInfo.hostname}${clientInfo.prefix}${pv_routes}?superAdmin=true`;
+	// no need to add clowder prefix as preview route has the clowder prefix
+	const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
 	preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	return preview_config;
 }
