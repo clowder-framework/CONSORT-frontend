@@ -17,7 +17,9 @@ export default function Pdf(props) {
 	const [isRendered, setIsRendered] = useState();
 	const [numPages, setNumPages] = useState(null);
 	const [pageNumber, setPageNumber] = useState(1);
-	const [pageHighlightCoordinates, setPageHighlightCoordinates] = useState([]);
+	const [pageWidth, setPageWidth] = useState(500);
+	const [pageHeight, setPageHeight]= useState(799);
+
 
 	useEffect(() => {
 		if (metadata == undefined){
@@ -33,19 +35,19 @@ export default function Pdf(props) {
 			});
 			setAllSentences(sentences_list);
 		}
-		if (metadata !== undefined){
-			let content = metadata;
-			setContent(content);
-			let checklist = content['checklist'];
-			let sentences_list = []
-			checklist.forEach((section) => {
-				section.items.forEach((item) => {
-					let sentences = item.sentences || [];
-					sentences_list.push(...sentences);
-				});
-			});
-			setAllSentences(sentences_list);
-		}
+		// if (metadata !== undefined){
+		// 	let content = metadata;
+		// 	setContent(content);
+		// 	let checklist = content['checklist'];
+		// 	let sentences_list = []
+		// 	checklist.forEach((section) => {
+		// 		section.items.forEach((item) => {
+		// 			let sentences = item.sentences || [];
+		// 			sentences_list.push(...sentences);
+		// 		});
+		// 	});
+		// 	setAllSentences(sentences_list);
+		// }
 
 	}, []);
 
@@ -79,27 +81,14 @@ export default function Pdf(props) {
 		pageCoords = pageCoords.filter(element => element !== undefined); // remove all undefined elements
 		console.log("pageCoords:", pageCoords);
 		let highlightCoordinates = [];
-		// For testing. Get the first 3 elements of pageCoords for testing
-		let coordinateLists = pageCoords.slice(0,3);
 
-		coordinateLists.forEach(coordinateList => {
-			// Initialize variables for minimum and maximum values
-			let minX = Infinity;
-			let maxY = -Infinity;
-			let maxW = -Infinity;
-			let maxH = -Infinity;
+		pageCoords.forEach(coordinateList => {
 			coordinateList.forEach(coordinateSet => {
 				let [p, x, y, w, h] = coordinateSet.split(',').map(Number);
-				// Update minimum and maximum values
-				minX = Math.min(minX, x);
-				maxY = Math.max(maxY, y);
-				maxW = Math.max(maxW, w);
-				maxH = Math.max(maxH, h);
-
+				highlightCoordinates.push([x, y, w, h]);
 			});
-			highlightCoordinates.push([minX, maxY, maxW, maxH]);
+
 		});
-		setPageHighlightCoordinates(highlightCoordinates);
 		return highlightCoordinates;
 	}
 
@@ -110,35 +99,43 @@ export default function Pdf(props) {
 			return;
 		}
 		const highlightCoordinates = getPageHighlights();
-		console.log(highlightCoordinates);
 		let context = canvas.current.getContext('2d');
-		let { width, height } = canvas.current;
+		let canvas_width = canvas.current.width;
+		let canvas_height = canvas.current.height;
+		let page_width = 595.276;  // TODO to remove later
+		let page_height = 799.37;  // TODO to remove later
+		let scale_x = canvas_height / page_height;
+		let scale_y = canvas_width / page_width;
 
 		// context highlights styling
-		context.globalCompositeOperation = 'hard-light';  // change composition operation for drawing new shapes
-		context.strokeStyle = 'rgb(255, 99, 71)';
-		context.lineWidth = 2;
+		context.globalAlpha = 0.2
+		//context.globalCompositeOperation = 'soft-light';  // change composition operation for drawing new shapes
+		context.fillStyle = 'rgb(255, 190, 60)';
 
 		// Draw rectangles based on coordinates
 		for (let i = 0; i < highlightCoordinates.length; i++) {
 			let [x, y, width, height] = highlightCoordinates[i];
-			context.strokeRect(x, y, width, height);
+			context.fillRect(x * scale_x, y * scale_y, width * scale_x, height * scale_y);
 		}
 	}
 
 
 	return (
 		<>
-			<Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess}>
-				<Page
-					key={`page_${pageNumber + 1}`}
-					pageNumber={pageNumber}
-					canvasRef={canvas}
-					onRenderSuccess={renderHighlights}
-					renderTextLayer={true}
-					renderAnnotationLayer={false}
-				/>
-			</Document>
+			<div>
+				<Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess} width={595.276}>
+					<Page className={"PDFPage"}
+						key={`page_${pageNumber + 1}`}
+						pageNumber={pageNumber}
+						canvasRef={canvas}
+						onRenderSuccess={renderHighlights}
+						renderTextLayer={true}
+						renderAnnotationLayer={false}
+						width={595.276}
+					/>
+				</Document>
+			</div>
+
 			<div>
 				<p>
 					Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
