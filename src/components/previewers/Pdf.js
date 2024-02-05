@@ -26,6 +26,8 @@ export default function Pdf(props) {
 			let content = json['content'][0];
 			let checklist = content['checklist'];
 			setContent(content);
+			setPageWidth(parseInt(content['page_dimensions']['width']));
+			setPageHeight(parseInt(content['page_dimensions']['height']));
 			let sentences_list = []
 			checklist.forEach((section) => {
 				section.items.forEach((item) => {
@@ -38,6 +40,8 @@ export default function Pdf(props) {
 		// if (metadata !== undefined){
 		// 	let content = metadata;
 		// 	setContent(content);
+		//	setPageWidth(parseInt(content['page_dimensions']['width']));
+		//	setPageHeight(parseInt(content['page_dimensions']['height']));
 		// 	let checklist = content['checklist'];
 		// 	let sentences_list = []
 		// 	checklist.forEach((section) => {
@@ -102,10 +106,8 @@ export default function Pdf(props) {
 		let context = canvas.current.getContext('2d');
 		let canvas_width = canvas.current.width;
 		let canvas_height = canvas.current.height;
-		let page_width = 595.276;  // TODO to remove later
-		let page_height = 799.37;  // TODO to remove later
-		let scale_x = canvas_height / page_height;
-		let scale_y = canvas_width / page_width;
+		let scale_x = canvas_height / pageHeight;
+		let scale_y = canvas_width / pageWidth;
 
 		// context highlights styling
 		context.globalAlpha = 0.2
@@ -123,7 +125,7 @@ export default function Pdf(props) {
 	return (
 		<>
 			<div>
-				<Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess} width={595.276}>
+				<Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess}>
 					<Page className={"PDFPage"}
 						key={`page_${pageNumber + 1}`}
 						pageNumber={pageNumber}
@@ -131,7 +133,7 @@ export default function Pdf(props) {
 						onRenderSuccess={renderHighlights}
 						renderTextLayer={true}
 						renderAnnotationLayer={false}
-						width={595.276}
+						width={pageWidth}
 					/>
 				</Document>
 			</div>
