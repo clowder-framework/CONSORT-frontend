@@ -103,10 +103,10 @@ export default function FilePreview() {
 										return (
 											<div key={preview["fileid"]}>
 												<Grid container spacing={2} direction="row">
-													<Grid item xs={3} >
+													<Grid item xs={5} >
 														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
 													</Grid>
-													<Grid item xs={9} >
+													<Grid item xs={7} >
 														<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
 													</Grid>
 												</Grid>
