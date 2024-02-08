@@ -4,8 +4,6 @@ import { pdfjs , Document, Page } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import samplePDF from '../../../main.pdf';
-import json from "../../../main-metadata.json";
 
 export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
@@ -22,12 +20,12 @@ export default function Pdf(props) {
 
 
 	useEffect(() => {
-		if (metadata == undefined){
-			let content = json['content'][0];
-			let checklist = content['checklist'];
+		if (metadata !== undefined){
+			let content = metadata;
 			setContent(content);
 			setPageWidth(parseInt(content['page_dimensions']['width']));
 			setPageHeight(parseInt(content['page_dimensions']['height']));
+			let checklist = content['checklist'];
 			let sentences_list = []
 			checklist.forEach((section) => {
 				section.items.forEach((item) => {
@@ -37,21 +35,6 @@ export default function Pdf(props) {
 			});
 			setAllSentences(sentences_list);
 		}
-		// if (metadata !== undefined){
-		// 	let content = metadata;
-		// 	setContent(content);
-		//	setPageWidth(parseInt(content['page_dimensions']['width']));
-		//	setPageHeight(parseInt(content['page_dimensions']['height']));
-		// 	let checklist = content['checklist'];
-		// 	let sentences_list = []
-		// 	checklist.forEach((section) => {
-		// 		section.items.forEach((item) => {
-		// 			let sentences = item.sentences || [];
-		// 			sentences_list.push(...sentences);
-		// 		});
-		// 	});
-		// 	setAllSentences(sentences_list);
-		// }
 
 	}, []);
 
@@ -125,7 +108,7 @@ export default function Pdf(props) {
 	return (
 		<>
 			<div>
-				<Document file={samplePDF} onLoadSuccess={onDocumentLoadSuccess}>
+				<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
 					<Page className={"PDFPage"}
 						key={`page_${pageNumber + 1}`}
 						pageNumber={pageNumber}
