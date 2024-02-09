@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Get correct metadata and render pdf or html file. [#59](https://github.com/clowder-framework/CONSORT-frontend/issues/59)
 - CLOWDER_PREFIX environment variable for prefix url. [#65](https://github.com/clowder-framework/CONSORT-frontend/issues/65)
 - Pdf file previewer.  [#61](https://github.com/clowder-framework/CONSORT-frontend/issues/61)
+- Highlighting sentences using canvas and coordinates from metadata. [#61](https://github.com/clowder-framework/CONSORT-frontend/issues/61)
 
 ### Changed
 - Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
