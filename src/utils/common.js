@@ -8,6 +8,10 @@ export function getClientInfo(){
 	return axios.request(getClient).then(function (response) {
 		return response.data.headers
 	});
+	// // For testing, change to
+	// return {hostname:"http://localhost:8000",
+	// 	prefix:'',
+	// 	apikey:"<apikey>"}
 }
 
 // construct header

@@ -111,6 +111,10 @@ export default {
 					{loader: "sass-loader", options: {sourceMap: true}}
 				]
 			},
+			{
+				test: /\.(pdf|gif|png|jpe?g|svg)$/,
+				use: 'file-loader?name=[path][name].[ext]',
+			}
 			// {
 			// 	test: /\.json$/,
 			// 	loader: "json-loader"
