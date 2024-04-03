@@ -59,10 +59,10 @@ export function createUploadExtract(file) {
 						const pdf_metadata = await getPdfMetadataLoop(dataset_json.id, clientInfo);
 						if (pdf_metadata !== null){
 							console.log("pdf extraction done");
-							const text_file_name = file_name + '.txt';
-							const extracted_txt_file = await getFileInDataset(dataset_json.id, "text/file", text_file_name, clientInfo);
-							if (extracted_txt_file !== null && typeof extracted_txt_file.id === "string") {
-								const rct_extraction_submission = await submitForExtraction(extracted_txt_file.id, config.rct_extractor, clientInfo);
+							const csv_file_name = file_name + '.csv';
+							const extracted_csv_file = await getFileInDataset(dataset_json.id, "text/csv", csv_file_name, clientInfo);
+							if (extracted_csv_file !== null && typeof extracted_csv_file.id === "string") {
+								const rct_extraction_submission = await submitForExtraction(extracted_csv_file.id, config.rct_extractor, clientInfo);
 								if (rct_extraction_submission === true){
 									// check every 5s for extraction status
 									//const rct_extraction_status = await checkExtractionStatusLoop(extracted_txt_file.id, config.rct_extractor, 5000, clientInfo);
