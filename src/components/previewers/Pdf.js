@@ -5,6 +5,7 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
+
 export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
 
@@ -28,12 +29,16 @@ export default function Pdf(props) {
 			let checklist = content['checklist'];
 			let sentences_list = []
 			checklist.forEach((section) => {
-				section.items.forEach((item) => {
-					let sentences = item.sentences || [];
-					sentences_list.push(...sentences);
+				section.items.forEach((i) => {
+					let sentences = i.sentences || [];
+					let label = i.item;
+					sentences_list.push({"label":label, "sentences":sentences});
 				});
 			});
 			setAllSentences(sentences_list);
+		}
+		if (metadata == undefined){
+			console.log("Error metadata undefined");
 		}
 
 	}, []);
@@ -58,25 +63,20 @@ export default function Pdf(props) {
 
 	function getPageHighlights(){
 		// Filter coordinates with the first element being page number
-		let pageCoords = allSentences.map(entry => {
-			let coordsStr = entry.coords.split(';');
-			let filteredCoords = coordsStr.filter(coord => coord.startsWith(pageNumber.toString()));
-			if (filteredCoords.length > 0 && filteredCoords != undefined){
-				return filteredCoords;
+		let pageHighlights = allSentences.map(entry => {
+			let label = entry.label;
+			let sentences = entry.sentences;
+			if (sentences.length > 0){
+				let pageSentences = sentences.filter(sentence => sentence.coords.startsWith(pageNumber.toString()));
+				if (pageSentences.length > 0 && pageSentences != undefined){
+					return {"label": label, "sentences": pageSentences};
+				}
 			}
 		});
-		pageCoords = pageCoords.filter(element => element !== undefined); // remove all undefined elements
-		console.log("pageCoords:", pageCoords);
-		let highlightCoordinates = [];
+		pageHighlights = pageHighlights.filter(element => element !== undefined); // remove all undefined elements
+		console.log("pageHighlights:", pageHighlights);
 
-		pageCoords.forEach(coordinateList => {
-			coordinateList.forEach(coordinateSet => {
-				let [p, x, y, w, h] = coordinateSet.split(',').map(Number);
-				highlightCoordinates.push([x, y, w, h]);
-			});
-
-		});
-		return highlightCoordinates;
+		return pageHighlights;
 	}
 
 
@@ -85,23 +85,48 @@ export default function Pdf(props) {
 			console.error("canvas current empty");
 			return;
 		}
-		const highlightCoordinates = getPageHighlights();
+		const pageHighlights = getPageHighlights();
 		let context = canvas.current.getContext('2d');
 		let canvas_width = canvas.current.width;
 		let canvas_height = canvas.current.height;
 		let scale_x = canvas_height / pageHeight;
 		let scale_y = canvas_width / pageWidth;
 
-		// context highlights styling
-		context.globalAlpha = 0.2
-		//context.globalCompositeOperation = 'soft-light';  // change composition operation for drawing new shapes
-		context.fillStyle = 'rgb(255, 190, 60)';
+		pageHighlights.forEach(item => {
+			let label = item.label;
+			let sentences = item.sentences;
+			sentences.forEach(sentence => {
+				let coordsList = sentence.coords.split(';');
+				// label sentence first box
+				let [text_p, text_x, text_y, text_width, text_height] = coordsList[0].split(',').map(Number);
+				text_x = text_x * scale_x;
+				text_y = text_y * scale_y;
+				// put labels to either side of text
+				if (text_x < 100){
+					text_x = 10;
+				}
+				else{
+					text_x = text_x + text_width + 2;
+				}
+				let text_label = label;
+				context.globalAlpha = 1.0
+				context.font = "10px Verdana";
+				context.fillStyle = 'red';
+				context.fillText(text_label, text_x, text_y);
 
-		// Draw rectangles based on coordinates
-		for (let i = 0; i < highlightCoordinates.length; i++) {
-			let [x, y, width, height] = highlightCoordinates[i];
-			context.fillRect(x * scale_x, y * scale_y, width * scale_x, height * scale_y);
-		}
+				// Draw rectangles based on coordinates
+				for (let i = 0; i < coordsList.length; i++) {
+					let [p, x, y, width, height] = coordsList[i].split(',').map(Number);
+					// rectangle highlights styling
+					context.globalAlpha = 0.2
+					context.fillStyle = 'rgb(255, 190, 60)';
+					context.fillRect(x * scale_x, y * scale_y, width * scale_x, height * scale_y);
+
+				}
+			});
+
+		});
+
 	}
 
 
