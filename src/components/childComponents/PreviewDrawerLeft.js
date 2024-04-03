@@ -120,11 +120,11 @@ export default function PreviewDrawerLeft(props) {
 											<List disablePadding>
 												{
 													check_item.items.length > 0 ?
-														check_item.items.map((item, index) => {
-															const found = item.found === "Yes";
+														check_item.items.map((i, index) => {
+															const found = i.found === "Yes";
 															return (
 																<ListItemButton key={index} sx={{ pl: 4 }}>
-																	<ListItemText primary={item.item} secondary={item.topic}/>
+																	<ListItemText primary={i.item} secondary={i.topic}/>
 																	{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																</ListItemButton>
 															);
