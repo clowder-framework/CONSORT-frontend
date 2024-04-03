@@ -1,0 +1,2568 @@
+{
+    "paper_id": "main",
+    "header": {
+        "generated_with": "S2ORC 1.0.0",
+        "date_generated": "2024-04-03T20:07:16.877430Z"
+    },
+    "title": "Eff ect of intravenous \u03b2-2 agonist treatment on clinical outcomes in acute respiratory distress syndrome (BALTI-2): a multicentre, randomised controlled trial",
+    "authors": [
+        {
+            "first": "F",
+            "middle": [],
+            "last": "Gao",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Smith",
+            "middle": [],
+            "last": "Md",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "G",
+            "middle": [
+                "D"
+            ],
+            "last": "Perkins",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Gates",
+            "middle": [],
+            "last": "Phd",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Prof",
+            "middle": [],
+            "last": "Fang",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Gao",
+            "middle": [],
+            "last": "Smith",
+            "suffix": "",
+            "affiliation": {},
+            "email": "f.gaosmith@bham.ac.uk"
+        },
+        {
+            "first": "Gao",
+            "middle": [],
+            "last": "Fang",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Gavin",
+            "middle": [
+                "D"
+            ],
+            "last": "Smith",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Simon",
+            "middle": [],
+            "last": "Perkins",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Duncan",
+            "middle": [],
+            "last": "Gates",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Daniel",
+            "middle": [
+                "F"
+            ],
+            "last": "Young",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "William",
+            "middle": [],
+            "last": "Mcauley",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "",
+            "middle": [],
+            "last": "Tunnicliff",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        },
+        {
+            "first": "Zahid",
+            "middle": [],
+            "last": "Khan",
+            "suffix": "",
+            "affiliation": {},
+            "email": ""
+        }
+    ],
+    "year": "",
+    "venue": null,
+    "identifiers": {},
+    "abstract": "Interpretation Treatment with intravenous salbutamol early in the course of ARDS was poorly tolerated. Treatment is unlikely to be benefi cial, and could worsen outcomes. Routine use of \u03b2-2 agonist treatment in ventilated patients with this disorder cannot be recommended.\n",
+    "pdf_parse": {
+        "paper_id": "main",
+        "_pdf_hash": "",
+        "abstract": [
+            {
+                "text": [
+                    {
+                        "sentence": "Background In a previous randomised controlled phase 2 trial, intravenous infusion of salbutamol for up to 7 days in patients with acute respiratory distress syndrome (ARDS) reduced extravascular lung water and plateau airway pressure.",
+                        "coords": "1,36.85,238.72,439.37,8.95;1,36.85,249.72,439.38,8.95;1,36.85,260.72,34.88,8.95"
+                    },
+                    {
+                        "sentence": "We assessed the eff ects of this intervention on mortality in patients with ARDS.",
+                        "coords": "1,73.98,260.72,300.06,8.95"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Abstract",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "We did a multicentre, placebo-controlled, parallel-group, randomised trial at 46 UK intensive-care units between December, 2006, and March, 2010.",
+                        "coords": "1,73.10,282.71,403.13,8.95;1,36.85,293.71,166.52,8.96"
+                    },
+                    {
+                        "sentence": "Intubated and mechanically ventilated patients (aged \u226516 years) within 72 h of ARDS onset were randomly assigned to receive either salbutamol (15 \u03bcg/kg ideal bodyweight per h) or placebo for up to 7 days.",
+                        "coords": "1,206.15,293.72,270.07,8.95;1,36.84,304.72,439.38,8.95;1,36.85,315.72,57.83,8.95"
+                    },
+                    {
+                        "sentence": "Randomisation was done by a central telephone or web-based randomisation service with minmisation by centre, pressure of arterial oxygen to fractional inspired oxygen concentration (PaO 2 /F I O 2 ) ratio, and age.",
+                        "coords": "1,96.26,315.72,379.97,8.95;1,36.85,326.72,340.38,8.95;1,377.23,331.90,2.25,4.47;1,379.48,326.72,8.82,8.95;1,388.30,331.90,1.67,4.47;1,389.97,326.72,6.69,8.95;1,396.66,331.90,2.25,4.47;1,398.91,326.72,62.72,8.95"
+                    },
+                    {
+                        "sentence": "All participants, caregivers, and investigators were masked to group allocation.",
+                        "coords": "1,465.37,326.72,10.85,8.95;1,36.85,337.72,286.19,8.95"
+                    },
+                    {
+                        "sentence": "The primary outcome was death within 28 days of randomisation.",
+                        "coords": "1,325.69,337.72,150.55,8.95;1,36.85,348.72,97.86,8.95"
+                    },
+                    {
+                        "sentence": "Analysis was by intention-to-treat.",
+                        "coords": "1,137.04,348.72,128.18,8.95"
+                    },
+                    {
+                        "sentence": "This trial is registered, ISRCTN38366450 and EudraCT number 2006-002647-86.",
+                        "coords": "1,267.56,348.72,208.67,8.95;1,36.85,359.72,94.03,8.95"
+                    },
+                    {
+                        "sentence": "Findings We randomly assigned 162 patients to the salbutamol group and 164 to the placebo group.",
+                        "coords": "1,36.85,381.72,380.93,8.95"
+                    },
+                    {
+                        "sentence": "One patient in each group withdrew consent.",
+                        "coords": "1,420.56,381.72,55.66,8.95;1,36.85,392.72,113.22,8.95"
+                    },
+                    {
+                        "sentence": "Recruitment was stopped after the second interim analysis because of safety concerns.",
+                        "coords": "1,152.20,392.72,324.04,8.95"
+                    },
+                    {
+                        "sentence": "Salbutamol increased 28-day mortality (55 [34%] of 161 patients died in the salbutamol group vs 38 (23%) of 163 in the placebo group; risk ratio [RR] 1\u202247, 95% CI 1\u202203-2\u202208).",
+                        "coords": "1,36.85,403.72,439.37,8.95;1,36.85,414.72,208.99,8.95"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Abstract",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Interpretation Treatment with intravenous salbutamol early in the course of ARDS was poorly tolerated.",
+                        "coords": "1,36.85,436.72,389.89,8.95"
+                    },
+                    {
+                        "sentence": "Treatment is unlikely to be benefi cial, and could worsen outcomes.",
+                        "coords": "1,428.89,436.72,47.34,8.95;1,36.85,447.72,200.64,8.95"
+                    },
+                    {
+                        "sentence": "Routine use of \u03b2-2 agonist treatment in ventilated patients with this disorder cannot be recommended.",
+                        "coords": "1,239.53,447.72,236.71,8.95;1,36.85,458.72,146.28,8.95"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Abstract",
+                "sec_num": null
+            }
+        ],
+        "body_text": [
+            {
+                "text": [
+                    {
+                        "sentence": "5][6] \u03b2-2 agonists could be a potential pharma cological intervention because they act on the many pulmonary cellular pathways thought to be associated with the pathophysiology of ARDS.",
+                        "coords": "1,195.11,546.96,2.18,4.46;1,202.32,546.75,48.52,8.92;1,36.85,557.75,213.98,8.92;1,36.85,568.74,213.99,8.92;1,36.85,579.74,214.02,8.92;1,36.85,590.74,83.92,8.92"
+                    },
+                    {
+                        "sentence": "][11] In patients with ARDS given salbutamol, we reported invivo evidence of reduced permeability of alveolar capillaries, and in-vitro evidence of enhanced wound repair in epithelial monolayers. 12",
+                        "coords": "1,246.76,645.96,4.10,4.46;1,36.85,656.75,214.02,8.92;1,36.85,667.74,213.98,8.92;1,36.85,678.74,213.98,8.92;1,36.85,689.74,118.97,8.92;1,155.85,689.96,4.10,4.46"
+                    },
+                    {
+                        "sentence": "These data suggest that \u03b2-2 agonists could maintain alveolar-capillary integrity, thereby reducing alveolar fl ooding.",
+                        "coords": "1,162.12,689.75,88.71,8.92;1,36.85,700.75,213.92,8.92;1,36.85,711.74,132.61,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 3,
+                        "end": 6,
+                        "text": "[6]",
+                        "ref_id": "BIBREF5"
+                    },
+                    {
+                        "start": 188,
+                        "end": 192,
+                        "text": "[11]",
+                        "ref_id": "BIBREF11"
+                    },
+                    {
+                        "start": 383,
+                        "end": 385,
+                        "text": "12",
+                        "ref_id": "BIBREF12"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Introduction",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Findings from the \u03b2-agonist lung injury trial (BALTI) 13 -a single-centre, randomised controlled trial in 40 patients with ARDS-showed that an infusion of salbutamol for 7 days caused signifi cant reductions in extravascular lung water and plateau airway pressure.",
+                        "coords": "1,43.95,722.74,206.93,8.92;1,36.86,733.74,29.95,8.92;1,66.80,733.96,4.08,4.46;1,70.88,733.75,180.00,8.92;1,36.85,744.75,214.02,8.92;1,262.20,502.75,214.02,8.92;1,262.20,513.74,214.02,8.92"
+                    },
+                    {
+                        "sentence": "However, this trial was not designed to assess the potential eff ects on mortality.",
+                        "coords": "1,262.20,524.74,214.02,8.92;1,262.20,535.74,119.11,8.92"
+                    },
+                    {
+                        "sentence": "We therefore assessed whether treatment with salbutamol in the early course of ARDS would improve clinical outcomes.",
+                        "coords": "1,386.64,535.74,89.58,8.92;1,262.20,546.74,214.03,8.92;1,262.20,557.74,153.14,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 54,
+                        "end": 56,
+                        "text": "13",
+                        "ref_id": "BIBREF13"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Introduction",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "We undertook a multicentre, pragmatic, double-blind, placebo-controlled, parallel-group, randomised trial at 46 UK intensive-care units between December, 2006, and March, 2010.",
+                        "coords": "1,262.21,601.75,213.98,8.92;1,262.21,612.75,213.97,8.92;1,262.21,623.74,213.98,8.92;1,262.21,634.74,68.92,8.92"
+                    },
+                    {
+                        "sentence": "Eligible participants were intubated and mechanically ventilated adults aged 16 years and older within 72 h of ARDS onset.",
+                        "coords": "1,335.31,634.74,140.87,8.92;1,262.21,645.74,213.98,8.92;1,262.21,656.74,123.14,8.92"
+                    },
+                    {
+                        "sentence": "Patients were identifi ed and recruited by local investigators at each site.",
+                        "coords": "1,387.26,656.74,88.94,8.92;1,262.21,667.74,197.04,8.92"
+                    },
+                    {
+                        "sentence": "We defi ned ARDS in accordance with the American European Consensus criteria: 14 a pressure of arterial oxygen to fractional inspired oxygen concentration (PaO 2 /F I O 2 ) ratio of 200 mm Hg or less, bilateral pulmonary infi ltrates consistent with oedema, and the absence of clinically evident left atrial hypertension.",
+                        "coords": "1,464.10,667.74,12.12,8.92;1,262.21,678.73,213.99,8.92;1,262.21,689.73,118.08,8.92;1,380.32,689.96,3.86,4.46;1,389.30,689.75,86.89,8.92;1,262.21,700.75,213.94,8.92;1,262.21,711.74,18.81,8.92;1,281.05,716.91,2.25,4.46;1,283.32,711.75,8.86,8.92;1,292.21,716.91,1.67,4.46;1,293.90,711.75,6.69,8.92;1,300.63,716.91,2.25,4.46;1,302.89,711.75,173.30,8.92;1,262.21,722.75,213.98,8.92;1,262.21,733.74,213.97,8.92"
+                    },
+                    {
+                        "sentence": "Exclusion criteria were pregnancy; current treatment with intravenous \u03b2-2 agonist or need for continuous, regular, aerolised \u03b2-2 agonists; current treatment with \u03b2-adrenergic antagonists; imminent withdrawal of medical treatment; chronic liver disease, defi ned as Child-Pugh grade C; and enrolment in another clinical trial of an investigational medicinal product within the previous 28 days.",
+                        "coords": "1,262.21,744.74,213.98,8.92;2,119.05,348.75,213.98,8.92;2,119.05,359.75,213.97,8.92;2,119.05,370.74,213.98,8.92;2,119.05,381.74,213.99,8.92;2,119.05,392.74,213.98,8.92;2,119.05,403.74,213.98,8.92;2,119.05,414.74,65.37,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 452,
+                        "end": 454,
+                        "text": "14",
+                        "ref_id": "BIBREF14"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Study design and participants",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Sedated patients did not have capacity to give consent; therefore, consistent with requirements of the EU clinical trial directive, 15 we obtained written informed consent from a personal or professional legal representative before randomisation.",
+                        "coords": "2,126.14,425.73,206.93,8.92;2,119.05,436.73,214.03,8.92;2,119.05,447.73,53.67,8.92;2,172.72,447.96,4.08,4.46;2,180.99,447.75,152.08,8.92;2,119.06,458.75,214.02,8.92;2,119.06,469.74,89.26,8.92"
+                    },
+                    {
+                        "sentence": "All surviving patients were informed about the trial at the earliest opportunity after regaining competence and consent to continue in the trial was sought.",
+                        "coords": "2,215.98,469.74,117.09,8.92;2,119.06,480.74,214.02,8.92;2,119.06,491.74,214.02,8.92;2,119.06,502.74,61.46,8.92"
+                    },
+                    {
+                        "sentence": "The study protocol 16 was approved for all centres by the Oxfordshire Research Ethics Committee A. Site specifi c approval was obtained at each site.",
+                        "coords": "2,182.51,502.74,69.86,8.92;2,252.36,502.96,4.08,4.46;2,258.43,502.75,74.64,8.92;2,119.05,513.75,214.02,8.92;2,119.05,524.74,196.05,8.92"
+                    },
+                    {
+                        "sentence": "The trial was monitored for safety by an independent Data Monitoring and Ethics Committee.",
+                        "coords": "2,318.41,524.74,14.66,8.92;2,119.05,535.74,214.02,8.92;2,119.05,546.74,131.97,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 132,
+                        "end": 134,
+                        "text": "15",
+                        "ref_id": "BIBREF15"
+                    },
+                    {
+                        "start": 421,
+                        "end": 423,
+                        "text": "16",
+                        "ref_id": "BIBREF16"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Study design and participants",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Study drug packs were prepared by Bilcare Global Clinical Supplies (Europe; Powys, UK).",
+                        "coords": "2,119.05,579.75,214.02,8.92;2,119.05,590.75,153.52,8.92"
+                    },
+                    {
+                        "sentence": "The active and placebo drug components of the infusions were packaged identically into numbered treatment packs, each containing 5 mL of either salbutamol sulphate BP (1 mg/mL in a sterile isotonic solution, GlaxoSmithKline, Middlesex, UK) or placebo (0\u20229% sterile sodium chloride).",
+                        "coords": "2,275.71,590.75,57.37,8.92;2,119.05,601.74,214.02,8.92;2,119.05,612.74,214.02,8.92;2,119.05,623.74,214.01,8.92;2,119.05,634.74,214.02,8.93;2,119.05,645.75,214.02,8.92;2,119.05,656.74,36.80,8.92"
+                    },
+                    {
+                        "sentence": "We used a computer-generated randomisation sequence with a block size of eight.",
+                        "coords": "2,162.24,656.74,170.83,8.92;2,119.05,667.74,178.59,8.92"
+                    },
+                    {
+                        "sentence": "Patients were randomly assigned in a 1:1 ratio by a centralised 24 h telephone or web-based randomisation service (Uni versity of Aberdeen, UK).",
+                        "coords": "2,301.99,667.74,31.08,8.92;2,119.05,678.74,214.02,8.92;2,119.05,689.74,214.02,8.92;2,119.05,700.74,127.65,8.92"
+                    },
+                    {
+                        "sentence": "Randomisation was minimised by centre, PaO 2 /F I O 2 ratio (\u226450, 51-99, or \u2265100 mm Hg), and age (<64, 65-84, \u226585 years).",
+                        "coords": "2,253.13,700.74,79.94,8.92;2,119.05,711.73,105.91,8.92;2,225.07,716.91,2.25,4.46;2,227.38,711.75,8.93,8.92;2,236.41,716.91,1.67,4.46;2,238.14,711.75,6.69,8.92;2,244.94,716.91,2.25,4.46;2,251.21,711.75,81.86,8.92;2,119.05,722.75,214.02,8.92"
+                    },
+                    {
+                        "sentence": "Participants, care providers, and investigators were masked to group assignment.",
+                        "coords": "2,119.05,733.74,214.02,8.92;2,119.05,744.74,114.91,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Randomisation and masking",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "We obtained acute physiology and chronic health evaluation II (APACHE II) scores from Intensive Care National Audit and Research Centre (ICNARC) for sites (n=36) that participate in the ICNARC's Case Mix Programme or, for non-participating sites (ten), we obtained data necessary for calculation of the scores.",
+                        "coords": "2,344.41,139.75,214.02,8.92;2,344.41,150.75,214.02,8.92;2,344.41,161.74,214.02,8.92;2,344.41,172.74,214.02,8.92;2,344.41,183.74,214.02,8.92;2,344.41,194.74,199.43,8.92"
+                    },
+                    {
+                        "sentence": "We used the APACHE II score to calculate the mortality risk, which we used for subgroup analysis.",
+                        "coords": "2,546.34,194.74,12.09,8.92;2,344.41,205.74,214.03,8.92;2,344.41,216.73,141.78,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Procedures",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "The most likely cause of ARDS was identifi ed by the treating clinician and categorised as direct lung injury (smoke or toxin inhalation, aspiration of gastric content, near drowning, thoracic trauma, pneumonia, or other) or indirect lung injury (sepsis, cardiopulmonary bypass, pancreatitis, non-thoracic trauma, other).",
+                        "coords": "2,351.49,227.73,206.93,8.92;2,344.41,238.73,214.02,8.92;2,344.41,249.73,214.02,8.92;2,344.41,260.73,214.03,8.92;2,344.41,271.72,214.02,8.92;2,344.41,282.72,160.46,8.92"
+                    },
+                    {
+                        "sentence": "The protocol recommended use of a lung protective ventilation strategy on the basis of ideal bodyweight, 17 fl uid restriction, 18 and appropriate high positive end-expiratory pressure. 19",
+                        "coords": "2,508.90,282.72,49.53,8.92;2,344.41,293.72,214.02,8.92;2,344.41,304.72,137.26,8.92;2,481.66,304.96,3.75,4.46;2,490.50,304.75,63.86,8.92;2,554.35,304.96,4.08,4.46;2,344.40,315.75,209.94,8.92;2,554.35,315.96,4.08,4.46"
+                    },
+                    {
+                        "sentence": "ompliance with recommendations for protective ventilation were assessed at baseline only (tidal volumes per kg ideal bodyweight).",
+                        "coords": "2,344.40,326.75,214.02,8.92;2,344.40,337.74,214.02,8.92;2,344.40,348.74,79.74,8.92"
+                    },
+                    {
+                        "sentence": "All other treatments were delivered in accordance with local clinical practice.",
+                        "coords": "2,426.21,348.74,132.22,8.92;2,344.40,359.74,153.67,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 426,
+                        "end": 428,
+                        "text": "17",
+                        "ref_id": "BIBREF17"
+                    },
+                    {
+                        "start": 449,
+                        "end": 451,
+                        "text": "18",
+                        "ref_id": "BIBREF18"
+                    },
+                    {
+                        "start": 507,
+                        "end": 509,
+                        "text": "19",
+                        "ref_id": "BIBREF19"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Procedures",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Before the start of recruitment, the intensive-care unit nurse was trained to monitor side-eff ects of the treatment and to inform the research team as necessary.",
+                        "coords": "2,351.49,370.74,206.93,8.92;2,344.40,381.74,214.02,8.92;2,344.40,392.73,178.22,8.92"
+                    },
+                    {
+                        "sentence": "Infusion syringes were prepared immediately before use by the nurse and contained two ampoules of the blinded solutions (salbutamol or placebo) diluted with 40 mL of saline in a 50 mL syringe.",
+                        "coords": "2,525.71,392.73,32.72,8.92;2,344.40,403.73,214.02,8.92;2,344.40,414.73,214.02,8.92;2,344.40,425.73,214.03,8.92;2,344.40,436.73,86.88,8.92"
+                    },
+                    {
+                        "sentence": "Salbutamol and placebo were administered through a dedicated intravenous line at a rate of 0\u2022075 mL/kg ideal bodyweight per h (equivalent to 15 \u03bcg salbutamol per kg ideal bodyweight per h).",
+                        "coords": "2,437.13,436.73,121.29,8.92;2,344.40,447.72,214.02,8.92;2,344.40,458.72,214.02,8.94;2,344.41,469.75,195.34,8.92"
+                    },
+                    {
+                        "sentence": "The patient was measured from heel to vertex with a soft tape measure, and the ideal bodyweight and infusion rate obtained from the conversion table. 17",
+                        "coords": "2,543.76,469.75,14.66,8.92;2,344.41,480.75,214.03,8.92;2,344.41,491.74,214.02,8.92;2,344.41,502.74,147.59,8.92;2,492.00,502.96,3.75,4.46"
+                    },
+                    {
+                        "sentence": "If any patient developed a tachycardia (heat rate >140 beats per min), new arrhythmia, or lactic acidosis, we adjusted the infusion rate according to a prespecifi ed dose-adjustment schedule. 15",
+                        "coords": "2,501.36,502.75,57.07,8.92;2,344.41,513.75,214.02,8.92;2,344.41,524.74,214.02,8.92;2,344.41,535.74,214.01,8.92;2,344.41,546.74,35.64,8.92;2,380.05,546.96,4.08,4.46"
+                    },
+                    {
+                        "sentence": "Infusion of the study drug was stopped at 7 days, or earlier if clinically indicated.",
+                        "coords": "2,388.28,546.75,170.15,8.92;2,344.41,557.75,144.10,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 693,
+                        "end": 695,
+                        "text": "17",
+                        "ref_id": "BIBREF17"
+                    },
+                    {
+                        "start": 888,
+                        "end": 890,
+                        "text": "15",
+                        "ref_id": "BIBREF15"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Procedures",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "The primary outcome was 28-day mortality, defi ned as death up to the end of calendar day 28 after random isation.",
+                        "coords": "2,344.41,590.75,214.01,8.92;2,344.41,601.75,214.02,8.92"
+                    },
+                    {
+                        "sentence": "Secondary outcomes were mortality in the intensive-care unit or hospital before fi rst discharge; ventilator-free and organ failure-free days from randomisation to day 28; length of stay in intensive-care unit and hospital; and tachycardia, new arrhythmia, or other side-eff ects suffi cient to stop treatment with trial drug.",
+                        "coords": "2,344.41,612.74,214.02,8.92;2,344.41,623.74,214.02,8.93;2,344.41,634.75,214.02,8.92;2,344.41,645.74,214.02,8.92;2,344.41,656.74,214.02,8.92;2,344.41,667.74,166.86,8.92"
+                    },
+                    {
+                        "sentence": "We defi ned ventilator-free days as the number of calendar days after patients started unassisted breathing until day 28 after randomisation for patients who survived at least 48 consecutive hours after start of unassisted breathing. 20",
+                        "coords": "2,514.85,667.74,43.57,8.92;2,344.41,678.74,214.02,8.92;2,344.41,689.74,214.02,8.92;2,344.41,700.73,214.02,8.92;2,344.41,711.73,191.43,8.92;2,535.76,711.96,4.46,4.46"
+                    },
+                    {
+                        "sentence": "The number of ventilator-free days was zero for patients who died without start of unassisted breathing or before 48 consecutive hours of unassisted breathing. 20",
+                        "coords": "2,543.91,711.75,14.52,8.92;2,344.41,722.75,214.02,8.92;2,344.41,733.74,214.02,8.92;2,344.41,744.74,166.34,8.92;2,510.67,744.96,4.46,4.46"
+                    },
+                    {
+                        "sentence": "We defi ned organ failure-free days as the number of days in the fi rst 28 days after randomisation that the patient received no cardiovascular, renal, liver, or neurological support as defi ned by the Critical Care Minimum Dataset. 21",
+                        "coords": "2,516.80,744.75,41.63,8.92;3,36.85,128.75,214.01,8.92;3,36.85,139.75,214.02,8.92;3,36.85,150.74,214.02,8.92;3,36.85,161.74,173.68,8.92;3,210.47,161.96,4.04,4.46"
+                    },
+                    {
+                        "sentence": "e did not plan to collect data for cause of death in the original trial protocol; however, after early termination of the trial because of the increased 28-day mortality in the salbutamol group, the data for the main cause of death were ascertained for all participants dying within 28 days of randomisation.",
+                        "coords": "3,43.94,172.75,206.94,8.92;3,36.85,183.75,214.02,8.92;3,36.85,194.74,214.02,8.92;3,36.85,205.74,214.02,8.92;3,36.85,216.74,214.03,8.92;3,36.85,227.74,70.70,8.92"
+                    },
+                    {
+                        "sentence": "We requested causes of death as recorded on the death certifi cate for the disorder directly leading to death.",
+                        "coords": "3,113.10,227.74,137.77,8.92;3,36.85,238.74,214.01,8.92;3,36.85,249.73,66.67,8.92"
+                    },
+                    {
+                        "sentence": "Patients who remained alive and in critical care after randomisation were monitored daily until discharged to a ward, or until day 28.",
+                        "coords": "3,107.79,249.73,143.08,8.92;3,36.85,260.73,214.02,8.92;3,36.85,271.73,159.41,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 674,
+                        "end": 676,
+                        "text": "20",
+                        "ref_id": "BIBREF20"
+                    },
+                    {
+                        "start": 837,
+                        "end": 839,
+                        "text": "20",
+                        "ref_id": "BIBREF20"
+                    },
+                    {
+                        "start": 1073,
+                        "end": 1075,
+                        "text": "21",
+                        "ref_id": "BIBREF21"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Study outcomes",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "We based the sample-size calculation on our BALTI trial 13 and on 2005 data from the Intensive Care National Audit and Research Centre.",
+                        "coords": "3,36.85,304.75,209.94,8.92;3,246.79,304.96,4.08,4.46;3,36.85,315.75,214.02,8.92;3,36.85,326.74,108.66,8.92"
+                    },
+                    {
+                        "sentence": "The target sample size of 1334 gave 90% power at p<0\u202205 to detect a risk ratio (RR) of 0\u20228 for 28-day mortality between the salbutamol and placebo groups with a 3% loss of patients for the primary outcome, with the assumption that the 28-day mortality in the placebo group was 44%.",
+                        "coords": "3,149.45,326.74,101.42,8.92;3,36.85,337.74,214.03,8.92;3,36.85,348.74,214.02,8.92;3,36.85,359.74,214.03,8.92;3,36.85,370.74,214.02,8.92;3,36.85,381.73,116.23,8.92"
+                    },
+                    {
+                        "sentence": "We planned interim analyses every 12 months, or more frequently if requested by the Data Monitoring and Ethics Committee.",
+                        "coords": "3,155.71,381.73,95.15,8.92;3,36.85,392.73,214.03,8.92;3,36.85,403.73,191.92,8.92"
+                    },
+                    {
+                        "sentence": "The committee used the Haybittle-Peto 22 stopping guideline: a diff erence of three standard errors would be needed before considering recommending trial cess ation for benefi t at an interim analysis.",
+                        "coords": "3,236.20,403.73,14.66,8.92;3,36.85,414.73,132.83,8.92;3,169.68,414.96,4.50,4.46;3,177.13,414.75,73.73,8.92;3,36.85,425.75,214.01,8.92;3,36.85,436.74,214.02,8.92;3,36.85,447.74,112.03,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 56,
+                        "end": 58,
+                        "text": "13",
+                        "ref_id": "BIBREF13"
+                    },
+                    {
+                        "start": 575,
+                        "end": 577,
+                        "text": "22",
+                        "ref_id": "BIBREF22"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Statistical analysis",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "All analyses were based on intention-to-treat analyses.",
+                        "coords": "3,43.93,458.74,206.93,8.92"
+                    },
+                    {
+                        "sentence": "We compared the primary outcome and other dichot omous outcomes using RRs and 95% CIs.",
+                        "coords": "3,36.85,469.74,214.02,8.92;3,36.85,480.74,151.53,8.92"
+                    },
+                    {
+                        "sentence": "We compared continuous outcomes with mean diff erences and their 95% CIs.",
+                        "coords": "3,195.33,480.74,55.53,8.92;3,36.85,491.73,214.02,8.92;3,36.85,502.73,36.72,8.92"
+                    },
+                    {
+                        "sentence": "We analysed 28-day mortality with survival analysis, and by comparison of the two groups with hazard ratios and 95% CIs and the Kaplan-Meier curve.",
+                        "coords": "3,78.97,502.73,171.89,8.92;3,36.85,513.73,214.02,8.92;3,36.85,524.73,198.34,8.92"
+                    },
+                    {
+                        "sentence": "All reported p values are two-sided and were not adjusted for multiple comparisons.",
+                        "coords": "3,240.30,524.73,10.57,8.92;3,36.85,535.73,214.02,8.92;3,36.85,546.72,85.33,8.92"
+                    },
+                    {
+                        "sentence": "We used prespecifi ed sub group analyses to investigate the eff ects of age, severity of hypoxaemia at study entry, cause (direct vs indirect causes of ARDS), and the APACHE II mortality risk, on the eff ect of salbutamol.",
+                        "coords": "3,127.15,546.72,123.71,8.92;3,36.85,557.72,214.02,8.92;3,36.85,568.69,214.02,8.95;3,36.85,579.72,214.02,8.92;3,36.85,590.72,51.73,8.92"
+                    },
+                    {
+                        "sentence": "All subgroup analyses used interaction tests; we either calculated the ratio of RRs between the subgroups, or used interaction terms in logistic regression models.",
+                        "coords": "3,90.31,590.72,160.55,8.92;3,36.85,601.71,214.02,8.92;3,36.85,612.71,200.19,8.92"
+                    },
+                    {
+                        "sentence": "We did a post-hoc analysis for the main causes of death as recorded on the death certifi cates of participants who died within 28 days of randomisation.",
+                        "coords": "3,238.92,612.71,11.94,8.92;3,36.85,623.71,214.02,8.92;3,36.85,634.71,214.02,8.92;3,36.85,645.71,125.22,8.92"
+                    },
+                    {
+                        "sentence": "This trial is registered, ISRCTN38366450 and EudraCT number 2006-002647-86.",
+                        "coords": "3,165.38,645.71,85.49,8.92;3,36.85,656.70,208.79,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Statistical analysis",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "The sponsor of the study had no role in study design, data collection, data analysis, data interpretation, or writing of the report.",
+                        "coords": "3,36.85,689.75,214.02,8.92;3,36.85,700.75,214.02,8.92;3,36.85,711.74,81.52,8.92"
+                    },
+                    {
+                        "sentence": "FGS, SG, GDP, and SEL had full access to all the data in the study, and the corresponding author had fi nal responsibility for the decision to submit for publication.",
+                        "coords": "3,121.55,711.74,129.32,8.92;3,36.85,722.74,214.02,8.92;3,36.85,733.74,214.02,8.92;3,36.85,744.74,57.98,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Role of the funding source",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "46 study sites participated in recruitment; a further 25 sites obtained approval to start the trial, but were unable to do so before recruitment was stopped.",
+                        "coords": "4,119.05,656.75,214.01,8.92;4,119.05,667.75,214.02,8.92;4,119.05,678.74,142.69,8.92"
+                    },
+                    {
+                        "sentence": "Recruitment was stopped after the second interim analysis, when the Data Monitoring and Ethics Committee reviewed the results for 273 patients in March, 2010.",
+                        "coords": "4,266.98,678.74,66.09,8.92;4,119.05,689.74,214.02,8.92;4,119.05,700.74,214.02,8.92;4,119.05,711.74,120.77,8.92"
+                    },
+                    {
+                        "sentence": "The RR for the primary outcome at this time was 1\u202255 (95% CI 1\u202207-2\u202224).",
+                        "coords": "4,242.77,711.74,90.30,8.92;4,119.05,722.74,214.02,8.92"
+                    },
+                    {
+                        "sentence": "Therefore, the committee recommended suspension of recruitment to BALTI-2 because of a signifi cant (p=0\u202202) adverse eff ect of salbutamol on 28-day mortality, and the 99\u20228% CI excluded a benefi t for salbutamol of the size anticipated in the protocol.",
+                        "coords": "4,119.05,733.73,214.02,8.92;4,119.05,744.73,214.01,8.92;4,344.41,128.74,214.01,8.92;4,344.41,139.73,214.01,8.92;4,344.41,150.73,100.85,8.92"
+                    },
+                    {
+                        "sentence": "Infusion was discontinued in all patients (one receiving salbutamol, two receiving placebo) receiving study drug at that time.",
+                        "coords": "4,447.92,150.73,110.51,8.92;4,344.41,161.73,214.02,8.92;4,344.41,172.73,174.22,8.92"
+                    },
+                    {
+                        "sentence": "The trial steering committee endorsed this recommendation and closed recruitment on March 23, 2010.",
+                        "coords": "4,523.84,172.73,34.58,8.92;4,344.41,183.73,214.02,8.92;4,344.41,194.72,142.20,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Results",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Figure 1 shows the trial profi le.",
+                        "coords": "4,351.49,205.72,130.51,8.92"
+                    },
+                    {
+                        "sentence": "326 patients were randomly assigned to receive either salbutamol or placebo.",
+                        "coords": "4,486.94,205.72,71.47,8.92;4,344.41,216.72,214.02,8.92;4,344.41,227.72,30.91,8.92"
+                    },
+                    {
+                        "sentence": "Two patients withdrew consent; no outcome data were available for these patients.",
+                        "coords": "4,379.93,227.72,178.49,8.92;4,344.41,238.72,139.06,8.92"
+                    },
+                    {
+                        "sentence": "The study drug was not given to two patients in the salbutamol group: one patient needed a \u03b2 blocker between randomisation and starting the drug, the other patient's next of kin refused to have a separate intravenous line inserted for infusion after initially giving consent.",
+                        "coords": "4,485.41,238.72,73.02,8.92;4,344.41,249.71,214.02,8.92;4,344.41,260.71,214.02,8.92;4,344.41,271.71,214.01,8.92;4,344.41,282.71,214.02,8.92;4,344.41,293.71,107.46,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [
+                    {
+                        "start": 7,
+                        "end": 8,
+                        "text": "1",
+                        "ref_id": "FIGREF1"
+                    }
+                ],
+                "eq_spans": [],
+                "section": "Results",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Both groups had similar baseline characteristics (table 1).",
+                        "coords": "4,351.49,304.70,206.93,8.92"
+                    },
+                    {
+                        "sentence": "The median time from randomisation to start of the study infusion was similar in both groups (salbutamol 1\u20223 h, IQR 0\u20226-2\u20225; placebo 1\u20221 h, 0\u20226-2\u20222).",
+                        "coords": "4,344.41,315.70,214.02,8.92;4,344.41,326.70,214.02,8.92;4,344.41,337.70,152.11,8.92"
+                    },
+                    {
+                        "sentence": "Patients in the salbutamol group were more likely to have their infusion stopped early than were those in the placebo group, either because of death (14/161 vs eight of 163), or the development of signifi cant side-eff ects (47/161 vs 13/163).",
+                        "coords": "4,500.71,337.70,57.71,8.92;4,344.41,348.70,214.02,8.92;4,344.41,359.69,214.02,8.92;4,344.41,370.67,214.02,8.95;4,344.41,381.66,162.34,8.95"
+                    },
+                    {
+                        "sentence": "The duration of infusion was on average 24\u20225 h (95% CI 12\u20223-36\u20227) shorter in the salbutamol group than in the placebo group (mean 114\u20221 h [SD 62 \u20227] vs 138\u20226 h [47 \u20229]; fi gure 2).",
+                        "coords": "4,509.36,381.69,49.05,8.92;4,344.40,392.69,214.01,8.92;4,344.40,403.69,214.02,8.92;4,344.40,414.66,196.66,8.95"
+                    },
+                    {
+                        "sentence": "The risks of patients developing a tachycardia, new arrhythmia, or lactic acidosis severe enough to warrant stopping of the study drug were substantially higher in the salbutamol group than in the placebo group (table 2).",
+                        "coords": "4,543.89,414.68,14.52,8.92;4,344.40,425.68,214.02,8.92;4,344.40,436.68,214.02,8.92;4,344.40,447.68,214.02,8.92;4,344.40,458.68,153.67,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 597,
+                        "end": 599,
+                        "text": "\u20227",
+                        "ref_id": null
+                    },
+                    {
+                        "start": 617,
+                        "end": 620,
+                        "text": "\u20229]",
+                        "ref_id": null
+                    }
+                ],
+                "ref_spans": [
+                    {
+                        "start": 56,
+                        "end": 57,
+                        "text": "1",
+                        "ref_id": "TABREF1"
+                    },
+                    {
+                        "start": 852,
+                        "end": 853,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    }
+                ],
+                "eq_spans": [],
+                "section": "Results",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "More patients died 28 days after randomisation in the salbutamol group than in the placebo group (RR 1\u202247, 95% CI 1\u202203-2\u202208; p=0\u202203; table 2).",
+                        "coords": "4,351.48,469.67,206.93,8.92;4,344.40,480.67,214.02,8.92;4,344.40,491.67,138.26,8.92"
+                    },
+                    {
+                        "sentence": "Survival analysis of the primary outcome (fi gure 3) showed a hazard ratio of 1\u202256 (95% CI 1\u202203-2\u202236).",
+                        "coords": "4,485.33,491.67,73.08,8.92;4,344.40,502.67,214.02,8.92;4,344.40,513.67,95.26,8.92"
+                    },
+                    {
+                        "sentence": "Salbutamol resulted in a 10\u20229% (95% CI 1\u20220-20\u20224) absolute increase in 28-day mortality (table 2).",
+                        "coords": "4,441.43,513.67,116.99,8.92;4,344.40,524.66,214.02,8.92;4,344.40,535.66,34.41,8.92"
+                    },
+                    {
+                        "sentence": "One additional death occurred for every 9\u20222 (95% CI 4\u20229-100\u20229) patients with ARDS given salbutamol.",
+                        "coords": "4,382.81,535.66,175.61,8.92;4,344.40,546.66,214.03,8.92"
+                    },
+                    {
+                        "sentence": "The number of deaths before discharge from either intensive-care unit or hospital did not diff er signifi cantly between groups (p=0\u202210 and p=0\u202226, respectively; table 2).",
+                        "coords": "4,344.40,557.66,214.02,8.92;4,344.40,568.66,214.02,8.92;4,344.40,579.65,214.02,8.92;4,344.40,590.65,29.40,8.92"
+                    },
+                    {
+                        "sentence": "We noted an 8\u20224% (95% CI -1\u20227 to 18\u20223) absolute increase in intensive-care unit mortality and a 6\u20220% (-4\u20224 to 16\u20222) increase in hospital mortality in the salbutamol group (table 2).",
+                        "coords": "4,375.58,590.65,182.84,8.92;4,344.40,601.65,214.02,8.92;4,344.40,612.65,214.02,8.92;4,344.40,623.65,101.49,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [
+                    {
+                        "start": 139,
+                        "end": 140,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    },
+                    {
+                        "start": 339,
+                        "end": 340,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    },
+                    {
+                        "start": 610,
+                        "end": 611,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    },
+                    {
+                        "start": 792,
+                        "end": 793,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    }
+                ],
+                "eq_spans": [],
+                "section": "Results",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Ventilator-free and organ failure-free days in the fi rst 28 days after randomisation were both reduced in the salbutamol group (table 2).",
+                        "coords": "4,351.48,634.64,206.93,8.92;4,344.40,645.64,214.01,8.92;4,344.40,656.64,96.87,8.92"
+                    },
+                    {
+                        "sentence": "We detected no clear diff erences between the groups in length of stay in intensive-care units and hospitals (table 2).",
+                        "coords": "4,442.45,656.64,115.96,8.92;4,344.40,667.64,214.02,8.92;4,344.40,678.64,102.62,8.92"
+                    },
+                    {
+                        "sentence": "Surviving patients with ARDS in the salbutamol group needed a mean of 3\u20224 more days (95% CI -0\u20223 to 7\u20221) in intensive-care units than did those in the placebo group (table 2).",
+                        "coords": "4,448.61,678.64,109.80,8.92;4,344.40,689.63,214.02,8.92;4,344.40,700.63,214.02,8.92;4,344.40,711.63,121.49,8.92"
+                    },
+                    {
+                        "sentence": "Serious adverse events (other than those recorded as trial outcomes, eg, death) were reported for 13 participants (nine in salbutamol group, four in placebo group).",
+                        "coords": "4,470.22,711.63,88.19,8.92;4,344.40,722.63,214.01,8.92;4,344.40,733.63,214.02,8.92;4,344.40,744.62,114.15,8.92"
+                    },
+                    {
+                        "sentence": "Four of these events were thought to be related to the study drug infusion, and only one was an unexpected eff ect.",
+                        "coords": "4,461.31,744.62,97.10,8.92;5,36.85,128.75,214.02,8.92;5,36.85,139.75,111.95,8.92"
+                    },
+                    {
+                        "sentence": "Subgroup analyses did not suggest that the eff ects of salbutamol were modifi ed by any of the variables investigated.",
+                        "coords": "5,151.32,139.75,99.54,8.92;5,36.85,150.74,214.02,8.92;5,36.85,161.74,126.94,8.92"
+                    },
+                    {
+                        "sentence": "For cause (categorical subgroup ing variable), the ratio of RRs was 0\u202296 (95% CI 0\u202246-2\u202201).",
+                        "coords": "5,167.63,161.74,83.24,8.92;5,36.85,172.74,214.02,8.92;5,36.85,183.74,43.03,8.92"
+                    },
+                    {
+                        "sentence": "For continuous variables the ratios of odds ratios for each variable investigated were 0\u202297, 0\u202293-1\u202200; p=0\u202207 for age; 1\u202202, 0\u202292-1\u202214; p=0\u202266 for severity of hypoxemia; and 1\u202229, 0\u202208-22\u202204; p=0\u202286 for mortality risk.",
+                        "coords": "5,83.61,183.74,167.26,8.92;5,36.85,194.74,214.02,8.92;5,36.85,205.73,214.02,8.92;5,36.85,216.73,214.02,8.92;5,36.85,227.73,16.25,8.92"
+                    },
+                    {
+                        "sentence": "The analysis suggested weak evidence of a possible interaction eff ect with age.",
+                        "coords": "5,56.06,227.73,194.81,8.92;5,36.85,238.73,99.61,8.92"
+                    },
+                    {
+                        "sentence": "However, the eff ect was small and strongly aff ected by the oldest age stratum (>85 years), in which there were only four patients; therefore, this fi nding is likely to be due to chance.",
+                        "coords": "5,139.05,238.73,111.81,8.92;5,36.85,249.73,214.01,8.92;5,36.85,260.72,214.02,8.92;5,36.85,271.72,133.14,8.92"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [
+                    {
+                        "start": 135,
+                        "end": 136,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    },
+                    {
+                        "start": 255,
+                        "end": 256,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    },
+                    {
+                        "start": 431,
+                        "end": 432,
+                        "text": "2",
+                        "ref_id": "TABREF3"
+                    }
+                ],
+                "eq_spans": [],
+                "section": "Results",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Adjustment for baseline variables (age, sex, PaO 2 /F I O 2 ratio, and cause) alone or in combination made no substantial diff erence to the estimate of the treatment eff ect of salbutamol or its statistical signifi cance (data not shown).",
+                        "coords": "5,43.93,282.72,185.79,8.92;5,229.62,287.91,2.25,4.46;5,231.81,282.75,8.71,8.92;5,240.42,287.91,1.67,4.46;5,242.04,282.75,6.69,8.92;5,248.62,287.91,2.25,4.46;5,36.85,293.75,214.02,8.92;5,36.85,304.74,214.02,8.92;5,36.85,315.74,214.00,8.92;5,36.85,326.74,29.41,8.92"
+                    },
+                    {
+                        "sentence": "We obtained data for cause of death for 91 of 93 patients who died by day 28 (55/55 in the salbutamol group, 36/38 in the placebo group).",
+                        "coords": "5,70.28,326.74,180.59,8.92;5,36.85,337.74,214.02,8.92;5,36.85,348.74,127.47,8.92"
+                    },
+                    {
+                        "sentence": "Because of the diversity of individual diagnoses, we grouped results for cause of death according to organ system.",
+                        "coords": "5,165.87,348.74,85.00,8.92;5,36.85,359.73,214.02,8.92;5,36.85,370.73,135.92,8.92"
+                    },
+                    {
+                        "sentence": "Diagnoses for the respiratory system were the most common primary cause of death in both groups (28 [51%] patients given salbutamol vs 20 [53%] given placebo), followed by multiorgan failure (12 [22%] vs 14 [37%]).",
+                        "coords": "5,178.51,370.73,72.36,8.92;5,36.85,381.73,214.02,8.92;5,36.85,392.73,214.02,8.92;5,36.85,403.70,214.02,8.95;5,36.85,414.70,83.31,8.95"
+                    },
+                    {
+                        "sentence": "ARDS was recorded on the death certifi cate for 11 (21%) patients in the salbutamol group, and eight (21%) in the placebo group.",
+                        "coords": "5,123.36,414.72,127.51,8.92;5,36.85,425.72,214.02,8.92;5,36.85,436.72,137.26,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 586,
+                        "end": 595,
+                        "text": "(28 [51%]",
+                        "ref_id": null
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Results",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Our fi ndings show that intravenous salbutamol given to patients with early ARDS signifi cantly increased 28-day mortality, and reduced ventilator-free days and organ failure-free days compared with those given placebo.",
+                        "coords": "5,36.85,469.75,214.02,8.92;5,36.85,480.75,214.01,8.92;5,36.85,491.74,214.02,8.92;5,36.85,502.74,214.02,8.92"
+                    },
+                    {
+                        "sentence": "Treatment was poorly tolerated because of tachycardia, arrhythmias, and lactic acidosis.",
+                        "coords": "5,36.85,513.74,214.02,8.92;5,36.85,524.74,128.13,8.92"
+                    },
+                    {
+                        "sentence": "These fi ndings were unexpected; however, they have clarifi ed whether intravenous infusion of \u03b2-2 agonists should be used in patients with ARDS (panel).",
+                        "coords": "5,169.60,524.74,81.27,8.92;5,36.85,535.74,214.02,8.92;5,36.85,546.73,214.02,8.92;5,36.85,557.73,105.96,8.92"
+                    },
+                    {
+                        "sentence": "The ALTA trial 23 of aerolised salbutamol for treatment of acute lung injury in 282 patients was stopped because the primary endpoint, ventilator-free days, had crossed predefi ned futility boundaries, making the probability of a positive trial very low.",
+                        "coords": "5,145.15,557.73,55.22,8.92;5,200.37,557.96,4.50,4.46;5,207.21,557.75,43.66,8.92;5,36.85,568.75,214.02,8.92;5,36.85,579.74,214.02,8.92;5,36.85,590.75,214.01,8.92;5,36.85,601.74,214.02,8.92;5,36.85,612.74,14.83,8.92"
+                    },
+                    {
+                        "sentence": "Nevertheless, in that trial, clinical outcomes were worse in the salbutamol group than in the placebo group, particularly in the most severely ill patients.",
+                        "coords": "5,55.59,612.74,195.28,8.92;5,36.85,623.74,214.03,8.92;5,36.85,634.74,167.25,8.92"
+                    },
+                    {
+                        "sentence": "Because we recruited a large number of ARDS patients, with characteristics similar to other multicentre trials, 2,23 from 46 multidisciplinary intensive-care units in the UK, our data could be generalised to other intensive-care units.",
+                        "coords": "5,206.78,634.74,44.09,8.92;5,36.85,645.74,214.02,8.92;5,36.85,656.73,184.99,8.92;5,221.83,656.96,7.88,4.46;5,232.07,656.75,18.79,8.92;5,36.85,667.75,214.02,8.92;5,36.85,678.74,205.38,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 475,
+                        "end": 477,
+                        "text": "23",
+                        "ref_id": "BIBREF23"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Discussion",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "Our trial has some limitations.",
+                        "coords": "5,43.94,689.74,119.89,8.92"
+                    },
+                    {
+                        "sentence": "First, mortality in the placebo group was much lower than anticipated.",
+                        "coords": "5,167.63,689.74,83.23,8.92;5,36.85,700.74,192.96,8.92"
+                    },
+                    {
+                        "sentence": "This outcome could have been caused by changes in the mortality of ARDS because of improvements in treatments. 24",
+                        "coords": "5,234.36,700.74,16.52,8.92;5,36.85,711.74,214.02,8.92;5,36.85,722.74,214.02,8.92;5,36.85,733.73,42.01,8.92;5,78.75,733.96,4.21,4.46"
+                    },
+                    {
+                        "sentence": "Second, because of the nature of pragmatic trials, we did not obtain prospective data for cardiovascular comorbidity and causes of deaths, including results of post-mortem.",
+                        "coords": "5,86.12,733.75,164.74,8.92;5,36.85,744.75,214.02,8.92;5,262.20,469.74,214.02,8.92;5,262.20,480.74,50.08,8.92"
+                    },
+                    {
+                        "sentence": "These data could provide useful infor mation about possible explanations of these unexpected trial results.",
+                        "coords": "5,314.10,480.74,162.11,8.92;5,262.20,491.74,214.02,8.92;5,262.20,502.74,26.84,8.92"
+                    },
+                    {
+                        "sentence": "Third, the trial was stopped at a smaller sample size than was planned; therefore, the precision of the treatment eff ect estimates is lower than expected.",
+                        "coords": "5,292.34,502.74,183.88,8.92;5,262.20,513.73,214.02,8.92;5,262.20,524.73,184.50,8.92"
+                    },
+                    {
+                        "sentence": "A large sample size and narrow CIs might clarify salbutamol's eff ects on secondary outcomes, such as mortality rates in intensive-care units and hospitals.",
+                        "coords": "5,449.34,524.73,26.88,8.92;5,262.20,535.73,214.02,8.92;5,262.20,546.73,214.02,8.92;5,262.20,557.73,131.15,8.92"
+                    },
+                    {
+                        "sentence": "Fourth, although we recommended best practice for ARDS (protective ventilation, conservative fl uid management), we did not measure details of clinical management.",
+                        "coords": "5,397.45,557.73,78.76,8.92;5,262.20,568.72,214.02,8.92;5,262.20,579.72,214.02,8.92;5,262.20,590.72,152.34,8.92"
+                    },
+                    {
+                        "sentence": "We selected the dose of salbutamol (15 \u03bcg/kg ideal bodyweight per h) after an early dose-ranging study identifi ed it to be the maximum dose that critically ill patients could receive without an increase in ventricular, atrial tachycardia, or ectopy.",
+                        "coords": "5,417.45,590.72,58.77,8.92;5,262.20,601.72,214.02,8.95;5,262.20,612.75,214.01,8.92;5,262.20,623.74,214.02,8.92;5,262.20,634.74,194.22,8.92"
+                    },
+                    {
+                        "sentence": "This dose was used in the BALTI study 25 and resulted in steadystate plasma concen trations of salbutamol (1\u00d710-\u2076 M), and is associated with a 100% increase in clearance of basal alveolar fl uid in animal studies of ARDS.",
+                        "coords": "5,459.71,634.74,16.52,8.92;5,262.20,645.74,124.51,8.92;5,386.61,645.96,4.45,4.46;5,393.23,645.75,83.00,8.92;5,262.20,656.75,214.02,8.92;5,262.20,667.74,214.02,8.92;5,262.20,678.74,148.99,8.92"
+                    },
+                    {
+                        "sentence": "The dose is at the high end of the manufacturer's recommended dosing regimen; as such, a benefi cial eff ect of salbutamol could have been outweighed by its adverse eff ects at this dose.",
+                        "coords": "5,412.99,678.74,63.23,8.92;5,262.20,689.74,214.02,8.92;5,262.20,700.74,214.01,8.92;5,262.19,711.74,205.82,8.92"
+                    },
+                    {
+                        "sentence": "A lower dose of salbutamol might have produced a diff erent outcome, so the conclusions from our study can relate only to the dose given.",
+                        "coords": "5,470.16,711.74,6.05,8.92;5,262.19,722.73,214.01,8.92;5,262.19,733.73,214.02,8.92;5,262.19,744.73,64.08,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 212,
+                        "end": 214,
+                        "text": "24",
+                        "ref_id": "BIBREF24"
+                    },
+                    {
+                        "start": 1256,
+                        "end": 1258,
+                        "text": "25",
+                        "ref_id": "BIBREF25"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Discussion",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "We searched PubMed and The Cochrane Library from Jan 1, 1960, to Aug 31, 2011, for randomised controlled trials or systematic reviews investigating the use of \u03b2 agonists for the treatment of patients with established acute respiratory distress syndrome (ARDS).",
+                        "coords": "5,269.71,164.91,281.05,7.60;5,269.71,175.91,280.19,7.60;5,269.71,186.90,269.27,7.60;5,269.71,197.90,25.78,7.60"
+                    },
+                    {
+                        "sentence": "We used a combination of text (\"salbutamol\", \"beta agonist\", \"ARDS\") and medical subject headings terms (\"adrenergic beta-agonists\", \"respiratory distress syndrome\", \"adult\").",
+                        "coords": "5,296.89,197.90,243.35,7.60;5,269.71,208.90,265.13,7.60;5,269.71,219.90,67.14,7.60"
+                    },
+                    {
+                        "sentence": "We identifi ed two randomised controlled trials 13,23 and no systematic reviews.",
+                        "coords": "5,338.25,219.72,187.01,7.78;5,269.71,230.91,64.00,7.60"
+                    },
+                    {
+                        "sentence": "Both trials were at low risk of bias, according to the criteria of the Cochrane risk of bias method.",
+                        "coords": "5,335.45,230.91,213.23,7.60;5,269.71,241.91,97.71,7.60"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 483,
+                        "end": 486,
+                        "text": "13,",
+                        "ref_id": "BIBREF13"
+                    },
+                    {
+                        "start": 487,
+                        "end": 489,
+                        "text": "23",
+                        "ref_id": "BIBREF23"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Systematic review",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "The \u03b2-agonist lung injury trial (BALTI) 13 recruited 40 patients and used an intravenous infusion of salbutamol.",
+                        "coords": "5,269.71,256.41,276.20,7.78;5,269.71,267.59,74.89,7.60"
+                    },
+                    {
+                        "sentence": "Findings from the trial showed reductions in extravascular lung water and plateau airway pressure in the group given salbutamol, but no diff erence in 28-day mortality (11 [58%] of 19 patients died in the salbutamol group vs 14 [67%] of 21 in the placebo group). 12",
+                        "coords": "5,346.21,267.59,203.53,7.60;5,269.71,278.59,275.55,7.60;5,269.71,289.59,277.61,7.62;5,269.71,300.41,84.50,7.78"
+                    },
+                    {
+                        "sentence": "The aerosolised beta-2 agonist for treatment of acute lung injury (ALTA) 23 trial randomly assigned 282 patients with acute lung injury to receive aerosolised salbutamol (5 mg) or placebo.",
+                        "coords": "5,355.36,300.59,188.95,7.60;5,269.71,311.41,271.25,7.78;5,269.70,322.59,134.94,7.60"
+                    },
+                    {
+                        "sentence": "The trial was stopped early on grounds of futility.",
+                        "coords": "5,405.80,322.59,132.83,7.60;5,269.70,333.59,23.33,7.60"
+                    },
+                    {
+                        "sentence": "The number of ventilator-free days (salbutamol 14\u20224 days vs placebo 16\u20226 days; 95% CI for the diff erence -4\u20227 to 0\u20223 days; p=0\u2022087) or hospital mortality (35 [23%] of 152 patients died in the salbutamol group vs 23 [17%] of 130 in the placebo group; 95% CI for the diff erence -4\u20220 to 14\u20227; p=0\u202230) did not diff er signifi cantly.",
+                        "coords": "5,294.19,333.59,255.12,7.62;5,269.70,344.59,274.50,7.60;5,269.70,355.59,289.64,7.62;5,269.70,366.59,210.75,7.60"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 40,
+                        "end": 42,
+                        "text": "13",
+                        "ref_id": "BIBREF13"
+                    },
+                    {
+                        "start": 375,
+                        "end": 377,
+                        "text": "12",
+                        "ref_id": "BIBREF12"
+                    },
+                    {
+                        "start": 451,
+                        "end": 453,
+                        "text": "23",
+                        "ref_id": "BIBREF23"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Systematic review",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "The eff ects on ventilator-free days and mortality in ALTA were consistent with those in BALTI-2, but our trial shows clearly that intravenous administration of salbutamol at 15 \u03bcg/kg ideal bodyweight per h to patients with early ARDS was poorly tolerated, is unlikely to be benefi cial, and could worsen outcomes.",
+                        "coords": "5,269.70,394.26,278.51,7.60;5,269.70,405.25,271.71,7.60;5,269.70,416.25,269.43,7.61;5,269.71,427.26,172.01,7.60"
+                    },
+                    {
+                        "sentence": "Routine use of \u03b2-2 agonist therapy in mechanically ventilated patients with ARDS cannot be recommended.",
+                        "coords": "5,443.32,427.26,111.77,7.60;5,269.71,438.26,233.77,7.60"
+                    },
+                    {
+                        "sentence": "Confl icts of interest FGS and GDP have received an investigator-led research grant from GlaxoSmithKline.",
+                        "coords": "6,344.41,231.52,55.43,6.08;6,344.41,239.55,200.93,6.94;6,344.41,248.30,52.90,6.94"
+                    },
+                    {
+                        "sentence": "GDP and DFM have consulted for, sat on advisory boards for, and received lecture fees from GlaxoSmithKline, and have received lecture fees from AstraZeneca for educational meetings (all unrelated to \u03b2 agonists).",
+                        "coords": "6,399.12,248.30,147.97,6.94;6,344.41,257.05,205.36,6.94;6,344.41,265.80,201.80,6.94;6,344.41,274.55,71.64,6.94"
+                    },
+                    {
+                        "sentence": "All other authors declare that they have no confl icts of interest.",
+                        "coords": "6,417.85,274.55,125.44,6.94;6,344.41,283.30,58.58,6.94"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Interpretation",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "The mechanisms underlying the increased mortality in the salbutamol group remain unclear.",
+                        "coords": "6,126.14,128.75,206.94,8.92;6,119.06,139.75,146.02,8.92"
+                    },
+                    {
+                        "sentence": "That the survival curves for salbutamol and placebo seem to continue to diverge after the end of the salbutamol infusion might be notable, so the mechanism could be complex.",
+                        "coords": "6,268.21,139.75,64.86,8.92;6,119.06,150.74,214.02,8.92;6,119.06,161.74,214.02,8.92;6,119.06,172.74,173.63,8.92"
+                    },
+                    {
+                        "sentence": "The ALTA investigators 23 explored possible explanations for the scarcity of eff ect of \u03b2-2 agonists, including poor drug delivery to injured and oedematous alveoli, inadequate alveolar epithelial response, downregulation of \u03b2-2 receptors, and genetic variation.",
+                        "coords": "6,295.18,172.74,37.90,8.92;6,119.06,183.74,48.01,8.92;6,167.06,183.96,4.50,4.46;6,177.19,183.74,155.89,8.92;6,119.06,194.74,214.01,8.92;6,119.06,205.74,214.02,8.92;6,119.06,216.74,214.02,8.92;6,119.06,227.74,143.56,8.92"
+                    },
+                    {
+                        "sentence": "Adverse eff ects on the cardiovascular system-eg, tachyarrythmias, cardiomyopathy and myocardial infarction-could have been harmful. 26,27",
+                        "coords": "6,264.71,227.74,68.37,8.92;6,119.06,238.73,214.02,8.92;6,119.06,249.73,214.02,8.92;6,119.06,260.73,33.26,8.92;6,152.31,260.96,9.80,4.46"
+                    },
+                    {
+                        "sentence": "Recruitment of damaged alveoli 28 and activation of the renin-angiotensin aldosterone system could adversely aff ect pulmonary fl uid balance. 29",
+                        "coords": "6,169.87,260.75,136.81,8.92;6,306.68,260.96,4.50,4.46;6,318.94,260.75,14.13,8.92;6,119.05,271.75,214.02,8.92;6,119.05,282.74,177.38,8.92;6,296.43,282.96,4.50,4.46"
+                    },
+                    {
+                        "sentence": "indings from this multicentre trial provide evidence that intravenous salbutamol in the early course of ARDS was poorly tolerated, is unlikely to be benefi cial, and could worsen outcomes.",
+                        "coords": "6,126.14,293.75,206.93,8.92;6,119.06,304.75,214.02,8.92;6,119.06,315.74,214.01,8.92;6,119.06,326.74,97.70,8.92"
+                    },
+                    {
+                        "sentence": "Routine use of \u03b2-2 agonist therapy in mechanically ventilated patients with ARDS cannot be recommended.",
+                        "coords": "6,222.04,326.74,111.03,8.92;6,119.06,337.74,214.02,8.92;6,119.06,348.74,96.26,8.92"
+                    }
+                ],
+                "cite_spans": [
+                    {
+                        "start": 285,
+                        "end": 287,
+                        "text": "23",
+                        "ref_id": "BIBREF23"
+                    },
+                    {
+                        "start": 657,
+                        "end": 660,
+                        "text": "26,",
+                        "ref_id": "BIBREF26"
+                    },
+                    {
+                        "start": 661,
+                        "end": 663,
+                        "text": "27",
+                        "ref_id": "BIBREF27"
+                    },
+                    {
+                        "start": 695,
+                        "end": 697,
+                        "text": "28",
+                        "ref_id": "BIBREF28"
+                    },
+                    {
+                        "start": 807,
+                        "end": 809,
+                        "text": "29",
+                        "ref_id": "BIBREF29"
+                    }
+                ],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Interpretation",
+                "sec_num": null
+            },
+            {
+                "text": [],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "",
+                "sec_num": null
+            }
+        ],
+        "back_matter": [
+            {
+                "text": [
+                    {
+                        "sentence": "The drug supply was funded by the Department of Health, UK, and the internal pilot was funded by the Intensive Care Foundation, UK.",
+                        "coords": "6,344.41,305.04,209.25,6.94;6,344.41,313.79,188.53,6.94"
+                    },
+                    {
+                        "sentence": "GDP was funded by a Clinician Scientist Award from the National Institute for Health Research.",
+                        "coords": "6,534.69,313.79,14.60,6.94;6,344.41,322.54,204.27,6.94;6,344.41,331.29,60.40,6.94"
+                    },
+                    {
+                        "sentence": "We thank all patients and their legal representatives who participated in the \u03b2-2 agonist lung injury trial (BALTI-2), all research nurses and the pharmacists in all participating centres for their help, and medical and nursing staff in participating centres who cared for patients and collected data.",
+                        "coords": "6,406.56,331.29,151.82,6.94;6,344.41,340.04,190.93,6.94;6,344.41,348.79,212.23,6.94;6,344.41,357.54,205.94,6.94;6,344.41,366.29,89.32,6.94"
+                    },
+                    {
+                        "sentence": "This trial was funded by the Medical Research Council (UK, number 84730).",
+                        "coords": "6,435.48,366.29,106.67,6.94;6,344.41,375.04,114.85,6.94"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Acknowledgments",
+                "sec_num": null
+            },
+            {
+                "text": [
+                    {
+                        "sentence": "FGS (chief investigator), DY, GDP, and DFM conceived the study and designed it with SG (senior trialist and statistician) and SEL (director of the clinical trials unit).",
+                        "coords": "6,119.05,372.00,203.69,6.94;6,119.05,380.75,209.46,6.94;6,119.05,389.50,66.28,6.94"
+                    },
+                    {
+                        "sentence": "FGS, SG, GDP, SEL, and DY obtained the funding and managed the undertaking of the trial.",
+                        "coords": "6,187.08,389.50,123.11,6.94;6,119.05,398.25,148.02,6.94"
+                    },
+                    {
+                        "sentence": "DFM, WT, and ZK contributed substantially to trial recruitment.",
+                        "coords": "6,268.82,398.25,54.49,6.94;6,119.05,407.00,132.36,6.94"
+                    },
+                    {
+                        "sentence": "SG did all statistical analyses, and GDP, FGS, SEL, WT, ZK, DFM, and DY interpreted the data.",
+                        "coords": "6,253.16,407.00,58.16,6.94;6,119.05,415.75,203.69,6.94;6,119.05,424.50,13.97,6.94"
+                    },
+                    {
+                        "sentence": "FGS and SG drafted the report with input editing from GDP, SEL, DFM, WT, ZK, and DY.",
+                        "coords": "6,134.77,424.50,194.40,6.94;6,119.05,433.25,68.30,6.94"
+                    }
+                ],
+                "cite_spans": [],
+                "ref_spans": [],
+                "eq_spans": [],
+                "section": "Contributors",
+                "sec_num": null
+            }
+        ],
+        "bib_entries": {
+            "BIBREF0": {
+                "ref_id": "b0",
+                "title": "Epidemiology and outcome of acute lung injury in European intensive care units. Results from the ALIVE study",
+                "authors": [
+                    {
+                        "first": "C",
+                        "middle": [],
+                        "last": "Brun-Buisson",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "C",
+                        "middle": [],
+                        "last": "Minelli",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "G",
+                        "middle": [],
+                        "last": "Bertolini",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2004,
+                "venue": "Intensive Care Med",
+                "volume": "30",
+                "issue": "",
+                "pages": "51--61",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Brun-Buisson C, Minelli C, Bertolini G, et al. Epidemiology and outcome of acute lung injury in European intensive care units. Results from the ALIVE study. Intensive Care Med 2004; 30: 51-61.",
+                "links": null
+            },
+            "BIBREF1": {
+                "ref_id": "b1",
+                "title": "Neuromuscular blockers in early acute respiratory distress syndrome",
+                "authors": [
+                    {
+                        "first": "L",
+                        "middle": [],
+                        "last": "Papazian",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "M"
+                        ],
+                        "last": "Forel",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [],
+                        "last": "Gacouin",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2010,
+                "venue": "N Engl J Med",
+                "volume": "363",
+                "issue": "",
+                "pages": "1107--1116",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Papazian L, Forel JM, Gacouin A, et al. Neuromuscular blockers in early acute respiratory distress syndrome. N Engl J Med 2010; 363: 1107-16.",
+                "links": null
+            },
+            "BIBREF2": {
+                "ref_id": "b2",
+                "title": "Incidence and outcomes of acute lung injury",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Rubenfeld",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "E",
+                        "middle": [],
+                        "last": "Caldwell",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "E",
+                        "middle": [],
+                        "last": "Peabody",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2005,
+                "venue": "N Engl J Med",
+                "volume": "353",
+                "issue": "",
+                "pages": "1685--1693",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Rubenfeld GD, Caldwell E, Peabody E, et al. Incidence and outcomes of acute lung injury. N Engl J Med 2005; 353: 1685-93.",
+                "links": null
+            },
+            "BIBREF3": {
+                "ref_id": "b3",
+                "title": "Reduced quality of life in survivors of acute respiratory distress syndrome compared with critically ill control patients",
+                "authors": [
+                    {
+                        "first": "T",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Davidson",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "E",
+                        "middle": [
+                            "S"
+                        ],
+                        "last": "Caldwell",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Curtis",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "L",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Hudson",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "K",
+                        "middle": [
+                            "P"
+                        ],
+                        "last": "Steinberg",
+                        "suffix": ""
+                    }
+                ],
+                "year": 1999,
+                "venue": "JAMA",
+                "volume": "281",
+                "issue": "",
+                "pages": "354--360",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Davidson TA, Caldwell ES, Curtis JR, Hudson LD, Steinberg KP. Reduced quality of life in survivors of acute respiratory distress syndrome compared with critically ill control patients. JAMA 1999; 281: 354-60.",
+                "links": null
+            },
+            "BIBREF4": {
+                "ref_id": "b4",
+                "title": "Survivors of acute respiratory distress syndrome: relationship between pulmonary dysfunction and long-term health-related quality of life",
+                "authors": [
+                    {
+                        "first": "D",
+                        "middle": [
+                            "K"
+                        ],
+                        "last": "Heyland",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [],
+                        "last": "Groll",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [],
+                        "last": "Caeser",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2005,
+                "venue": "Crit Care Med",
+                "volume": "33",
+                "issue": "",
+                "pages": "1549--1556",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Heyland DK, Groll D, Caeser M. Survivors of acute respiratory distress syndrome: relationship between pulmonary dysfunction and long-term health-related quality of life. Crit Care Med 2005; 33: 1549-56.",
+                "links": null
+            },
+            "BIBREF5": {
+                "ref_id": "b5",
+                "title": "ECMO in ARDS: a long-term follow-up study regarding pulmonary morphology and function and health-related quality of life",
+                "authors": [
+                    {
+                        "first": "V",
+                        "middle": [
+                            "B"
+                        ],
+                        "last": "Linden",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [
+                            "K"
+                        ],
+                        "last": "Lidegran",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "G",
+                        "middle": [],
+                        "last": "Frisen",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "P",
+                        "middle": [],
+                        "last": "Dahlgren",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "B",
+                        "middle": [
+                            "P"
+                        ],
+                        "last": "Frenckner",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Larsen",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2009,
+                "venue": "Acta Anaesthesiol Scand",
+                "volume": "53",
+                "issue": "",
+                "pages": "489--495",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Linden VB, Lidegran MK, Frisen G, Dahlgren P, Frenckner BP, Larsen F. ECMO in ARDS: a long-term follow-up study regarding pulmonary morphology and function and health-related quality of life. Acta Anaesthesiol Scand 2009; 53: 489-95.",
+                "links": null
+            },
+            "BIBREF6": {
+                "ref_id": "b6",
+                "title": "Antiinfl ammatory eff ects of salmeterol after inhalation of lipopolysaccharide by healthy volunteers",
+                "authors": [
+                    {
+                        "first": "N",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Maris",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [
+                            "F"
+                        ],
+                        "last": "De Vos",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [
+                            "C"
+                        ],
+                        "last": "Dessing",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2005,
+                "venue": "Am J Respir Crit Care Med",
+                "volume": "172",
+                "issue": "",
+                "pages": "878--884",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Maris NA, de Vos AF, Dessing MC, et al. Antiinfl ammatory eff ects of salmeterol after inhalation of lipopolysaccharide by healthy volunteers. Am J Respir Crit Care Med 2005; 172: 878-84.",
+                "links": null
+            },
+            "BIBREF7": {
+                "ref_id": "b7",
+                "title": "Bench-to-bedside review: beta2-agonists and the acute respiratory distress syndrome",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Perkins",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "F"
+                        ],
+                        "last": "Mcauley",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [],
+                        "last": "Richter",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Thickett",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Gao",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2004,
+                "venue": "Crit Care",
+                "volume": "8",
+                "issue": "",
+                "pages": "25--32",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Perkins GD, McAuley DF, Richter A, Thickett DR, Gao F. Bench-to-bedside review: beta2-agonists and the acute respiratory distress syndrome. Crit Care 2004; 8: 25-32.",
+                "links": null
+            },
+            "BIBREF8": {
+                "ref_id": "b8",
+                "title": "Lung epithelial fl uid transport and the resolution of pulmonary edema",
+                "authors": [
+                    {
+                        "first": "M",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Matthay",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "H",
+                        "middle": [
+                            "G"
+                        ],
+                        "last": "Folkesson",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "C",
+                        "middle": [],
+                        "last": "Clerici",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2002,
+                "venue": "Physiol Rev",
+                "volume": "82",
+                "issue": "",
+                "pages": "569--600",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Matthay MA, Folkesson HG, Clerici C. Lung epithelial fl uid transport and the resolution of pulmonary edema. Physiol Rev 2002; 82: 569-600.",
+                "links": null
+            },
+            "BIBREF9": {
+                "ref_id": "b9",
+                "title": "Physiological and biochemical markers of alveolar epithelial barrier dysfunction in perfused human lungs",
+                "authors": [
+                    {
+                        "first": "J",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Frank",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "R",
+                        "middle": [],
+                        "last": "Briot",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "W"
+                        ],
+                        "last": "Lee",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [],
+                        "last": "Ishizaka",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "T",
+                        "middle": [],
+                        "last": "Uchida",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Matthay",
+                        "suffix": ""
+                    }
+                ],
+                "year": null,
+                "venue": "",
+                "volume": "",
+                "issue": "",
+                "pages": "",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Frank JA, Briot R, Lee JW, Ishizaka A, Uchida T, Matthay MA. Physiological and biochemical markers of alveolar epithelial barrier dysfunction in perfused human lungs.",
+                "links": null
+            },
+            "BIBREF11": {
+                "ref_id": "b11",
+                "title": "Alveolar fl uid clearance in the resected human lung",
+                "authors": [
+                    {
+                        "first": "T",
+                        "middle": [],
+                        "last": "Sakuma",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "G",
+                        "middle": [],
+                        "last": "Okaniwa",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "T",
+                        "middle": [],
+                        "last": "Nakada",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "T",
+                        "middle": [],
+                        "last": "Nishimura",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "S",
+                        "middle": [],
+                        "last": "Fujimura",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Matthay",
+                        "suffix": ""
+                    }
+                ],
+                "year": 1994,
+                "venue": "Am J Respir Crit Care Med",
+                "volume": "150",
+                "issue": "",
+                "pages": "305--310",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Sakuma T, Okaniwa G, Nakada T, Nishimura T, Fujimura S, Matthay MA. Alveolar fl uid clearance in the resected human lung. Am J Respir Crit Care Med 1994; 150: 305-10.",
+                "links": null
+            },
+            "BIBREF12": {
+                "ref_id": "b12",
+                "title": "In vivo and in vitro eff ects of salbutamol on alveolar epithelial repair in acute lung injury",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Perkins",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Gao",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Thickett",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2008,
+                "venue": "Thorax",
+                "volume": "63",
+                "issue": "",
+                "pages": "215--220",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Perkins GD, Gao F, Thickett DR. In vivo and in vitro eff ects of salbutamol on alveolar epithelial repair in acute lung injury. Thorax 2008; 63: 215-20.",
+                "links": null
+            },
+            "BIBREF13": {
+                "ref_id": "b13",
+                "title": "The beta-agonist lung injury trial (BALTI): a randomized placebo-controlled clinical trial",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Perkins",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "F"
+                        ],
+                        "last": "Mcauley",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Thickett",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Gao",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2006,
+                "venue": "Am J Respir Crit Care Med",
+                "volume": "173",
+                "issue": "",
+                "pages": "281--287",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Perkins GD, McAuley DF, Thickett DR, Gao F. The beta-agonist lung injury trial (BALTI): a randomized placebo-controlled clinical trial. Am J Respir Crit Care Med 2006; 173: 281-87.",
+                "links": null
+            },
+            "BIBREF14": {
+                "ref_id": "b14",
+                "title": "The American-European Consensus Conference on ARDS. Defi nitions, mechanisms, relevant outcomes, and clinical trial coordination",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Bernard",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [],
+                        "last": "Artigas",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "K",
+                        "middle": [
+                            "L"
+                        ],
+                        "last": "Brigham",
+                        "suffix": ""
+                    }
+                ],
+                "year": 1994,
+                "venue": "Am J Respir Crit Care Med",
+                "volume": "149",
+                "issue": "",
+                "pages": "818--824",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Bernard GR, Artigas A, Brigham KL, et al. The American-European Consensus Conference on ARDS. Defi nitions, mechanisms, relevant outcomes, and clinical trial coordination. Am J Respir Crit Care Med 1994; 149: 818-24.",
+                "links": null
+            },
+            "BIBREF15": {
+                "ref_id": "b15",
+                "title": "20/EC of the European Parliament and the Council of the European Union: the implementation of good clinical practice in the conduct of clinical trials on medicinal products for human use",
+                "authors": [],
+                "year": 2001,
+                "venue": "Off J Eur Communities",
+                "volume": "121",
+                "issue": "",
+                "pages": "34--44",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Directive 2001/20/EC of the European Parliament and the Council of the European Union: the implementation of good clinical practice in the conduct of clinical trials on medicinal products for human use. Off J Eur Communities 2001; 121: 34-44.",
+                "links": null
+            },
+            "BIBREF16": {
+                "ref_id": "b16",
+                "title": "Beta Agonist Lung Injury Trial-2 (BALTI-2) trial protocol: a randomised, double-blind, placebo-controlled of intravenous infusion of salbutamol in the acute respiratory distress syndrome",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Perkins",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "S",
+                        "middle": [],
+                        "last": "Gates",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "S",
+                        "middle": [
+                            "E"
+                        ],
+                        "last": "Lamb",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "C",
+                        "middle": [],
+                        "last": "Mccabe",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [],
+                        "last": "Young",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Gao",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2011,
+                "venue": "Trials",
+                "volume": "12",
+                "issue": "",
+                "pages": "",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Perkins GD, Gates S, Lamb SE, McCabe C, Young D, Gao F. Beta Agonist Lung Injury Trial-2 (BALTI-2) trial protocol: a randomised, double-blind, placebo-controlled of intravenous infusion of salbutamol in the acute respiratory distress syndrome. Trials 2011; 12: 113.",
+                "links": null
+            },
+            "BIBREF17": {
+                "ref_id": "b17",
+                "title": "The Acute Respiratory Distress Syndrome Network. Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. The Acute Respiratory Distress Syndrome Network",
+                "authors": [],
+                "year": 2000,
+                "venue": "N Engl J Med",
+                "volume": "342",
+                "issue": "",
+                "pages": "1301--1308",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "The Acute Respiratory Distress Syndrome Network. Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. The Acute Respiratory Distress Syndrome Network. N Engl J Med 2000; 342: 1301-08.",
+                "links": null
+            },
+            "BIBREF18": {
+                "ref_id": "b18",
+                "title": "Comparison of two fl uid-management strategies in acute lung injury",
+                "authors": [
+                    {
+                        "first": "H",
+                        "middle": [
+                            "P"
+                        ],
+                        "last": "Wiedemann",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [
+                            "P"
+                        ],
+                        "last": "Wheeler",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "G",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Bernard",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2006,
+                "venue": "N Engl J Med",
+                "volume": "354",
+                "issue": "",
+                "pages": "2564--2575",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Wiedemann HP, Wheeler AP, Bernard GR, et al. Comparison of two fl uid-management strategies in acute lung injury. N Engl J Med 2006; 354: 2564-75.",
+                "links": null
+            },
+            "BIBREF19": {
+                "ref_id": "b19",
+                "title": "Higher versus lower positive end-expiratory pressures in patients with the acute respiratory distress syndrome",
+                "authors": [
+                    {
+                        "first": "R",
+                        "middle": [
+                            "G"
+                        ],
+                        "last": "Brower",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "P",
+                        "middle": [
+                            "N"
+                        ],
+                        "last": "Lanken",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "N",
+                        "middle": [],
+                        "last": "Macintyre",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2004,
+                "venue": "N Engl J Med",
+                "volume": "351",
+                "issue": "",
+                "pages": "327--336",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Brower RG, Lanken PN, MacIntyre N, et al. Higher versus lower positive end-expiratory pressures in patients with the acute respiratory distress syndrome. N Engl J Med 2004; 351: 327-36.",
+                "links": null
+            },
+            "BIBREF20": {
+                "ref_id": "b20",
+                "title": "Statistical evaluation of ventilator-free days as an effi cacy measure in clinical trials of treatments for acute respiratory distress syndrome",
+                "authors": [
+                    {
+                        "first": "D",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Schoenfeld",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "G",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Bernard",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2002,
+                "venue": "Crit Care Med",
+                "volume": "30",
+                "issue": "",
+                "pages": "1772--1777",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Schoenfeld DA, Bernard GR. Statistical evaluation of ventilator-free days as an effi cacy measure in clinical trials of treatments for acute respiratory distress syndrome. Crit Care Med 2002; 30: 1772-77.",
+                "links": null
+            },
+            "BIBREF21": {
+                "ref_id": "b21",
+                "title": "Can a score derived from the Critical Care Minimum Data Set be used as a marker of organ dysfunction?-a pilot study",
+                "authors": [
+                    {
+                        "first": "T",
+                        "middle": [
+                            "W"
+                        ],
+                        "last": "Felton",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "R",
+                        "middle": [],
+                        "last": "Sander",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [],
+                        "last": "Al-Aloul",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "P",
+                        "middle": [],
+                        "last": "Dark",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "A",
+                        "middle": [
+                            "M"
+                        ],
+                        "last": "Bentley",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2009,
+                "venue": "BMC Res Notes",
+                "volume": "2",
+                "issue": "",
+                "pages": "",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Felton TW, Sander R, Al-Aloul M, Dark P, Bentley AM. Can a score derived from the Critical Care Minimum Data Set be used as a marker of organ dysfunction?-a pilot study. BMC Res Notes 2009; 2: 77.",
+                "links": null
+            },
+            "BIBREF22": {
+                "ref_id": "b22",
+                "title": "Design and analysis of randomized clinical trials requiring prolonged observation of each patient. I. Introduction and design",
+                "authors": [
+                    {
+                        "first": "R",
+                        "middle": [],
+                        "last": "Peto",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [
+                            "C"
+                        ],
+                        "last": "Pike",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "P",
+                        "middle": [],
+                        "last": "Armitage",
+                        "suffix": ""
+                    }
+                ],
+                "year": 1976,
+                "venue": "Br J Cancer",
+                "volume": "34",
+                "issue": "",
+                "pages": "585--612",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Peto R, Pike MC, Armitage P, et al. Design and analysis of randomized clinical trials requiring prolonged observation of each patient. I. Introduction and design. Br J Cancer 1976; 34: 585-612.",
+                "links": null
+            },
+            "BIBREF23": {
+                "ref_id": "b23",
+                "title": "Randomized, placebo-controlled clinical trial of an aerosolized beta-2 agonist for treatment of acute lung injury",
+                "authors": [
+                    {
+                        "first": "M",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Matthay",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "R",
+                        "middle": [
+                            "G"
+                        ],
+                        "last": "Brower",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "S",
+                        "middle": [],
+                        "last": "Carson",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2011,
+                "venue": "Am J Respir Crit Care Med",
+                "volume": "342",
+                "issue": "",
+                "pages": "1301--1308",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "The Acute Respiratory Distress Syndrome Network. Matthay MA, Brower RG, Carson S, et al. Randomized, placebo-controlled clinical trial of an aerosolized beta-2 agonist for treatment of acute lung injury. Am J Respir Crit Care Med 2011; 342: 1301-08.",
+                "links": null
+            },
+            "BIBREF24": {
+                "ref_id": "b24",
+                "title": "Eight-year trend of acute respiratory distress syndrome: a population-based study in Olmsted County, Minnesota",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [],
+                        "last": "Li",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [],
+                        "last": "Malinchoc",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "R",
+                        "middle": [],
+                        "last": "Cartin-Ceba",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2011,
+                "venue": "Am J Respir Crit Care Med",
+                "volume": "183",
+                "issue": "",
+                "pages": "59--66",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Li G, Malinchoc M, Cartin-Ceba R, et al. Eight-year trend of acute respiratory distress syndrome: a population-based study in Olmsted County, Minnesota. Am J Respir Crit Care Med 2011; 183: 59-66.",
+                "links": null
+            },
+            "BIBREF25": {
+                "ref_id": "b25",
+                "title": "In vitro and in vivo eff ects of salbutamol on neutrophil function in acute lung injury",
+                "authors": [
+                    {
+                        "first": "G",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Perkins",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "N",
+                        "middle": [],
+                        "last": "Nathani",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "F"
+                        ],
+                        "last": "Mcauley",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Gao",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Thickett",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2007,
+                "venue": "Thorax",
+                "volume": "62",
+                "issue": "",
+                "pages": "36--42",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Perkins GD, Nathani N, McAuley DF, Gao F, Thickett DR. In vitro and in vivo eff ects of salbutamol on neutrophil function in acute lung injury. Thorax 2007; 62: 36-42.",
+                "links": null
+            },
+            "BIBREF26": {
+                "ref_id": "b26",
+                "title": "Should acute treatment with inhaled beta agonists be withheld from patients with dyspnea who may have heart failure?",
+                "authors": [
+                    {
+                        "first": "C",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Maak",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Tabas",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [
+                            "E"
+                        ],
+                        "last": "Mcclintock",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2011,
+                "venue": "J Emerg Med",
+                "volume": "40",
+                "issue": "",
+                "pages": "135--145",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Maak CA, Tabas JA, McClintock DE. Should acute treatment with inhaled beta agonists be withheld from patients with dyspnea who may have heart failure? J Emerg Med 2011; 40: 135-45.",
+                "links": null
+            },
+            "BIBREF27": {
+                "ref_id": "b27",
+                "title": "Association between inhaled beta-agonists and the risk of unstable angina and myocardial infarction",
+                "authors": [
+                    {
+                        "first": "D",
+                        "middle": [
+                            "H"
+                        ],
+                        "last": "Au",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Curtis",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "N",
+                        "middle": [
+                            "R"
+                        ],
+                        "last": "Every",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "M",
+                        "middle": [
+                            "B"
+                        ],
+                        "last": "Mcdonell",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "S",
+                        "middle": [
+                            "D"
+                        ],
+                        "last": "Fihn",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2002,
+                "venue": "Chest",
+                "volume": "121",
+                "issue": "",
+                "pages": "846--851",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Au DH, Curtis JR, Every NR, McDonell MB, Fihn SD. Association between inhaled beta-agonists and the risk of unstable angina and myocardial infarction. Chest 2002; 121: 846-51.",
+                "links": null
+            },
+            "BIBREF28": {
+                "ref_id": "b28",
+                "title": "Increased cardiac index due to terbutaline treatment aggravates capillary-alveolar macromolecular leakage in oleic acid lung injury in dogs",
+                "authors": [
+                    {
+                        "first": "R",
+                        "middle": [],
+                        "last": "Briot",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "S",
+                        "middle": [],
+                        "last": "Bayat",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "D",
+                        "middle": [],
+                        "last": "Anglade",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "L"
+                        ],
+                        "last": "Martiel",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "F",
+                        "middle": [],
+                        "last": "Grimbert",
+                        "suffix": ""
+                    }
+                ],
+                "year": 2009,
+                "venue": "Crit Care",
+                "volume": "13",
+                "issue": "",
+                "pages": "",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Briot R, Bayat S, Anglade D, Martiel JL, Grimbert F. Increased cardiac index due to terbutaline treatment aggravates capillary-alveolar macromolecular leakage in oleic acid lung injury in dogs. Crit Care 2009; 13: R166.",
+                "links": null
+            },
+            "BIBREF29": {
+                "ref_id": "b29",
+                "title": "The eff ect of nebulized albuterol on the activity of the renin-angiotensin system in asthma",
+                "authors": [
+                    {
+                        "first": "E",
+                        "middle": [
+                            "A"
+                        ],
+                        "last": "Millar",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "J",
+                        "middle": [
+                            "M"
+                        ],
+                        "last": "Connell",
+                        "suffix": ""
+                    },
+                    {
+                        "first": "N",
+                        "middle": [
+                            "C"
+                        ],
+                        "last": "Thomson",
+                        "suffix": ""
+                    }
+                ],
+                "year": 1997,
+                "venue": "Chest",
+                "volume": "111",
+                "issue": "",
+                "pages": "71--74",
+                "other_ids": {},
+                "num": null,
+                "urls": [],
+                "raw_text": "Millar EA, Connell JM, Thomson NC. The eff ect of nebulized albuterol on the activity of the renin-angiotensin system in asthma. Chest 1997; 111: 71-74.",
+                "links": null
+            }
+        },
+        "ref_entries": {
+            "FIGREF1": {
+                "fig_num": "1",
+                "type_str": "figure",
+                "text": "Figure 1: Trial profi le",
+                "uris": null,
+                "num": null
+            },
+            "FIGREF2": {
+                "fig_num": "2",
+                "type_str": "figure",
+                "text": "Figure 2: Kaplan-Meier curves for duration of infusions Duration of salbutamol and placebo infusions from 28 days after randomisation.HR=hazard ratio.",
+                "uris": null,
+                "num": null
+            },
+            "FIGREF3": {
+                "fig_num": "3",
+                "type_str": "figure",
+                "text": "Figure 3: Kaplan-Meier curves for mortalityRate of death in the two study groups up to 28 days after randomisation.",
+                "uris": null,
+                "num": null
+            },
+            "FIGREF4": {
+                "fig_num": null,
+                "type_str": "figure",
+                "text": "M Ranganathan; Frimley Park Hospital S Tote; Warwick Hospital T Long; Wythenshawe Hospital P Alexander; Walsall Manor Hospital M Khalil; Warrington Hospital J Little; Royal Hallamshire Hospital G Mills; Macclesfi eld Hospital J Hunter; Northern General Hospital G Mills; Salford Royal Hospital M Ghrew; Kings Mill Hospital L Milligan; Antrim Area Hospital R Ballie; Royal United Hospital Bath A Padkin; Royal Victoria Infi rmary S Wright; Freeman Hospital S Wright; St Johns Hospital M Beatty; Newcastle General Hospital S Wright; Chase Farm Hospital R Schoub; Scunthorpe Hospital R Sharawi; Southmead Hospital J Soar; Royal Lancaster Infi rmary D Highley; Hairmyres Hospital D Allen; Aberdeen Royal Infi rmary D Noble; Monklands Hospital J Ruddy; West Middlesex Hospital M Popescu.",
+                "uris": null,
+                "num": null
+            },
+            "TABREF1": {
+                "content": "<table coords=\"3,267.27,595.02,200.97,121.15\"><tr><td/><td>Infusion in progress</td><td/><td/><td/><td colspan=\"2\">Log-rank p&lt;0\u202201</td><td/><td/></tr><tr><td/><td/><td colspan=\"2\">Placebo</td><td/><td/><td/><td/><td/></tr><tr><td/><td/><td colspan=\"2\">Salbutamol</td><td/><td/><td/><td/><td/></tr><tr><td/><td>0</td><td>24</td><td>48</td><td>72</td><td>96</td><td>120</td><td>144</td><td>168</td></tr><tr><td>Number at risk</td><td/><td/><td colspan=\"4\">Duration of infusion (h)</td><td/><td/></tr><tr><td>Placebo</td><td>163</td><td>154</td><td>147</td><td>140</td><td>132</td><td>122</td><td>111</td><td>81</td></tr><tr><td>Salbutamol</td><td>160</td><td>138</td><td>126</td><td>111</td><td>99</td><td>90</td><td>81</td><td>54</td></tr></table>",
+                "html": null,
+                "type_str": "table",
+                "text": "Baseline characteristics",
+                "num": null
+            },
+            "TABREF3": {
+                "content": "<table coords=\"4,34.78,432.48,291.78,161.89\"><tr><td/><td colspan=\"2\">1\u202200</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td>Placebo</td></tr><tr><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan=\"2\">Salbutamol</td></tr><tr><td/><td colspan=\"2\">0\u202275</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/></tr><tr><td>Probability of survival</td><td colspan=\"2\">0\u202250</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan=\"4\">Log-rank p=0\u2022033</td></tr><tr><td/><td colspan=\"2\">0\u202225</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/></tr><tr><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td colspan=\"4\">HR 1\u202256 (95% CI 1\u202203-2\u202236)</td></tr><tr><td/><td/><td>0</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/></tr><tr><td/><td/><td>0</td><td>2</td><td>4</td><td>6</td><td>8</td><td colspan=\"11\">10 12 14 16 18 20 22 24 26 28 30</td></tr><tr><td colspan=\"2\">Number at risk</td><td/><td/><td/><td/><td/><td/><td colspan=\"4\">Days after randomisation</td><td/><td/><td/><td/><td/></tr><tr><td colspan=\"2\">Placebo</td><td>164</td><td>162</td><td>155</td><td>151</td><td>148</td><td>144</td><td>141</td><td>138</td><td>136</td><td>134</td><td>131</td><td>128</td><td>125</td><td>124</td><td>123</td><td>..</td></tr><tr><td colspan=\"2\">Salbutamol</td><td>161</td><td>160</td><td>156</td><td>147</td><td>139</td><td>134</td><td>131</td><td>126</td><td>124</td><td>118</td><td>114</td><td>111</td><td>110</td><td>106</td><td>105</td><td>..</td></tr></table>",
+                "html": null,
+                "type_str": "table",
+                "text": "",
+                "num": null
+            }
+        }
+    }
+}
