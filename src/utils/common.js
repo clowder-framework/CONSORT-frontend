@@ -5,13 +5,13 @@ import axios from "axios"
 const getClient = {method:'GET', url:"/client"};
 
 export function getClientInfo(){
-	return axios.request(getClient).then(function (response) {
-		return response.data.headers
-	});
-	// // For testing, change to
-	// return {hostname:"http://localhost:8000",
-	// 	prefix:'',
-	// 	apikey:"<apikey>"}
+	// return axios.request(getClient).then(function (response) {
+	// 	return response.data.headers
+	// });
+	// For testing, change to
+	return {hostname:"http://localhost:8000",
+		prefix:'',
+		apikey:"<api-key>"}
 }
 
 // construct header

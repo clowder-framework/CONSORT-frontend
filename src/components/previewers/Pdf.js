@@ -2,9 +2,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { pdfjs , Document, Page } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
-
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
+// for testing
+import pdfFile from "../../../data/2020.acl-main.207.pdf";
+import metadataFile from "../../../data/2020.acl-main.207_highlights.json";
 
 export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
@@ -39,6 +41,20 @@ export default function Pdf(props) {
 		}
 		if (metadata == undefined){
 			console.log("Error metadata undefined");
+			let content = metadataFile['content'][0];
+			setContent(content);
+			setPageWidth(parseInt(content['page_dimensions']['width']));
+			setPageHeight(parseInt(content['page_dimensions']['height']));
+			let checklist = content['checklist'];
+			let sentences_list = []
+			checklist.forEach((section) => {
+				section.items.forEach((i) => {
+					let sentences = i.sentences || [];
+					let label = i.item;
+					sentences_list.push({"label":label, "sentences":sentences});
+				});
+			});
+			setAllSentences(sentences_list);
 		}
 
 	}, []);
@@ -102,7 +118,7 @@ export default function Pdf(props) {
 				text_x = text_x * scale_x;
 				text_y = text_y * scale_y;
 				// put labels to either side of text
-				if (text_x < 100){
+				if (text_x < (canvas_width * scale_x)/2){
 					text_x = 10;
 				}
 				else{
@@ -112,6 +128,8 @@ export default function Pdf(props) {
 				context.globalAlpha = 1.0
 				context.font = "10px Verdana";
 				context.fillStyle = 'red';
+				context.fillRect(text_x, text_y, 10, 10);
+				context.fillStyle = 'white';
 				context.fillText(text_label, text_x, text_y);
 
 				// Draw rectangles based on coordinates
@@ -133,7 +151,7 @@ export default function Pdf(props) {
 	return (
 		<>
 			<div>
-				<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
+				<Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
 					<Page className={"PDFPage"}
 						key={`page_${pageNumber + 1}`}
 						pageNumber={pageNumber}

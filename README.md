@@ -31,3 +31,10 @@ run `npm run codegen:dev`
 
 - Login first: `docker login hub.ncsa.illinois.edu`
 - Run `docker image push hub.ncsa.illinois.edu/clowder/consort-frontend:<version>`
+
+
+## For testing PDF preview
+- Add your clowder API key to src/utils/common.js getClientInfo method
+- Add pdf and highlights.json file to data folder
+- Change the file names in src/components/previewers/Pdf.js
+- In the root path, run with `npm start` in command line.
