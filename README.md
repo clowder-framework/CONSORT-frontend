@@ -38,3 +38,4 @@ run `npm run codegen:dev`
 - Add pdf and highlights.json file to data folder
 - Change the file names in src/components/previewers/Pdf.js
 - In the root path, run with `npm start` in command line.
+- Point browser to `http://localhost:3000/preview`
