@@ -54,11 +54,12 @@ export default function CreateAndUpload() {
 			// check extraction status and html file generation in loop
 			const html_file_loop = async () => {
 				setLoadingText("Checking extraction status");
-				const html_output_filename = file_name + '_predicted' + '.html'
-				const htmlFile = await getFileInDataset(dataset_id, "text/html", html_output_filename, clientInfo);
-				if (htmlFile !== null && typeof htmlFile.id === "string") {
+				const highlights_filename = file_name + '_highlights' + '.json'
+				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename, clientInfo);
+				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
+					console.log("metadata", metadata);
 					// get the metadata content list
 					const contentList = metadata.map(item => item.content[0]);
 					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
@@ -70,7 +71,7 @@ export default function CreateAndUpload() {
 						listFilePreviews(pdf_input_file, clientInfo);
 					}
 					else{
-						listFilePreviews(htmlFile.id, clientInfo);
+						listFilePreviews(highlightsFile.id, clientInfo);
 					}
 					datasetMetadata(metadata);
 
@@ -78,7 +79,7 @@ export default function CreateAndUpload() {
 					setPreview(false)  // Continue button activated
 					setSpinner(false); // stop display of spinner
 				} else {
-					console.log("check html file after 5s");
+					console.log("check highlights file after 5s");
 					setTimeout(html_file_loop, 5000);
 				}
 			};
