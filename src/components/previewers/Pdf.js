@@ -5,6 +5,46 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
+const highlight_color = {
+	"1a":"#88FF88",
+	"1b":"#88FF88",
+	"2a": "#CCAAFF",
+	"2b": "#CCAAFF",
+	"3a": "#88FFFF",
+	"3b": "#88FFFF",
+	"4a": "#88FFFF",
+	"4b": "#88FFFF",
+	"5":  "#88FFFF",
+	"6a": "#88FFFF",
+	"6b": "#88FFFF",
+	"7a": "#88FFFF",
+	"7b": "#88FFFF",
+	"8a": "#88FFFF",
+	"8b": "#88FFFF",
+	"9" : "#88FFFF",
+	"10" :"#88FFFF",
+	"11a" :"#88FFFF",
+	"11b" :"#88FFFF",
+	"12a ":"#88FFFF",
+	"12b" :"#88FFFF",
+	"13a":"#bbff44",
+	"13b" :"#bbff44",
+	"14a" :"#bbff44",
+	"14b" :"#bbff44",
+	"15" :"#bbff44",
+	"16" :"#bbff44",
+	"17a" :"#bbff44",
+	"17b" :"#bbff44",
+	"18" :"#bbff44",
+	"19" :"#bbff44",
+	"20" :"#AACCFF",
+	"21" :"#AACCFF",
+	"22" :"#AACCFF",
+	"23" :"#FFAACC",
+	"24" :"#FFAACC",
+	"25" :"#FFAACC",
+}
+
 
 export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
@@ -18,6 +58,10 @@ export default function Pdf(props) {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageWidth, setPageWidth] = useState(500);
 	const [pageHeight, setPageHeight]= useState(799);
+	const [canvas_width, setCanvasWidth] = useState(500);
+	const [canvas_height, setCanvasHeight] = useState(800);
+	const [scale_x, setScaleX] = useState(1);
+	const [scale_y, setScaleY] = useState(1);
 
 
 	useEffect(() => {
@@ -41,12 +85,19 @@ export default function Pdf(props) {
 			console.log("Error metadata undefined");
 		}
 
-	}, []);
+	}, [metadata]);
 
 
 	function onDocumentLoadSuccess({ numPages }) {
 		setNumPages(numPages);
 		setPageNumber(1);
+	}
+
+	function onPageLoadSuccess(){
+		setCanvasWidth(canvas.current.width);
+		setCanvasHeight(canvas.current.height);
+		setScaleY(canvas_height / pageHeight);
+		setScaleX(canvas_width / pageWidth);
 	}
 
 	function changePage(offset) {
@@ -77,6 +128,24 @@ export default function Pdf(props) {
 		console.log("pageHighlights:", pageHighlights);
 
 		return pageHighlights;
+	}
+
+	function highlightText(context, label, x, y, width, height){
+		// rectangle highlights styling
+		context.globalAlpha = 0.2
+		context.fillStyle = highlight_color[label];  // 'rgb(255, 190, 60)';
+		context.fillRect(x , y , width , height );
+	}
+
+	function highlightLabel(context, label, x, y){
+		context.globalAlpha = 1.0
+		context.font = "10px Verdana";
+		context.fillStyle =  highlight_color[label];
+		context.fillRect(x, y, 20, 10);
+		context.fillStyle = 'red';
+		context.textAlign = "start";
+		context.textBaseline = "top";
+		context.fillText(label, x, y);
 	}
 
 
