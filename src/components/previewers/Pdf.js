@@ -1,12 +1,52 @@
 // Preview Pdf file using react-pdf package
-import React, { useEffect, useRef, useState } from "react";
-import { pdfjs , Document, Page } from 'react-pdf';
+import React, {useEffect, useRef, useState} from "react";
+import {Document, Page, pdfjs} from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
 // for testing
 import pdfFile from "../../../data/2020.acl-main.207.pdf";
 import metadataFile from "../../../data/2020.acl-main.207_highlights.json";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+const highlight_color = {
+	"1a":"#88FF88",
+	"1b":"#88FF88",
+	"2a": "#CCAAFF",
+	"2b": "#CCAAFF",
+	"3a": "#88FFFF",
+	"3b": "#88FFFF",
+	"4a": "#88FFFF",
+	"4b": "#88FFFF",
+	"5":  "#88FFFF",
+	"6a": "#88FFFF",
+	"6b": "#88FFFF",
+	"7a": "#88FFFF",
+	"7b": "#88FFFF",
+	"8a": "#88FFFF",
+	"8b": "#88FFFF",
+	"9" : "#88FFFF",
+	"10" :"#88FFFF",
+	"11a" :"#88FFFF",
+	"11b" :"#88FFFF",
+	"12a ":"#88FFFF",
+	"12b" :"#88FFFF",
+	"13a":"#bbff44",
+	"13b" :"#bbff44",
+	"14a" :"#bbff44",
+	"14b" :"#bbff44",
+	"15" :"#bbff44",
+	"16" :"#bbff44",
+	"17a" :"#bbff44",
+	"17b" :"#bbff44",
+	"18" :"#bbff44",
+	"19" :"#bbff44",
+	"20" :"#AACCFF",
+	"21" :"#AACCFF",
+	"22" :"#AACCFF",
+	"23" :"#FFAACC",
+	"24" :"#FFAACC",
+	"25" :"#FFAACC",
+}
 
 export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
@@ -20,6 +60,11 @@ export default function Pdf(props) {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageWidth, setPageWidth] = useState(500);
 	const [pageHeight, setPageHeight]= useState(799);
+	const [canvas_width, setCanvasWidth] = useState(500);
+	const [canvas_height, setCanvasHeight] = useState(800);
+	const [scale_x, setScaleX] = useState(1);
+	const [scale_y, setScaleY] = useState(1);
+
 
 
 	useEffect(() => {
@@ -57,12 +102,20 @@ export default function Pdf(props) {
 			setAllSentences(sentences_list);
 		}
 
-	}, []);
+	}, [metadata]);
 
 
 	function onDocumentLoadSuccess({ numPages }) {
 		setNumPages(numPages);
 		setPageNumber(1);
+
+	}
+
+	function onPageLoadSuccess(){
+		setCanvasWidth(canvas.current.width);
+		setCanvasHeight(canvas.current.height);
+		setScaleY(canvas_height / pageHeight);
+		setScaleX(canvas_width / pageWidth);
 	}
 
 	function changePage(offset) {
@@ -96,6 +149,25 @@ export default function Pdf(props) {
 	}
 
 
+	function highlightText(context, label, x, y, width, height){
+		// rectangle highlights styling
+		context.globalAlpha = 0.2
+		context.fillStyle = highlight_color[label];  // 'rgb(255, 190, 60)';
+		context.fillRect(x , y , width , height );
+	}
+
+	function highlightLabel(context, label, x, y){
+		context.globalAlpha = 1.0
+		context.font = "10px Verdana";
+		context.fillStyle =  highlight_color[label];
+		context.fillRect(x, y, 20, 10);
+		context.fillStyle = 'red';
+		context.textAlign = "start";
+		context.textBaseline = "top";
+		context.fillText(label, x, y);
+	}
+
+
 	function renderHighlights() {
 		if (!canvas.current) {
 			console.error("canvas current empty");
@@ -103,10 +175,6 @@ export default function Pdf(props) {
 		}
 		const pageHighlights = getPageHighlights();
 		let context = canvas.current.getContext('2d');
-		let canvas_width = canvas.current.width;
-		let canvas_height = canvas.current.height;
-		let scale_x = canvas_height / pageHeight;
-		let scale_y = canvas_width / pageWidth;
 
 		pageHighlights.forEach(item => {
 			let label = item.label;
@@ -117,29 +185,19 @@ export default function Pdf(props) {
 				let [text_p, text_x, text_y, text_width, text_height] = coordsList[0].split(',').map(Number);
 				text_x = text_x * scale_x;
 				text_y = text_y * scale_y;
+				text_width = text_width * scale_x;
 				// put labels to either side of text
 				if (text_x < (canvas_width * scale_x)/2){
-					text_x = 10;
+					text_x = 10 * scale_x;
 				}
 				else{
-					text_x = text_x + text_width + 2;
+					text_x = text_x + text_width + (2 * scale_x);
 				}
-				let text_label = label;
-				context.globalAlpha = 1.0
-				context.font = "10px Verdana";
-				context.fillStyle = 'red';
-				context.fillRect(text_x, text_y, 10, 10);
-				context.fillStyle = 'white';
-				context.fillText(text_label, text_x, text_y);
-
+				highlightLabel(context, label, text_x, text_y)
 				// Draw rectangles based on coordinates
 				for (let i = 0; i < coordsList.length; i++) {
-					let [p, x, y, width, height] = coordsList[i].split(',').map(Number);
-					// rectangle highlights styling
-					context.globalAlpha = 0.2
-					context.fillStyle = 'rgb(255, 190, 60)';
-					context.fillRect(x * scale_x, y * scale_y, width * scale_x, height * scale_y);
-
+					const [p, x, y, width, height] = coordsList[i].split(',').map(Number);
+					highlightText(context, label, x * scale_x, y * scale_y, width * scale_x, height * scale_y);
 				}
 			});
 
@@ -155,6 +213,7 @@ export default function Pdf(props) {
 					<Page className={"PDFPage"}
 						key={`page_${pageNumber + 1}`}
 						pageNumber={pageNumber}
+						  onLoadSuccess={onPageLoadSuccess}
 						canvasRef={canvas}
 						onRenderSuccess={renderHighlights}
 						renderTextLayer={true}
