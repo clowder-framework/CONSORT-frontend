@@ -170,27 +170,19 @@ export default function Pdf(props) {
 				let [text_p, text_x, text_y, text_width, text_height] = coordsList[0].split(',').map(Number);
 				text_x = text_x * scale_x;
 				text_y = text_y * scale_y;
+				text_width = text_width * scale_x;
 				// put labels to either side of text
-				if (text_x < 100){
-					text_x = 10;
+				if (text_x < (canvas_width * scale_x)/2){
+					text_x = 10 * scale_x;
 				}
 				else{
-					text_x = text_x + text_width + 2;
+					text_x = text_x + text_width + (2 * scale_x);
 				}
-				let text_label = label;
-				context.globalAlpha = 1.0
-				context.font = "10px Verdana";
-				context.fillStyle = 'red';
-				context.fillText(text_label, text_x, text_y);
-
+				highlightLabel(context, label, text_x, text_y)
 				// Draw rectangles based on coordinates
 				for (let i = 0; i < coordsList.length; i++) {
-					let [p, x, y, width, height] = coordsList[i].split(',').map(Number);
-					// rectangle highlights styling
-					context.globalAlpha = 0.2
-					context.fillStyle = 'rgb(255, 190, 60)';
-					context.fillRect(x * scale_x, y * scale_y, width * scale_x, height * scale_y);
-
+					const [p, x, y, width, height] = coordsList[i].split(',').map(Number);
+					highlightText(context, label, x * scale_x, y * scale_y, width * scale_x, height * scale_y);
 				}
 			});
 
@@ -204,13 +196,14 @@ export default function Pdf(props) {
 			<div>
 				<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
 					<Page className={"PDFPage"}
-						key={`page_${pageNumber + 1}`}
-						pageNumber={pageNumber}
-						canvasRef={canvas}
-						onRenderSuccess={renderHighlights}
-						renderTextLayer={true}
-						renderAnnotationLayer={false}
-						width={pageWidth}
+						  key={`page_${pageNumber + 1}`}
+						  pageNumber={pageNumber}
+						  onLoadSuccess={onPageLoadSuccess}
+						  canvasRef={canvas}
+						  onRenderSuccess={renderHighlights}
+						  renderTextLayer={true}
+						  renderAnnotationLayer={false}
+						  width={pageWidth}
 					/>
 				</Document>
 			</div>
