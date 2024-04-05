@@ -48,6 +48,47 @@ const highlight_color = {
 	"25" :"#FFAACC",
 }
 
+const label_color = {
+	"1a":"#009c00",
+	"1b":"#009c00",
+	"2a": "#4400aa",
+	"2b": "#4400aa",
+	"3a": "#009c9c",
+	"3b": "#009c9c",
+	"4a": "#009c9c",
+	"4b": "#009c9c",
+	"5":  "#009c9c",
+	"6a": "#009c9c",
+	"6b": "#009c9c",
+	"7a": "#009c9c",
+	"7b": "#009c9c",
+	"8a": "#009c9c",
+	"8b": "#009c9c",
+	"9" : "#009c9c",
+	"10" :"#009c9c",
+	"11a" :"#009c9c",
+	"11b" :"#009c9c",
+	"12a ":"#009c9c",
+	"12b" :"#009c9c",
+	"13a":"#528100",
+	"13b" :"#528100",
+	"14a" :"#528100",
+	"14b" :"#528100",
+	"15" :"#528100",
+	"16" :"#528100",
+	"17a" :"#528100",
+	"17b" :"#528100",
+	"18" :"#528100",
+	"19" :"#528100",
+	"20" :"#0044aa",
+	"21" :"#0044aa",
+	"22" :"#0044aa",
+	"23" :"#0044aa",
+	"24" :"#0044aa",
+	"25" :"#0044aa",
+}
+
+
 export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
 
@@ -158,10 +199,10 @@ export default function Pdf(props) {
 
 	function highlightLabel(context, label, x, y){
 		context.globalAlpha = 1.0
-		context.font = "10px Verdana";
 		context.fillStyle =  highlight_color[label];
-		context.fillRect(x, y, 20, 10);
-		context.fillStyle = 'red';
+		context.fillRect(x, y, 25, 12);
+		context.font = "bold 12px Verdana";
+		context.fillStyle = label_color[label];
 		context.textAlign = "start";
 		context.textBaseline = "top";
 		context.fillText(label, x, y);
