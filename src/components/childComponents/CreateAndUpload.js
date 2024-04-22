@@ -61,7 +61,7 @@ export default function CreateAndUpload() {
 					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
 					console.log("metadata", metadata);
 					// get the metadata content list
-					const contentList = metadata.map(item => item.content[0]);
+					const contentList = metadata.map(item => item.content);
 					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 					const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
 					if (pdfExtractorContent){

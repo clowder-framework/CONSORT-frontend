@@ -59,7 +59,7 @@ export default function FilePreview() {
 	// useEffect on datasetMetadata to load preview leftdrawer metadata
 	useEffect( async ()=> {
 		if (datasetMetadata !== undefined) {
-			const contentList = datasetMetadata.map(item => item.content[0]);
+			const contentList = datasetMetadata.map(item => item.content);
 			const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 			const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
 			if (pdfExtractorContent){
