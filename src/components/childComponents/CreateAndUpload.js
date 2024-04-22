@@ -52,7 +52,7 @@ export default function CreateAndUpload() {
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
-			const html_file_loop = async () => {
+			const highlights_file_loop = async () => {
 				setLoadingText("Checking extraction status");
 				const highlights_filename = file_name + '_highlights' + '.json'
 				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename, clientInfo);
@@ -80,12 +80,12 @@ export default function CreateAndUpload() {
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
-					setTimeout(html_file_loop, 5000);
+					setTimeout(highlights_file_loop, 5000);
 				}
 			};
 
 			if (dataset_id !== null) {
-				await html_file_loop(); // call the loop to check extractions
+				await highlights_file_loop(); // call the loop to check extractions
 			} else {
 				console.error("Dataset does not exist");
 			}
