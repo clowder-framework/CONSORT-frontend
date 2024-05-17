@@ -21,9 +21,9 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import {downloadAndSaveFile} from "../../utils/file";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
-import metadataFile from "../../../data/ard-70-1-32_highlights.json";
 
 const drawerWidth = 400;
+
 
 export default function PreviewDrawerLeft(props) {
 	const dispatch = useDispatch();
@@ -118,13 +118,6 @@ export default function PreviewDrawerLeft(props) {
 		}
 		if (metadata === undefined){
 			console.log("Error metadata undefined");
-			let content = metadataFile['content'];
-			setContent(content);
-			setExtractor(content["extractor"]);
-			setItemsMissed(content["items_missed"]);
-			setChecklist(content["checklist"]);
-			setReportFileID(content["extracted_files"][1]["file_id"])
-			setItemFoundPages(get_item_found_pages(content["checklist"]))
 		}
 	},[]);
 

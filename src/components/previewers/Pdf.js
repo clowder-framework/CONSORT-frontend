@@ -4,8 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 import { pdfjs , Document, Page } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
-import pdfFile from "../../../data/ard-70-1-32.pdf";
-import metadataFile from "../../../data/ard-70-1-32_highlights.json";
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -117,36 +115,24 @@ export default function Pdf(props) {
 
 	useEffect(() => {
 		if (metadata !== undefined){
-			let content = metadata;
+			const content = metadata;
 			setContent(content);
 			setPageWidth(parseInt(content['page_dimensions']['width']));
 			setPageHeight(parseInt(content['page_dimensions']['height']));
-			let checklist = content['checklist'];
-			let sentences_list = []
+			const checklist = content['checklist'];
+			const sentences_list = []
 			checklist.forEach((section) => {
 				section.items.forEach((i) => {
-					let sentences = i.sentences || [];
-					let label = i.item;
+					const sentences = i.sentences || [];
+					const label = i.item;
 					sentences_list.push({"label":label, "sentences":sentences});
 				});
 			});
 			setAllSentences(sentences_list);
 		}
-		if (metadata === undefined && metadataFile !== undefined){
+		if (metadata === undefined){
 			console.log("Error metadata undefined");
-			let content = metadataFile['content'];
-			setContent(content);
-			setPageWidth(parseInt(content['page_dimensions']['width']));
-			setPageHeight(parseInt(content['page_dimensions']['height']));
-			let checklist = content['checklist'];
-			let sentences_list = []
-			checklist.forEach((section) => {
-				section.items.forEach((i) => {
-					let sentences = i.sentences || [];
-					let label = i.item;
-					sentences_list.push({"label":label, "sentences":sentences});
-				});
-			});
+			const sentences_list = []
 			setAllSentences(sentences_list);
 		}
 
@@ -266,7 +252,7 @@ export default function Pdf(props) {
 	return (
 		<>
 			<div>
-				<Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+				<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
 					<Page className={"PDFPage"}
 						  key={`page_${pageNumber + 1}`}
 						  pageNumber={pageNumber}
