@@ -36,3 +36,7 @@ yarn-error.log*
 #package file
 /server/var/db/
 /dist
+
+# data folder
+/data
+
