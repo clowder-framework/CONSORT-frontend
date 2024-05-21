@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pdf file previewer.  [#61](https://github.com/clowder-framework/CONSORT-frontend/issues/61)
 - Highlighting sentences using canvas and coordinates from metadata. [#61](https://github.com/clowder-framework/CONSORT-frontend/issues/61)
 - Highlight sentences with label at the side. [#70](https://github.com/clowder-framework/CONSORT-frontend/issues/70) , [#75](https://github.com/clowder-framework/CONSORT-frontend/issues/75)
-
+- Go to sentence page on click of label on the Previewer Drawer component. [#81](https://github.com/clowder-framework/CONSORT-frontend/issues/81)
 ### Changed
 - Status message display in overlay. [#26](https://github.com/clowder-framework/CONSORT-frontend/issues/26)
 - PreviewDrawer component displays number of items missed per section. [#43](https://github.com/clowder-framework/CONSORT-frontend/issues/43)
