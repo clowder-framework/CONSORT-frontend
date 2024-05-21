@@ -1,7 +1,10 @@
 // Preview Pdf file using react-pdf package
 import React, { useEffect, useRef, useState } from "react";
+import {useDispatch, useSelector} from "react-redux";
 import { pdfjs , Document, Page } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
+import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
+
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -87,6 +90,8 @@ const label_color = {
 
 
 export default function Pdf(props) {
+	const dispatch = useDispatch();
+
 	const {fileId, pdfSrc, metadata, ...other} = props;
 
 	const [content, setContent] = useState({});
@@ -95,53 +100,66 @@ export default function Pdf(props) {
 	const canvas = useRef();
 	const [isRendered, setIsRendered] = useState();
 	const [numPages, setNumPages] = useState(null);
-	const [pageNumber, setPageNumber] = useState(1);
+
+	//const [pageNumber, setPageNumber] = useState(1);
+	let pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
+	const dispatchPageNumber = (number) => dispatch(setPageNumber(SET_PAGE_NUMBER, number));
+
 	const [pageWidth, setPageWidth] = useState(500);
 	const [pageHeight, setPageHeight]= useState(799);
-	const [canvas_width, setCanvasWidth] = useState(500);
-	const [canvas_height, setCanvasHeight] = useState(800);
-	const [scale_x, setScaleX] = useState(1);
-	const [scale_y, setScaleY] = useState(1);
+	let [canvas_width, setCanvasWidth] = useState(500);
+	let [canvas_height, setCanvasHeight] = useState(800);
+	let [scale_x, setScaleX] = useState(1);
+	let [scale_y, setScaleY] = useState(1);
 
 
 	useEffect(() => {
 		if (metadata !== undefined){
-			let content = metadata;
+			const content = metadata;
 			setContent(content);
 			setPageWidth(parseInt(content['page_dimensions']['width']));
 			setPageHeight(parseInt(content['page_dimensions']['height']));
-			let checklist = content['checklist'];
-			let sentences_list = []
+			const checklist = content['checklist'];
+			const sentences_list = []
 			checklist.forEach((section) => {
 				section.items.forEach((i) => {
-					let sentences = i.sentences || [];
-					let label = i.item;
+					const sentences = i.sentences || [];
+					const label = i.item;
 					sentences_list.push({"label":label, "sentences":sentences});
 				});
 			});
 			setAllSentences(sentences_list);
 		}
-		if (metadata == undefined){
+		if (metadata === undefined){
 			console.log("Error metadata undefined");
+			const sentences_list = []
+			setAllSentences(sentences_list);
 		}
 
 	}, [metadata]);
 
+	useEffect(() => {
+		dispatchPageNumber(pageNumber);
+
+	}, [pageNumber]);
+
 
 	function onDocumentLoadSuccess({ numPages }) {
 		setNumPages(numPages);
-		setPageNumber(1);
+
 	}
 
 	function onPageLoadSuccess(){
-		setCanvasWidth(canvas.current.width);
-		setCanvasHeight(canvas.current.height);
-		setScaleY(canvas_height / pageHeight);
-		setScaleX(canvas_width / pageWidth);
+		// Move to onRenderSuccess
+	}
+
+	function onPageChange(event) {
+		dispatchPageNumber(parseInt(event.target.value));
 	}
 
 	function changePage(offset) {
-		setPageNumber(prevPageNumber => prevPageNumber + offset);
+		dispatchPageNumber(+pageNumber + +offset);
+		//setPageNumber(prevPageNumber => prevPageNumber + offset);
 	}
 
 	function previousPage() {
@@ -256,6 +274,7 @@ export default function Pdf(props) {
 					type="button"
 					disabled={pageNumber <= 1}
 					onClick={previousPage}
+					style={{margin: "10px"}}
 				>
 					Previous
 				</button>
@@ -263,9 +282,13 @@ export default function Pdf(props) {
 					type="button"
 					disabled={pageNumber >= numPages}
 					onClick={nextPage}
+					style={{margin: "10px"}}
 				>
 					Next
 				</button>
+				Page Number :
+				<input name="pageInput" type="text" value={pageNumber.toString()} onChange={onPageChange} style={{margin: "10px"}} />
+
 			</div>
 		</>
 	);
