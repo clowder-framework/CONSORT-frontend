@@ -124,7 +124,7 @@ export default function Pdf(props) {
 			checklist.forEach((section) => {
 				section.items.forEach((i) => {
 					const sentences = i.sentences || [];
-					const label = i.item;
+					const label = i.label;
 					sentences_list.push({"label":label, "sentences":sentences});
 				});
 			});
