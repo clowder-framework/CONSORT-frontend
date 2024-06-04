@@ -62,10 +62,10 @@ export default function PreviewDrawerLeft(props) {
 				section.items.forEach(item => {
 					if (item.found === "Yes") {
 						const found_pages = getCoordsPages(item.sentences);
-						result[item.item] = [...found_pages];
+						result[item.label] = [...found_pages];
 					}
 					else{
-						result[item.item] = [];
+						result[item.label] = [];
 					}
 				});
 			});
@@ -185,7 +185,7 @@ export default function PreviewDrawerLeft(props) {
 															return (
 																<>
 																	<div className="label" style={{display: "flex", flexDirection: "row",  alignItems: "center"}}>
-																		<ListItemText primary={i.item} secondary={i.topic} sx={{ pl: 4 }}/>
+																		<ListItemText primary={i.label} secondary={i.topic} sx={{ pl: 4 }}/>
 																		<ListItemIcon>
 																			{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																		</ListItemIcon>
@@ -200,7 +200,7 @@ export default function PreviewDrawerLeft(props) {
 																			sx={{ pl: 4 }}
 																		>
 																			{
-																				item_found_pages[i.item].map((pagenum, page_index) => (
+																				item_found_pages[i.label].map((pagenum, page_index) => (
 																				<ToggleButton key={page_index} value={pagenum} aria-label="item page" onClick={() => {handleItemClick(pagenum)}}>
 																					<Typography variant="string">Page: {pagenum}</Typography>
 																				</ToggleButton>
