@@ -9,6 +9,8 @@ var csrf = require('csurf');
 var passport = require('passport');
 var logger = require('morgan');
 
+const rctModel = require('./rctModel');
+
 var ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
 
 var ensureLoggedIn = ensureLogIn();
@@ -87,6 +89,15 @@ app.get('/client', function (req, res, next){
 
 app.get('/home', ensureLoggedIn, function (req, res, next){
 	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
+
+app.get('/home/publication', ensureLoggedIn, function (req, res, next){
+  console.log('publication');
+  rctModel.getAllPublication().then((publications) => {
+    console.log(publications);
+    res.json(publications);      
+  });
 });
 
 // catch 404 and forward to error handler
