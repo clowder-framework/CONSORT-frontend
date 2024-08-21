@@ -1,6 +1,8 @@
 import {getClientInfo, getHeader, getHostname} from "./common";
 import config from "../app.config";
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const clientInfo = await getClientInfo();
 
 export async function getDatasetsRequest(title, limit) {
@@ -43,13 +45,13 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 		// handle error
 		const responseJson = await response.json();
 		console.log(responseJson);
-		console.log("Creation of dataset failed");
+		console.error("Creation of dataset failed");
 		return null;
 	} else {
 		// handle error
 		const responseJson = await response.json();
 		console.log(responseJson);
-		console.log("Creation of dataset failed");
+		console.error("Creation of dataset failed");
 		return null;
 	}
 }
@@ -92,7 +94,7 @@ export async function listFilesInDatasetRequest(dataset_id, clientInfo) {
 }
 
 
-export async function getFileInDataset(dataset_id, file_type, file_name=null, clientInfo){
+export async function getFileInDataset(dataset_id, file_type, file_name, clientInfo){
 	// function to check if a specific file is present in dataset and return the file
 	// filter files on file type and filename and select the first item in filtered array.
 	let fileObjects = await listFilesInDatasetRequest(dataset_id, clientInfo);
@@ -121,8 +123,8 @@ export async function getFileInDataset(dataset_id, file_type, file_name=null, cl
 		console.log("No File with type ", file_type);
 		return null;
 	}
-
 }
+
 
 export async function downloadDataset(datasetId, filename = null) {
 
@@ -197,5 +199,56 @@ export async function setDatasetMetadata(dataset_id, content) {
 		// handle error
 		console.log("Metadata for dataset failed");
 		return null;
+	}
+}
+
+
+export async function getDatasetMetadataLoop(dataset_id, extractor_name, clientInfo){
+	/**
+	 * Asynchronously retrieves dataset metadata by repeatedly checking until it's available.
+	 * 
+	 * @param {string} dataset_id - The ID of the dataset to retrieve metadata for.
+	 * @param {string} extractor_name - The name of the extractor used (currently unused in the function).
+	 * @param {Object} clientInfo - Client information required for API calls.
+	 * @returns {Promise<Object|Array>} The dataset metadata content if successful, or an empty array if unsuccessful.
+	 * 
+	 * This function implements a polling mechanism to check for dataset metadata:
+	 * 1. It attempts to retrieve the metadata using the provided dataset ID and client info.
+	 * 2. If metadata is available, it returns the content of the first metadata item.
+	 * 3. If metadata is not yet available, it waits for 30 seconds before trying again.
+	 * 4. This process repeats until metadata is found or an error occurs.
+	 * 
+	 */
+	
+	const extractor_metadata_loop = async () => {
+		// get dataset metadata as json-ld
+		const metadata = await getDatasetMetadata(dataset_id, clientInfo);
+		if (metadata !== null && metadata.length > 0) {
+			// Filter metadata for the specified extractor
+			const relevantMetadata = metadata.filter(item => 
+				item.content && item.content.extractor === extractor_name
+			);
+
+			if (relevantMetadata.length > 0) {
+				console.log(`Metadata found for extractor: ${extractor_name}`, relevantMetadata);
+				return relevantMetadata.map(item => item.content);
+			} else {
+				console.log(`No metadata found for extractor: ${extractor_name}`);
+				console.log("Waiting 30 seconds before checking again...");
+				await sleep(30000);
+				return await extractor_metadata_loop();
+			}
+		} else {
+			console.log("check for extraction metadata after 30s");
+			await sleep(30000);
+			await extractor_metadata_loop();
+		}
+	};
+
+	if (dataset_id !== null) {
+		await extractor_metadata_loop(); // call the loop to check extractions
+	} else {
+		console.error("Dataset does not exist");
+		return [];
 	}
 }

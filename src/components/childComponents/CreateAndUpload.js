@@ -128,7 +128,8 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
-					<Dropfile onDrop={onDrop} accept={{"text/plain": [".txt"], "application/pdf": [".pdf"]}}/>
+					{/* <Dropfile onDrop={onDrop} accept={{"text/plain": [".txt"], "application/pdf": [".pdf"]}}/> */}
+					<Dropfile onDrop={onDrop} accept={{"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],  "application/msword": [".doc"], "application/pdf": [".pdf"]}}/>
 				</div>
 			</LoadingOverlay>
 

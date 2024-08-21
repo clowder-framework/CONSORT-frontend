@@ -19,7 +19,7 @@ export async function submitForExtraction(file_id, extractor_name, clientInfo){
 }
 
 
-async function extractionRequest(file_id,body_data, clientInfo) {
+async function extractionRequest(file_id, body_data, clientInfo) {
 	// Clowder API call to submit a file for extraction
 	const extractions_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/extractions`;
 	const body = JSON.stringify(body_data);
@@ -82,30 +82,32 @@ export async function fetchFileMetadata(id) {
 
 export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file
-	const extractions_status_url = `${clientInfo.hostname}${clientInfo.prefix}/api/extractions/${file_id}/status`;
+	const extractions_status_url = `${clientInfo.hostname}${clientInfo.prefix}/api/extractions/${file_id}/statuses`;
 	let authHeader = getHeader(clientInfo);
 	authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:authHeader});
 	if (response.status === 200){
+		console.log("Extraction status response %s", response);
 		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
 		return await response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
-		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		console.error("Extraction status error %s %s", extractions_status_url, response);
 		return {};
 	} else if (response.status === 500){
 		// TODO handle error
-		console.error("Extraction Status Error %s %s", extractions_status_url, response);
+		console.error("Extraction status Error %s %s", extractions_status_url, response);
 		return {};
 	}
 	else {
 		// TODO handle error
-		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		console.error("Extraction status error %s %s", extractions_status_url, response);
 		return {};
 	}
 
 }
 
+// Not used
 export async function checkExtractionStatusLoop(file_id, extractor, interval, clientInfo){
 	// check extraction status of a file in loop. Check status every interval seconds
 
