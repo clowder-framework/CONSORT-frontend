@@ -29,12 +29,18 @@ export async function getDatasetsRequest(title, limit) {
 
 export async function createEmptyDatasetRequest(dataset_name, dataset_description, clientInfo) {
 	// Clowder API call to create empty dataset
+	console.log("Remove dataset_name", dataset_name);
+	console.log("Remove dataset description",dataset_description);
+	console.log("Remove clientInfo", clientInfo);
+	console.log("remove apikey", clientInfo.apikey);
 	const url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/createempty`;
+	console.log("remove url", url);
 	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
 	const body_data = {"name": dataset_name, "description": dataset_description, "space": config.space};
 	const body = JSON.stringify(body_data);
+	console.log("createEmptyDatasetRequest body", body);
 	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {
 		// return the dataset ID {id:xxx}
