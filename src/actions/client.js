@@ -23,7 +23,6 @@ export function createUploadExtract(file) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
 		
 		// Clowder API call to create empty dataset
-		console.log("Remove clientInfo", clientInfo);
 		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 		const file_description = file.type;
 		console.log("Uploading file", file_name);
