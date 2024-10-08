@@ -231,7 +231,8 @@ export async function getDatasetMetadataLoop(dataset_id, extractor_name, clientI
 
 			if (relevantMetadata.length > 0) {
 				console.log(`Metadata found for extractor: ${extractor_name}`, relevantMetadata);
-				return relevantMetadata.map(item => item.content);
+				// return relevantMetadata.map(item => item.content);
+				return relevantMetadata[0].content;
 			} else {
 				console.log(`No metadata found for extractor: ${extractor_name}`);
 				console.log("Waiting 30 seconds before checking again...");
