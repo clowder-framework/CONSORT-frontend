@@ -69,6 +69,7 @@ export default function FilePreview() {
 				setRCTMetadata(rctExtractorContent);
 			}
 		}
+		console.log("datasetMetadata ", datasetMetadata);
 	}, [datasetMetadata])
 
 
@@ -100,6 +101,7 @@ export default function FilePreview() {
 											</div>
 										);
 									} else if (preview["previewType"] === "pdf") {
+										console.log("previewType pdf");
 										return (
 											<div key={preview["fileid"]}>
 												<Grid container spacing={2} direction="row">
