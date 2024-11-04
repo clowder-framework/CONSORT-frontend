@@ -263,7 +263,7 @@ export async function getPreviewResources(preview, clientInfo) {
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
 
-		let pv_routes = `clowder/api/files/${preview_config.fileid}/blob`; 
+		let pv_routes = `/clowder/api/files/${preview_config.fileid}/blob`; 
 		const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
 		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
