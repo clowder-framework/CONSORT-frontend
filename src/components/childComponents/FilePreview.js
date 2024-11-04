@@ -93,15 +93,15 @@ export default function FilePreview() {
 												<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>
 											</div>
 										);
-									} else if (preview["previewType"] === "thumbnail") {
-										return (
-											<div key={preview["fileid"]}>
-												<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
-														   imgSrc={preview["resource"]}/>
-											</div>
-										);
-									} else if (preview["previewType"] === "pdf") {
-										console.log("previewType pdf");
+									// } else if (preview["previewType"] === "thumbnail") {
+									// 	return (
+									// 		<div key={preview["fileid"]}>
+									// 			<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
+									// 					   imgSrc={preview["resource"]}/>
+									// 		</div>
+									// 	);
+									} else if (preview["previewType"] === "pdf" || preview["previewType"] === "thumbnail") {
+										console.log("previewType pdf or thumbnail");
 										return (
 											<div key={preview["fileid"]}>
 												<Grid container spacing={2} direction="row">
