@@ -176,7 +176,13 @@ export default function Pdf(props) {
 			let label = entry.label;
 			let sentences = entry.sentences;
 			if (sentences.length > 0){
-				let pageSentences = sentences.filter(sentence => sentence.coords.startsWith(pageNumber.toString()));
+				let pageSentences = sentences.filter(sentence => { 
+					// Split coordinates into groups (separated by semicolon)
+                    const coordGroups = sentence.coords.split(';');
+                    // Get the page number from the first group (first element before comma)
+                    const pageNum = coordGroups[0].split(',')[0];
+                    return pageNum === pageNumber.toString();
+				}); 
 				if (pageSentences.length > 0 && pageSentences != undefined){
 					return {"label": label, "sentences": pageSentences};
 				}
