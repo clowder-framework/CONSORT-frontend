@@ -34,23 +34,18 @@ export default function FilePreview() {
 			const previewsTemp = [];
 			// get either pdf preview / html preview
 			if (filePreviews.length === 1){
-				// only html preview
-				filePreviews[0].map(async (preview) => {
+				console.log("filePreviews:", filePreviews);
+				const fileId = filePreviews[0][0].file_id;
+				const previewsList = filePreviews[0][0].previews;
+				previewsList.map(async (preview) => {
 					const clientInfo = await getClientInfo()
-					const preview_config = await getPreviewResources(preview, clientInfo);
+					const preview_config = await getPreviewResources(fileId, preview, clientInfo);
 					previewsTemp.push(preview_config);
 					setPreviews(previewsTemp); // set previews
 				});
 			}
 			else {
-				// TODO only one file preview will be set. Can remove the else portion
-				// both pdf and html preview. Get pdf preview
-				filePreviews[1].map(async (preview) => {
-					const clientInfo = await getClientInfo()
-					const preview_config = await getPreviewResources(preview, clientInfo);
-					previewsTemp.push(preview_config);
-					setPreviews(previewsTemp); // set previews
-				});
+				console.log("Multiple file previews found ", filePreviews)
 			}
 
 		}
@@ -69,6 +64,7 @@ export default function FilePreview() {
 				setRCTMetadata(rctExtractorContent);
 			}
 		}
+		console.log("datasetMetadata ", datasetMetadata);
 	}, [datasetMetadata])
 
 
@@ -92,14 +88,15 @@ export default function FilePreview() {
 												<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>
 											</div>
 										);
-									} else if (preview["previewType"] === "thumbnail") {
-										return (
-											<div key={preview["fileid"]}>
-												<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
-														   imgSrc={preview["resource"]}/>
-											</div>
-										);
-									} else if (preview["previewType"] === "pdf") {
+									// } else if (preview["previewType"] === "thumbnail") {
+									// 	return (
+									// 		<div key={preview["fileid"]}>
+									// 			<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
+									// 					   imgSrc={preview["resource"]}/>
+									// 		</div>
+									// 	);
+									} else if (preview["previewType"] === "pdf" || preview["previewType"] === "thumbnail") {
+										console.log("previewType pdf or thumbnail");
 										return (
 											<div key={preview["fileid"]}>
 												<Grid container spacing={2} direction="row">

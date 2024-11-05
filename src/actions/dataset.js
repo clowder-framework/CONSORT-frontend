@@ -24,16 +24,6 @@ export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
 export const addFileToDataset = (type, file_json) => ({type: type, files: file_json});
 
 
-// createEmptyDataset thunk function
-export const createEmptyDataset = (file) => async dispatch => {
-	// Clowder API call to create empty dataset
-	const dataset = await createEmptyDatasetRequest(file); // returns the dataset ID {id:xxx}
-	if (dataset !== undefined) {
-		dispatch(createDataset(CREATE_DATASETS, dataset));
-	}
-};
-
-
 export const RECEIVE_FILES_IN_DATASET = "RECEIVE_FILES_IN_DATASET";
 export function receiveFilesInDataset(type, json) {
 	return (dispatch) => {

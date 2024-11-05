@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
 import Preview from "./components/Preview";
+// import CreateAndUpload from "./components/childComponents/CreateAndUpload";
 
 
 export const AppRoutes = (): JSX.Element => {
@@ -10,6 +11,7 @@ export const AppRoutes = (): JSX.Element => {
 		<BrowserRouter>
 			<Routes>
 				<Route path="/home/" element={<Dashboard/>}/>
+				{/* <Route path="/create/" element={<CreateAndUpload/>}/> */}
 				<Route path="/preview" element={<Preview/>} />
 				<Route path="*"
 					   element={

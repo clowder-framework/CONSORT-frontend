@@ -62,12 +62,15 @@ export default function CreateAndUpload() {
 					console.log("metadata", metadata);
 					// get the metadata content list
 					const contentList = metadata.map(item => item.content);
+					console.log("metadata content list", contentList);
 					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 					const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
 					if (pdfExtractorContent){
 						// get pdf preview
+						console.log("pdf extractor preview ", pdfExtractorContent)
 						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"]
 						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"]
+						console.log("listFilePreviews", pdf_input_file)
 						listFilePreviews(pdf_input_file, clientInfo);
 					}
 					else{
@@ -128,7 +131,8 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
-					<Dropfile onDrop={onDrop} accept={{"text/plain": [".txt"], "application/pdf": [".pdf"]}}/>
+					{/* <Dropfile onDrop={onDrop} accept={{"text/plain": [".txt"], "application/pdf": [".pdf"]}}/> */}
+					<Dropfile onDrop={onDrop} accept={{"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],  "application/msword": [".doc"], "application/pdf": [".pdf"]}}/>
 				</div>
 			</LoadingOverlay>
 

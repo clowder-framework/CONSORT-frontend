@@ -19,7 +19,7 @@ export async function submitForExtraction(file_id, extractor_name, clientInfo){
 }
 
 
-async function extractionRequest(file_id,body_data, clientInfo) {
+async function extractionRequest(file_id, body_data, clientInfo) {
 	// Clowder API call to submit a file for extraction
 	const extractions_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/extractions`;
 	const body = JSON.stringify(body_data);
@@ -82,30 +82,32 @@ export async function fetchFileMetadata(id) {
 
 export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file
-	const extractions_status_url = `${clientInfo.hostname}${clientInfo.prefix}/api/extractions/${file_id}/status`;
+	const extractions_status_url = `${clientInfo.hostname}${clientInfo.prefix}/api/extractions/${file_id}/statuses`;
 	let authHeader = getHeader(clientInfo);
 	authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:authHeader});
 	if (response.status === 200){
+		console.log("Extraction status response %s", response);
 		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
 		return await response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
-		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		console.error("Extraction status error %s %s", extractions_status_url, response);
 		return {};
 	} else if (response.status === 500){
 		// TODO handle error
-		console.error("Extraction Status Error %s %s", extractions_status_url, response);
+		console.error("Extraction status Error %s %s", extractions_status_url, response);
 		return {};
 	}
 	else {
 		// TODO handle error
-		console.error("Extraction Status error %s %s", extractions_status_url, response);
+		console.error("Extraction status error %s %s", extractions_status_url, response);
 		return {};
 	}
 
 }
 
+// Not used
 export async function checkExtractionStatusLoop(file_id, extractor, interval, clientInfo){
 	// check extraction status of a file in loop. Check status every interval seconds
 
@@ -233,11 +235,12 @@ export async function getPreviewsRequest(file_id, clientInfo) {
 	let previews_list = [];
 	if (previews_response.status === 200) {
 		const file_preview = await previews_response.json();
-		if (file_preview[0].file_id !== undefined){
-			file_preview[0].previews.map((preview) => previews_list.push(preview));
-			console.log("preview generated");
-		}
-		return previews_list;
+		// if (file_preview[0].file_id !== undefined){
+		// 	file_preview[0].previews.map((preview) => previews_list.push(preview));
+		// 	console.log("preview generated");
+		// }
+		//return previews_list;
+		return file_preview;
 	}
 	else{
 		console.log("preview failed");
@@ -245,33 +248,50 @@ export async function getPreviewsRequest(file_id, clientInfo) {
 }
 
 
-export async function getPreviewResources(preview, clientInfo) {
+export async function getPreviewResources(fileId, preview, clientInfo) {
 	// get all file preview resources
 	const preview_config = {};
 	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
+	//{"pv_route": "/clowder/api/previews/67224c2ae4b095dc59cb5fde","p_main": "thumbnail-previewer.js","pv_id": "67224c2ae4b095dc59cb5fde","p_path": "/clowder/assets/javascripts/previewers/thumbnail","p_id": "Thumbnail","pv_length": "157049","pv_contenttype": "image/png"}
+	
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
-	preview_config.url = `${clientInfo.hostname}${clientInfo.prefix}${preview["pv_route"]}?superAdmin=true`;
-	preview_config.fileid = preview["pv_id"];
-	preview_config.previewer = `/public${preview["p_path"]}/`;
-	preview_config.fileType = preview["pv_contenttype"];
 
-	// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-	// clowder/files vs clowder/api/files
-	// Temp fix insert /api/
-	let pv_routes = preview["pv_route"];
-	if (!pv_routes.includes("/api/")) {
-		try{
-			let routes = pv_routes.split("files/");
-			// add api endpoint in url
-			pv_routes = routes[0] + 'api/files/' + routes[1];
-		} catch (e) {
-			console.error("Incorrect Preview url %s", pv_routes);
-		}
+	if (preview_config.previewType == 'thumbnail') {
+		// TODO this is a hacky way to fix file previewer extractor output for soffice converted pdf docs
+		// in some cases, the file previewer extractor puts pdf file as thumbnail type. See https://github.com/clowder-framework/CONSORT-frontend/pull/91
+		preview_config.url = `${clientInfo.hostname}${preview["pv_route"]}?superAdmin=true`;
+		preview_config.fileid = preview["pv_id"];
+		preview_config.previewer = `/public${preview["p_path"]}/`;
+		preview_config.fileType = preview["pv_contenttype"];
+
+		let pv_routes = `/clowder/api/files/${fileId}/blob`; 
+		const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
+		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
-	preview_config.pv_route = pv_routes;
-	// no need to add clowder prefix as preview route has the clowder prefix
-	const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
-	preview_config.resource = await downloadResource(resourceURL, clientInfo);
+	else {
+		preview_config.url = `${clientInfo.hostname}${clientInfo.prefix}${preview["pv_route"]}?superAdmin=true`;
+		preview_config.fileid = preview["pv_id"];
+		preview_config.previewer = `/public${preview["p_path"]}/`;
+		preview_config.fileType = preview["pv_contenttype"];
+		// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
+		// clowder/files vs clowder/api/files
+		// Temp fix insert /api/
+		let pv_routes = preview["pv_route"];   // pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"
+		if (!pv_routes.includes("/api/")) {
+			try{
+				let routes = pv_routes.split("files/");
+				// add api endpoint in url
+				pv_routes = routes[0] + 'api/files/' + routes[1];
+			} catch (e) {
+				console.error("Incorrect Preview url %s", pv_routes);
+			}
+		}
+		preview_config.pv_route = pv_routes;  // pv_route:"clowder/api/files/64ac2c9ae4b024bdd77bbfb1/blob"
+		// no need to add clowder prefix as preview route has the clowder prefix
+		const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
+		preview_config.resource = await downloadResource(resourceURL, clientInfo);
+	}
+
 	return preview_config;
 }
 
