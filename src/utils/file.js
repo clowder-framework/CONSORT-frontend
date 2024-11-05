@@ -235,12 +235,12 @@ export async function getPreviewsRequest(file_id, clientInfo) {
 	let previews_list = [];
 	if (previews_response.status === 200) {
 		const file_preview = await previews_response.json();
-		console.log("file_preview", file_preview);
-		if (file_preview[0].file_id !== undefined){
-			file_preview[0].previews.map((preview) => previews_list.push(preview));
-			console.log("preview generated");
-		}
-		return previews_list;
+		// if (file_preview[0].file_id !== undefined){
+		// 	file_preview[0].previews.map((preview) => previews_list.push(preview));
+		// 	console.log("preview generated");
+		// }
+		//return previews_list;
+		return file_preview;
 	}
 	else{
 		console.log("preview failed");
@@ -248,11 +248,12 @@ export async function getPreviewsRequest(file_id, clientInfo) {
 }
 
 
-export async function getPreviewResources(preview, clientInfo) {
+export async function getPreviewResources(fileId, preview, clientInfo) {
 	// get all file preview resources
 	const preview_config = {};
 	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
 	//{"pv_route": "/clowder/api/previews/67224c2ae4b095dc59cb5fde","p_main": "thumbnail-previewer.js","pv_id": "67224c2ae4b095dc59cb5fde","p_path": "/clowder/assets/javascripts/previewers/thumbnail","p_id": "Thumbnail","pv_length": "157049","pv_contenttype": "image/png"}
+	
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 
 	if (preview_config.previewType == 'thumbnail') {
@@ -263,7 +264,7 @@ export async function getPreviewResources(preview, clientInfo) {
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
 
-		let pv_routes = `/clowder/api/files/${preview_config.fileid}/blob`; 
+		let pv_routes = `/clowder/api/files/${fileId}/blob`; 
 		const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
 		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
