@@ -3,8 +3,8 @@
 custom react frontend working with consort clowder instance
 
 ## Install Dependencies
-
-run `npm install`
+- Install node version 14.21
+- Run `npm install`
 
 ## Run Project
 
