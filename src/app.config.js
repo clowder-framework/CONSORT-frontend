@@ -16,5 +16,7 @@ config["rct_extractor"] = "ncsa.rctTransparencyExtractor";
 config["pdf_extractor"] = "pdf2text-extractor";
 // extractor name for SOffice extractor. Triggers on word files and converts them to pdf.
 config["soffice_extractor"] = "soffice-extractor";
+// Add default statement type
+config["statement"] = "consort";
 
 export default config;

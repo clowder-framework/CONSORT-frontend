@@ -38,6 +38,9 @@ export default function CreateAndUpload() {
 	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 
+	const handleStatementChange = (event) => {
+		dispatch(setStatement(event.target.value));
+	};
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
@@ -137,10 +140,15 @@ export default function CreateAndUpload() {
 			</LoadingOverlay>
 
 			<div className="radio-buttons-group-div">
-				<RadioGroup defaultValue="consort" name="radio-buttons-group" row>
+				<RadioGroup 
+					defaultValue="consort" 
+					name="radio-buttons-group" 
+					row
+					onChange={handleStatementChange}
+				>
 					<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
 					<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm"/>
-					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" disabled={true}/>
+					<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
 					<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm"/>
 				</RadioGroup>
 			</div>

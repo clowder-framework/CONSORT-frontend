@@ -17,6 +17,16 @@ import {ADD_FILE_TO_DATASET, addFileToDataset, CREATE_DATASETS, createDataset} f
 
 const clientInfo = await getClientInfo();
 
+export function setStatement(statementType) {
+	return (dispatch) => {
+		dispatch({
+			type: 'SET_STATEMENT_TYPE',
+			statementType: statementType,
+			receivedAt: Date.now(),
+		});
+	};
+}
+
 // createUploadExtract thunk function
 export function createUploadExtract(file) {
 	return async function createUploadExtractThunk(dispatch) {
