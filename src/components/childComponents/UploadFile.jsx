@@ -28,7 +28,7 @@ export default function UploadFile(props) {
 		const response = await uploadFile(formData, selectedDatasetId);
 		setLoading(false);
 		setOpen(false);
-		if (response !== {} && (response["id"] !== undefined || response["ids"] !== undefined)) {
+		if (Object.keys(response).length > 0 && (response["id"] !== undefined || response["ids"] !== undefined)) {
 			// Redirect to file route with file Id and dataset id
 			history(`/files/${response["id"]}?datasetId=${selectedDatasetId}`);
 		} else {

@@ -28,7 +28,7 @@ export default function CreateDataset(props) {
 		setOpen(false);
 
 		// zoom into that newly created dataset
-		if (response !== {} && response["id"] !== undefined) {
+		if (response && response["id"] !== undefined) {
 			history(`/datasets/${response["id"]}`);
 		}
 	};
