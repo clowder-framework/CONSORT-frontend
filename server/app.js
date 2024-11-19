@@ -53,6 +53,13 @@ app.use(function(req, res, next) {
   next();
 });
 
+function isAuthenticated(req, res, next) {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect('/login');
+}
+
 //const baseUrl = process.env.BASE_URL;
 app.use('/', indexRouter);
 app.use('/', authRouter);
@@ -69,7 +76,7 @@ app.use('/public',express.static('../dist/public'));
 app.use('/public', express.static('public'));
 
 
-app.get('/client', function (req, res, next){
+app.get('/client', isAuthenticated, function (req, res, next){
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;
