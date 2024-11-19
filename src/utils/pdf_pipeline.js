@@ -10,7 +10,7 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo) {
 	const filename = file_json.filename;
 	const datasetid = dataset_json.id;
 
-    const pdf_extraction_submission = await submitForExtraction(fileid, config.pdf_extractor, clientInfo);
+    const pdf_extraction_submission = await submitForExtraction(fileid, config.pdf_extractor, config.statementType, clientInfo);
     if (pdf_extraction_submission) {
         const pdf_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.pdf_extractor, clientInfo);
         if (pdf_extraction_metadata !== null){

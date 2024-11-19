@@ -27,6 +27,8 @@ const drawerWidth = 400;
 
 export default function PreviewDrawerLeft(props) {
 	const dispatch = useDispatch();
+	const statementType = useSelector((state) => state.statement.statementType);
+	const statementString = statementType.toUpperCase();
 
 	const {fileId, fileSrc, metadata, ...other} = props;
 	const [extractor, setExtractor] = useState('');
@@ -155,7 +157,7 @@ export default function PreviewDrawerLeft(props) {
 					aria-labelledby="item-checklist"
 					subheader={
 						<ListSubheader component="div" id="item-checklist-subheader">
-							CONSORT Checklist Items
+							{statementString} Checklist Items
 						</ListSubheader>
 					}
 					variant="permanent"

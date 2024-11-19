@@ -9,7 +9,7 @@ export async function csvPipeline(file_json, dataset_json, config, clientInfo) {
 	const filename = file_json.filename;
 	const datasetid = dataset_json.id;
 
-    const rct_extraction_submission = await submitForExtraction(fileid, config.rct_extractor, clientInfo);
+    const rct_extraction_submission = await submitForExtraction(fileid, config.rct_extractor, config.statementType, clientInfo);
     if (rct_extraction_submission) {
         const rct_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.rct_extractor, clientInfo);
         if (rct_extraction_metadata !== null){

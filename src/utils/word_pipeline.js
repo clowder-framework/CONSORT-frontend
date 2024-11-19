@@ -11,7 +11,7 @@ export async function wordPipeline(file_json, dataset_json, config, clientInfo) 
 	const filename = file_json.filename;
 	const datasetid = dataset_json.id;
 
-	const soffice_extraction_submission = await submitForExtraction(fileid, config.soffice_extractor, clientInfo);
+	const soffice_extraction_submission = await submitForExtraction(fileid, config.soffice_extractor, config.statementType, clientInfo);
     if (soffice_extraction_submission) {
 		// check for dataset metadata updation after extraction
         const soffice_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.soffice_extractor, clientInfo);

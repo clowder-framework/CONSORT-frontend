@@ -5,14 +5,14 @@ import config from "../app.config";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-export async function submitForExtraction(file_id, extractor_name, clientInfo){
+export async function submitForExtraction(file_id, extractor_name, statementType, clientInfo){
 	// submits file for extraction and returns true if extraction is successful, else returns false
+	let body = {}
 	if (extractor_name == config.rct_extractor){
-		const statementType = useSelector((state) => state.statement.statementType);
-		const body = {"extractor": extractor_name, "parameters": {"statement":statementType}};
+		body = {"extractor": extractor_name, "parameters": {"statement": statementType}};
 	}
 	else{
-		const body = {"extractor": extractor_name};
+		body = {"extractor": extractor_name};
 	}
 	
 	const extraction_response = await extractionRequest(file_id, body, clientInfo);
