@@ -6,7 +6,6 @@ import {
 	getFileInDataset,
 	uploadFileToDatasetRequest
 } from "../utils/dataset";
-import {submitForExtraction} from "../utils/file";
 import config from "../app.config";
 import {getClientInfo} from "../utils/common";
 import {wordPipeline} from "../utils/word_pipeline";
@@ -17,11 +16,21 @@ import {ADD_FILE_TO_DATASET, addFileToDataset, CREATE_DATASETS, createDataset} f
 
 const clientInfo = await getClientInfo();
 
+export function setStatement(statementType) {
+	return (dispatch) => {
+		dispatch({
+			type: 'SET_STATEMENT_TYPE',
+			statementType: statementType,
+			receivedAt: Date.now(),
+		});
+	};
+}
+
 // createUploadExtract thunk function
-export function createUploadExtract(file) {
+export function createUploadExtract(file, config) {
 	return async function createUploadExtractThunk(dispatch) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
-		
+		console.log("StatementType", config.statementType)
 		// Clowder API call to create empty dataset
 		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 		const file_description = file.type;

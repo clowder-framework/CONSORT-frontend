@@ -1,6 +1,6 @@
 {
 	"name": "consort-frontend",
-	"version": "0.7.1",
+	"version": "0.8.0",
 	"description": "",
 	"engines": {
 		"npm": ">=8.11",
