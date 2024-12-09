@@ -43,29 +43,30 @@ export function createUploadExtract(file, config) {
 			if (file_json !== undefined){
 				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
+				dispatch(setExtractionStatus("Analyzing file"));
 				if (file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type =="application/msword"){
 					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo);
 					if (word_pipeline_status) {
-						console.log("File extraction complete.");
-						dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, true));
+						console.log("File extraction complete");
+						dispatch(setExtractionStatus("File extraction complete"));
 
 					}
 					else {
 						console.error("File extraction failed");
-						dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, false));
+						dispatch(setExtractionStatus("File extraction failed"));
 					}
-					
+
 				}
 				else if (file.type == "application/pdf") {
 					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo);
 					if (pdf_pipeline_status) {
 						console.log("File extraction complete.");
-						dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, true));
+						dispatch(setExtractionStatus("File extraction complete"));
 
 					}
 					else {
 						console.error("File extraction failed");
-						dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, false));
+						dispatch(setExtractionStatus("File extraction failed"));
 					}
 
 					// TODO add extracted output files to dataset state
@@ -75,20 +76,20 @@ export function createUploadExtract(file, config) {
 				else {
 					// TODO add error action
 					console.error("Error in file type");
-					dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, false));
+					dispatch(setExtractionStatus("Error in file type"));
 				}
 				// after submitting uploaded file for extraction, add the file to dataset state
 				dispatch(addFileToDataset(ADD_FILE_TO_DATASET, file_json));
 			}
 			else {
 				console.error("Error in clowder upload of file ", file.name)
-				dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, false));
+				dispatch(setExtractionStatus("Error in clowder upload of file " + file.name));
 			}
 		}
 		else {
 			console.error("Error in dataset creation");
-			dispatch(setExtractionStatus(SET_EXTRACTION_STATUS, false));
-		}	
+			dispatch(setExtractionStatus("Error in dataset creation"));
+		}
 	};
 }
 
