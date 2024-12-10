@@ -206,26 +206,26 @@ export async function setDatasetMetadata(dataset_id, content) {
 export async function getDatasetMetadataLoop(dataset_id, extractor_name, clientInfo){
 	/**
 	 * Asynchronously retrieves dataset metadata by repeatedly checking until it's available.
-	 * 
+	 *
 	 * @param {string} dataset_id - The ID of the dataset to retrieve metadata for.
 	 * @param {string} extractor_name - The name of the extractor used (currently unused in the function).
 	 * @param {Object} clientInfo - Client information required for API calls.
 	 * @returns {Promise<Object|Array>} The dataset metadata content if successful, or an empty array if unsuccessful.
-	 * 
+	 *
 	 * This function implements a polling mechanism to check for dataset metadata:
 	 * 1. It attempts to retrieve the metadata using the provided dataset ID and client info.
 	 * 2. If metadata is available, it returns the content of the first metadata item.
 	 * 3. If metadata is not yet available, it waits for 30 seconds before trying again.
 	 * 4. This process repeats until metadata is found or an error occurs.
-	 * 
+	 *
 	 */
-	
+
 	const extractor_metadata_loop = async () => {
 		// get dataset metadata as json-ld
 		const metadata = await getDatasetMetadata(dataset_id, clientInfo);
 		if (metadata !== null && metadata.length > 0) {
 			// Filter metadata for the specified extractor
-			const relevantMetadata = metadata.filter(item => 
+			const relevantMetadata = metadata.filter(item =>
 				item.content && item.content.extractor === extractor_name
 			);
 
@@ -235,13 +235,13 @@ export async function getDatasetMetadataLoop(dataset_id, extractor_name, clientI
 				return relevantMetadata[0].content;
 			} else {
 				console.log(`No metadata found for extractor: ${extractor_name}`);
-				console.log("Waiting 30 seconds before checking again...");
-				await sleep(30000);
+				console.log("Waiting 5 seconds before checking again...");
+				await sleep(5000);
 				return await extractor_metadata_loop();
 			}
 		} else {
-			console.log("check for extraction metadata after 30s");
-			await sleep(30000);
+			console.log("check for extraction metadata after 5s");
+			await sleep(5000);
 			await extractor_metadata_loop();
 		}
 	};

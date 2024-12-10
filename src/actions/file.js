@@ -89,10 +89,10 @@ export function fetchFileMetadataJsonld(id) {
 }
 
 export const SET_EXTRACTION_STATUS = "SET_EXTRACTION_STATUS";
-export function setExtractionStatus(type, status) {
+export function setExtractionStatus(status) {
 	return (dispatch) => {
 		dispatch({
-			type: type,
+			type: SET_EXTRACTION_STATUS,
 			extractionStatus: status
 		});
 	};
