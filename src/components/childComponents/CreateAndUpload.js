@@ -27,7 +27,7 @@ export default function CreateAndUpload() {
 	const rctExtractor = config.rct_extractor;
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
-	const [statementTypeSelected, setStatementTypeSelected] = useState(false); // user choice of statement type consort or spirit
+	// const [statementTypeSelected, setStatementTypeSelected] = useState(false); // user choice of statement type consort or spirit
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
 	const [filename, setFilename] = useState(''); // uploaded filename
@@ -43,7 +43,7 @@ export default function CreateAndUpload() {
 	const handleStatementChange = (event) => {
 		dispatch(setStatement(SET_STATEMENT_TYPE, event.target.value));
 		config.statementType = event.target.value;
-		setStatementTypeSelected(true);
+		// setStatementTypeSelected(true);
 	};
 
 	const onDropFile = (file) => {
@@ -104,17 +104,12 @@ export default function CreateAndUpload() {
 			dispatch(setExtractionStatus("Error in extraction"));
 			setSpinner(false); // stop display of spinner
 		}
-	}, [extractionStatus]);
+	}, [extractionStatus]); // This useEffect will trigger again when the extractionStatus is completed 
 
 
 	// onDrop function to trigger createUploadExtract action dispatch
 	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-		if (!statementTypeSelected) {
-			dispatch(setExtractionStatus("Please select a statement type (Trial results or Trial protocol) first"));
-			setSpinner(false);
-			return;
-		}
-
+		// this callback function is triggered when a file is dropped into the dropzone
 		setLoading(true);
 		try {
 			acceptedFiles.map(file => {
@@ -129,7 +124,7 @@ export default function CreateAndUpload() {
 			dispatch(setExtractionStatus("Upload failed"));
 			setSpinner(false);
 		}
-	}, [mouseHover, statementTypeSelected]);
+	}, [mouseHover]);
 
 
 	const goToPreviewRoute = () => {
@@ -150,15 +145,14 @@ export default function CreateAndUpload() {
 							"application/msword": [".doc"],
 							"application/pdf": [".pdf"]
 						}}
-						message={!statementTypeSelected ?
-							"Please select a statement type above before uploading files" :
-							"Drag and drop files here"}
+						message={"Drag and drop files here"}
 					/>
 				</div>
 			</LoadingOverlay>
 
 			<div className="radio-buttons-group-div">
 				<RadioGroup
+					defaultValue={config.statementType}
 					name="radio-buttons-group"
 					row
 					onChange={handleStatementChange}
