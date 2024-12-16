@@ -27,7 +27,6 @@ export default function CreateAndUpload() {
 	const rctExtractor = config.rct_extractor;
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
-	// const [statementTypeSelected, setStatementTypeSelected] = useState(false); // user choice of statement type consort or spirit
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
 	const [filename, setFilename] = useState(''); // uploaded filename
@@ -43,7 +42,6 @@ export default function CreateAndUpload() {
 	const handleStatementChange = (event) => {
 		dispatch(setStatement(SET_STATEMENT_TYPE, event.target.value));
 		config.statementType = event.target.value;
-		// setStatementTypeSelected(true);
 	};
 
 	const onDropFile = (file) => {
