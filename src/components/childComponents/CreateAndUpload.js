@@ -102,7 +102,7 @@ export default function CreateAndUpload() {
 			dispatch(setExtractionStatus("Error in extraction"));
 			setSpinner(false); // stop display of spinner
 		}
-	}, [extractionStatus]); // This useEffect will trigger again when the extractionStatus is completed 
+	}, [extractionStatus]); // TODO: This useEffect will trigger again when the extractionStatus is completed 
 
 
 	// onDrop function to trigger createUploadExtract action dispatch
