@@ -33,7 +33,7 @@ export default function FilePreview() {
 		if (filePreviews !== undefined && filePreviews.length > 0) {
 			const previewsTemp = [];
 			// get either pdf preview / html preview
-			if (filePreviews.length === 1){
+			if (filePreviews.length > 0){
 				console.log("filePreviews:", filePreviews);
 				const fileId = filePreviews[0][0].file_id;
 				const previewsList = filePreviews[0][0].previews;

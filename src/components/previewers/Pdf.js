@@ -4,90 +4,15 @@ import {useDispatch, useSelector} from "react-redux";
 import { pdfjs , Document, Page } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
+import { 
+    consort_highlight_color, 
+    consort_label_color, 
+    spirit_highlight_color, 
+    spirit_label_color 
+} from '../styledComponents/HighlightColors';
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
-const highlight_color = {
-	"1a":"#88FF88",
-	"1b":"#88FF88",
-	"2a": "#CCAAFF",
-	"2b": "#CCAAFF",
-	"3a": "#88FFFF",
-	"3b": "#88FFFF",
-	"4a": "#88FFFF",
-	"4b": "#88FFFF",
-	"5":  "#88FFFF",
-	"6a": "#88FFFF",
-	"6b": "#88FFFF",
-	"7a": "#88FFFF",
-	"7b": "#88FFFF",
-	"8a": "#88FFFF",
-	"8b": "#88FFFF",
-	"9" : "#88FFFF",
-	"10" :"#88FFFF",
-	"11a" :"#88FFFF",
-	"11b" :"#88FFFF",
-	"12a ":"#88FFFF",
-	"12b" :"#88FFFF",
-	"13a":"#bbff44",
-	"13b" :"#bbff44",
-	"14a" :"#bbff44",
-	"14b" :"#bbff44",
-	"15" :"#bbff44",
-	"16" :"#bbff44",
-	"17a" :"#bbff44",
-	"17b" :"#bbff44",
-	"18" :"#bbff44",
-	"19" :"#bbff44",
-	"20" :"#AACCFF",
-	"21" :"#AACCFF",
-	"22" :"#AACCFF",
-	"23" :"#FFAACC",
-	"24" :"#FFAACC",
-	"25" :"#FFAACC",
-}
-
-const label_color = {
-	"1a":"#009c00",
-	"1b":"#009c00",
-	"2a": "#4400aa",
-	"2b": "#4400aa",
-	"3a": "#009c9c",
-	"3b": "#009c9c",
-	"4a": "#009c9c",
-	"4b": "#009c9c",
-	"5":  "#009c9c",
-	"6a": "#009c9c",
-	"6b": "#009c9c",
-	"7a": "#009c9c",
-	"7b": "#009c9c",
-	"8a": "#009c9c",
-	"8b": "#009c9c",
-	"9" : "#009c9c",
-	"10" :"#009c9c",
-	"11a" :"#009c9c",
-	"11b" :"#009c9c",
-	"12a ":"#009c9c",
-	"12b" :"#009c9c",
-	"13a":"#528100",
-	"13b" :"#528100",
-	"14a" :"#528100",
-	"14b" :"#528100",
-	"15" :"#528100",
-	"16" :"#528100",
-	"17a" :"#528100",
-	"17b" :"#528100",
-	"18" :"#528100",
-	"19" :"#528100",
-	"20" :"#0044aa",
-	"21" :"#0044aa",
-	"22" :"#0044aa",
-	"23" :"#0044aa",
-	"24" :"#0044aa",
-	"25" :"#0044aa",
-}
-
 
 export default function Pdf(props) {
 	const dispatch = useDispatch();
@@ -104,6 +29,8 @@ export default function Pdf(props) {
 	//const [pageNumber, setPageNumber] = useState(1);
 	let pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
 	const dispatchPageNumber = (number) => dispatch(setPageNumber(SET_PAGE_NUMBER, number));
+
+	const statementType = useSelector(state => state.statement.statementType);
 
 	const [pageWidth, setPageWidth] = useState(500);
 	const [pageHeight, setPageHeight]= useState(799);
@@ -197,16 +124,16 @@ export default function Pdf(props) {
 	function highlightText(context, label, x, y, width, height){
 		// rectangle highlights styling
 		context.globalAlpha = 0.2
-		context.fillStyle = highlight_color[label];  // 'rgb(255, 190, 60)';
+		context.fillStyle = statementType === "consort" ? consort_highlight_color[label] : spirit_highlight_color[label];
 		context.fillRect(x , y , width , height );
 	}
 
 	function highlightLabel(context, label, x, y){
 		context.globalAlpha = 1.0
-		context.fillStyle =  highlight_color[label];
+		context.fillStyle = statementType === "consort" ? consort_highlight_color[label] : spirit_highlight_color[label];
 		context.fillRect(x, y, 25, 12);
 		context.font = "bold 12px Verdana";
-		context.fillStyle = label_color[label];
+		context.fillStyle = statementType === "consort" ? consort_label_color[label] : spirit_label_color[label];
 		context.textAlign = "start";
 		context.textBaseline = "top";
 		context.fillText(label, x, y);

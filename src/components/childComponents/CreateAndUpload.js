@@ -13,7 +13,7 @@ import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
-import {fetchFilePreviews} from "../../actions/file";
+import { fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
 import {SET_STATEMENT_TYPE, setStatement} from '../../actions/statement';
 import config from "../../app.config";
@@ -27,7 +27,6 @@ export default function CreateAndUpload() {
 	const rctExtractor = config.rct_extractor;
 
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
-	const [statementTypeSelected, setStatementTypeSelected] = useState(false); // user choice of statement type consort or spirit
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
 	const [filename, setFilename] = useState(''); // uploaded filename
@@ -39,11 +38,11 @@ export default function CreateAndUpload() {
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
 	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
+	const statementType = useSelector(state => state.statement.statementType); 
 
 	const handleStatementChange = (event) => {
 		dispatch(setStatement(SET_STATEMENT_TYPE, event.target.value));
 		config.statementType = event.target.value;
-		setStatementTypeSelected(true);
 	};
 
 	const onDropFile = (file) => {
@@ -55,13 +54,13 @@ export default function CreateAndUpload() {
 
 	// useEffect on extractionStatus for preview generation
 	useEffect(async () => {
-		if (extractionStatus !== null && extractionStatus === true) {
+		if (extractionStatus !== null) {
+			setLoadingText(extractionStatus);
 			const clientInfo = await getClientInfo();
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 			const dataset_id = datasets[0].id;
 			// check extraction status and html file generation in loop
 			const html_file_loop = async () => {
-				setLoadingText("Checking extraction status");
 				const highlights_filename = file_name + '_highlights' + '.json'
 				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename, clientInfo);
 				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
@@ -86,7 +85,6 @@ export default function CreateAndUpload() {
 					}
 					datasetMetadata(metadata);
 
-					setLoadingText("Extraction completed");
 					setPreview(false)  // Continue button activated
 					setSpinner(false); // stop display of spinner
 				} else {
@@ -102,35 +100,30 @@ export default function CreateAndUpload() {
 			}
 		}
 		else if (extractionStatus === false){
-			setLoadingText("Error in extraction");
+			dispatch(setExtractionStatus("Error in extraction"));
 			setSpinner(false); // stop display of spinner
 		}
-	}, [extractionStatus]);
+	}, [extractionStatus]); // TODO: This useEffect will trigger again when the extractionStatus is completed 
 
 
 	// onDrop function to trigger createUploadExtract action dispatch
 	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-		if (!statementTypeSelected) {
-			setLoadingText("Please select a statement type (Trial results or Trial protocol) first");
-			setSpinner(false);
-			return;
-		}
-
+		// this callback function is triggered when a file is dropped into the dropzone
 		setLoading(true);
 		try {
 			acceptedFiles.map(file => {
 				onDropFile(file)
 			})
 			rejectedFiles.map(file => {
-				setLoadingText("File rejected");
+				dispatch(setExtractionStatus("File rejected"));
 				setSpinner(false);
 			})
 		}
 		catch(error) {
-			setLoadingText("Upload failed", error)
+			dispatch(setExtractionStatus("Upload failed"));
 			setSpinner(false);
 		}
-	}, [mouseHover, statementTypeSelected]);
+	}, [mouseHover]);
 
 
 	const goToPreviewRoute = () => {
@@ -144,23 +137,22 @@ export default function CreateAndUpload() {
 		<Box className="createupload">
 			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
 				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
-					<Dropfile 
-						onDrop={onDrop} 
+					<Dropfile
+						onDrop={onDrop}
 						accept={{
-							"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],  
-							"application/msword": [".doc"], 
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+							"application/msword": [".doc"],
 							"application/pdf": [".pdf"]
 						}}
-						message={!statementTypeSelected ? 
-							"Please select a statement type above before uploading files" : 
-							"Drag and drop files here"}
+						message={"Drag and drop files here"}
 					/>
 				</div>
 			</LoadingOverlay>
 
 			<div className="radio-buttons-group-div">
-				<RadioGroup 
-					name="radio-buttons-group" 
+				<RadioGroup
+					defaultValue={statementType}
+					name="radio-buttons-group"
 					row
 					onChange={handleStatementChange}
 				>
