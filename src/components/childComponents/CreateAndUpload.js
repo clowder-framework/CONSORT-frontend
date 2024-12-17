@@ -38,6 +38,7 @@ export default function CreateAndUpload() {
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
 	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
+	const statementType = useSelector(state => state.statement.statementType); 
 
 	const handleStatementChange = (event) => {
 		dispatch(setStatement(SET_STATEMENT_TYPE, event.target.value));
@@ -150,7 +151,7 @@ export default function CreateAndUpload() {
 
 			<div className="radio-buttons-group-div">
 				<RadioGroup
-					defaultValue={config.statementType}
+					defaultValue={statementType}
 					name="radio-buttons-group"
 					row
 					onChange={handleStatementChange}
