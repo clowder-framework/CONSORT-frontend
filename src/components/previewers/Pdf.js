@@ -185,21 +185,6 @@ export default function Pdf(props) {
 	return (
 		<>
 			<div>
-				<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
-					<Page className={"PDFPage"}
-						  key={`page_${pageNumber + 1}`}
-						  pageNumber={pageNumber}
-						  onLoadSuccess={onPageLoadSuccess}
-						  canvasRef={canvas}
-						  onRenderSuccess={renderHighlights}
-						  renderTextLayer={true}
-						  renderAnnotationLayer={false}
-						  width={pageWidth}
-					/>
-				</Document>
-			</div>
-
-			<div>
 				<p>
 					Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
 				</p>
@@ -222,6 +207,21 @@ export default function Pdf(props) {
 				Page Number :
 				<input name="pageInput" type="text" value={pageNumber.toString()} onChange={onPageChange} style={{margin: "10px"}} />
 
+			</div>
+
+			<div>
+				<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
+					<Page className={"PDFPage"}
+						  key={`page_${pageNumber + 1}`}
+						  pageNumber={pageNumber}
+						  onLoadSuccess={onPageLoadSuccess}
+						  canvasRef={canvas}
+						  onRenderSuccess={renderHighlights}
+						  renderTextLayer={true}
+						  renderAnnotationLayer={false}
+						  width={pageWidth}
+					/>
+				</Document>
 			</div>
 		</>
 	);
