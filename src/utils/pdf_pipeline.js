@@ -2,10 +2,11 @@
 import {getDatasetMetadataLoop, getFileInDataset} from "../utils/dataset";
 import {submitForExtraction} from "../utils/file";
 import {csvPipeline} from "../utils/csv_pipeline";
+import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 
 // pdf_pipeline function
-export async function pdfPipeline(file_json, dataset_json, config, clientInfo) {
-
+export async function pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
+    
     const fileid = file_json.id;
 	const filename = file_json.filename;
 	const datasetid = dataset_json.id;
@@ -15,7 +16,7 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo) {
     if (userCategory === "author") {
         pdf_extractor = config.pymupdf_extractor; // report only pdf extractor for author category
     }
-
+    dispatch(setExtractionStatus("Extracting sentences and metadata from file"));
     const pdf_extraction_submission = await submitForExtraction(fileid, pdf_extractor, statementType, clientInfo)
     if (pdf_extraction_submission) {
         const pdf_extraction_metadata = await getDatasetMetadataLoop(datasetid, pdf_extractor, clientInfo);
@@ -36,7 +37,7 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo) {
             
             if (extracted_csv_file !== null && typeof extracted_csv_file.id === "string") {
                 console.log("Extracted csv file found after pdf extraction", extracted_csv_file);
-                const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, clientInfo)
+                const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, clientInfo, dispatch)
                 return csv_pipeline_status;
             }
             else {

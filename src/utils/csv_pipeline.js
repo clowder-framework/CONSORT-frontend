@@ -1,14 +1,15 @@
 // RCT pipeline for pdf files
 import {getDatasetMetadataLoop, getFileInDataset} from "../utils/dataset";
 import {submitForExtraction} from "../utils/file";
+import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 
 // csv_pipeline function
-export async function csvPipeline(file_json, dataset_json, config, clientInfo) {
+export async function csvPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
 
     const fileid = file_json.id;
 	const filename = file_json.filename;
 	const datasetid = dataset_json.id;
-
+    dispatch(setExtractionStatus("Running RCT model inference"));
     const rct_extraction_submission = await submitForExtraction(fileid, config.rct_extractor, config.statementType, clientInfo);
     if (rct_extraction_submission) {
         const rct_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.rct_extractor, clientInfo);

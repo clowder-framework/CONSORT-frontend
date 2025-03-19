@@ -2,15 +2,16 @@
 import {getDatasetMetadataLoop, getFileInDataset} from "../utils/dataset";
 import {submitForExtraction} from "../utils/file";
 import {pdfPipeline} from "../utils/pdf_pipeline";
+import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 
 // word_pipeline function
-export async function wordPipeline(file_json, dataset_json, config, clientInfo) {
-
+export async function wordPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
 
 	const fileid = file_json.id;
 	const filename = file_json.filename;
 	const datasetid = dataset_json.id;
 
+    dispatch(setExtractionStatus("Extracting text from file"));
 	const soffice_extraction_submission = await submitForExtraction(fileid, config.soffice_extractor, config.statementType, clientInfo);
     if (soffice_extraction_submission) {
 		// check for dataset metadata updation after extraction
@@ -21,7 +22,7 @@ export async function wordPipeline(file_json, dataset_json, config, clientInfo) 
 			const fileNameWithoutExtension = filename.split('.').slice(0, -1).join('.');
 			const pdf_file_name = fileNameWithoutExtension + '.pdf';  
             const extracted_pdf_file = await getFileInDataset(datasetid, "application/pdf", pdf_file_name, clientInfo);
-            const pdf_pipeline_status = await pdfPipeline(extracted_pdf_file, dataset_json, config, clientInfo);
+            const pdf_pipeline_status = await pdfPipeline(extracted_pdf_file, dataset_json, config, clientInfo, dispatch);
             return pdf_pipeline_status;
         }
         else {
