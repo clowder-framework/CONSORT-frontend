@@ -58,7 +58,7 @@ export default function Pdf(props) {
 			setAllSentences(sentences_list);
 		}
 		if (metadata === undefined){
-			console.log("Error metadata undefined");
+			console.error("Error metadata undefined");
 			const sentences_list = []
 			setAllSentences(sentences_list);
 		}

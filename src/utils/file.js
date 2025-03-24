@@ -8,7 +8,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function submitForExtraction(file_id, extractor_name, statementType, clientInfo){
 	// submits file for extraction and returns true if extraction is successful, else returns false
 	let body = {}
-	if (extractor_name == config.rct_extractor){
+	if (extractor_name === config.rct_extractor){
 		body = {"extractor": extractor_name, "parameters": {"statement": statementType}};
 	}
 	else{
@@ -16,7 +16,7 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 	}
 	
 	const extraction_response = await extractionRequest(file_id, body, clientInfo);
-	console.log(extraction_response);
+	console.log("Extraction response for extractor ", extractor_name, extraction_response);
 	if (extraction_response !== null && extraction_response.status === "OK") {
 		return true;
 	}
@@ -263,7 +263,7 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 	
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 
-	if (preview_config.previewType == 'thumbnail') {
+	if (preview_config.previewType === 'thumbnail') {
 		// TODO this is a hacky way to fix file previewer extractor output for soffice converted pdf docs
 		// in some cases, the file previewer extractor puts pdf file as thumbnail type. See https://github.com/clowder-framework/CONSORT-frontend/pull/91
 		preview_config.url = `${clientInfo.hostname}${preview["pv_route"]}?superAdmin=true`;

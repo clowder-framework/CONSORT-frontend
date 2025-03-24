@@ -12,12 +12,12 @@ function Dashboard() {
 			<div className="outer-container">
 				<div className="inner-container">
 					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "2rem", justifyContent:"flex-start" }}>
-						<Grid item xs={5} >
+						<Grid item xs={12} sm={5}>
 							<Box className="intro">
 								<Intro />
 							</Box>
 						</Grid>
-						<Grid item xs={6} >
+						<Grid item xs={12} sm={6}>
 							<Box className="createAndUpload">
 								<CreateAndUpload />
 							</Box>

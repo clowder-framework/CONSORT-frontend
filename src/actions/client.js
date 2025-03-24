@@ -22,6 +22,7 @@ export function createUploadExtract(file, config) {
 	return async function createUploadExtractThunk(dispatch) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
 		console.log("StatementType", config.statementType)
+		console.log("UserCategory", config.userCategory)
 		// Clowder API call to create empty dataset
 		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 		const file_description = file.type;
@@ -36,7 +37,7 @@ export function createUploadExtract(file, config) {
 				// submit uploaded file for extraction
 				dispatch(setExtractionStatus("Analyzing file"));
 				if (file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type =="application/msword"){
-					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo);
+					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo, dispatch);
 					if (word_pipeline_status) {
 						console.log("File extraction complete");
 						dispatch(setExtractionStatus("File extraction complete"));
@@ -49,7 +50,7 @@ export function createUploadExtract(file, config) {
 
 				}
 				else if (file.type == "application/pdf") {
-					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo);
+					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch);
 					if (pdf_pipeline_status) {
 						console.log("File extraction complete.");
 						dispatch(setExtractionStatus("File extraction complete"));
