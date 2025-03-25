@@ -9,6 +9,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import { theme } from "../../theme";
 import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
@@ -163,14 +164,17 @@ export default function CreateAndUpload() {
 							"application/msword": [".doc"],
 							"application/pdf": [".pdf"]
 						}}
-						message={"Drag and drop files here"}
+						message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
+						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}
 					/>
 				</div>
 			</LoadingOverlay>
 
 			<div className="radio-buttons-group-div" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6">Select Statement</Typography>
+					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily }}>
+						Select Statement
+					</Typography>
 					<RadioGroup
 						defaultValue={statementType}
 						name="radio-buttons-group"
@@ -178,14 +182,14 @@ export default function CreateAndUpload() {
 						onChange={handleStatementChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
 					>
-						<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
-						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' } }}/>
-						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
+						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}/>
 						<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' } }}/>
+						<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}/>
+						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' } }}/>
 					</RadioGroup>
 				</div>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6">Select User Category</Typography>
+					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily}}>Select Use-case</Typography>
 					<RadioGroup
 						defaultValue={userCategory}
 						name="radio-buttons-group"
@@ -193,8 +197,8 @@ export default function CreateAndUpload() {
 						onChange={handleUserCategoryChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
 					>
-						<FormControlLabel value="author" control={<Radio />} label="Author" />
-						<FormControlLabel value="researcher" control={<Radio />} label="Researcher" />
+						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}/>
+						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}/>
 					</RadioGroup>
 				</div>
 			</div>
