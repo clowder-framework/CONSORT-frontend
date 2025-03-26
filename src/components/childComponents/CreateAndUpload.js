@@ -173,7 +173,7 @@ export default function CreateAndUpload() {
 			<div className="radio-buttons-group-div" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
 					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily }}>
-						Select Statement
+						Select Guideline
 					</Typography>
 					<RadioGroup
 						defaultValue={statementType}

@@ -22,7 +22,7 @@ export default function Intro() {
 					WebkitBackgroundClip: 'text',
 					fontFamily: theme.typography.fontFamily
 				}}>
-					Review your clinical trial quality before submission
+					RCTCheck uses NLP techniques to help you access the compliance of your randomised controlled trial (RCT) manuscript with relevant guidelines.
 				</Typography>
 			</div>
 		</div>

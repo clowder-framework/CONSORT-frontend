@@ -84,22 +84,22 @@ export default function TopBar() {
 				<Toolbar className={classes.toolBar}>
 					<img className={classes.logo} src="../../public/assets/logo.png" alt="logo" width="150"
 						 height="50"/>
-					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'left', fontFamily: theme.typography.fontFamily}}>
-						<Link href="/" target="_blank" className={classes.toolBarlink}>
-							Home</Link>
+					<Box sx={{ flexGrow: 1 }} />
+					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', fontFamily: theme.typography.fontFamily}}>
+						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink}>
+							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<Link href="/" target="_blank" className={classes.toolBarlink} sx={{marginRight: "100px", fontFamily: theme.typography.fontFamily}}>
-							Help</Link>
+						<Link href="/faq" target="_blank" className={classes.toolBarlink} sx={{marginRight: "100px", fontFamily: theme.typography.fontFamily}}>
+							FAQ</Link>
 					</Typography>
-					{/* <Box sx={{ flexGrow: 1 }} />
 					<Button 
 						variant="contained" 
 						style={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }} 
-						onClick={handleAuthButtonClick}
+						onClick={() => { window.location.href = '/logout'; }}
 					>
-						{isAuthenticated ? 'Logout' : 'Login'}
-					</Button> */}
+						Logout
+					</Button>
 				</Toolbar>
 				
 			</AppBar>

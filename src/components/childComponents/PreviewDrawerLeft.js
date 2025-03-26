@@ -145,14 +145,16 @@ export default function PreviewDrawerLeft(props) {
 						<Typography variant="h6">Items Missed</Typography>
 						<Typography align="center">{itemsMissed}</Typography>
 					</Box>
-					<Button onClick={onDownload} variant="contained" color="primary" startIcon={<DownloadIcon />}>
+					<Button onClick={onDownload} variant="contained"
+						style={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}  
+						startIcon={<DownloadIcon />}>
 						Export
 					</Button>
 				</Toolbar>
 				<Divider />
 
 				<List
-					sx={{ width: drawerWidth, }}
+					sx={{ width: drawerWidth, color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}
 					component="nav"
 					aria-labelledby="item-checklist"
 					subheader={
@@ -173,7 +175,9 @@ export default function PreviewDrawerLeft(props) {
 										<ListItem key={index} divider>
 											<ListItemButton onClick={() => {handleSectionClick(check_item.section)}}>
 												<ListItemText primary={check_item.section} />
-												{isMissed(missed) ? <Badge badgeContent={missed} max={35} color={"primary"} /> : <CheckIcon style={{color:"green"}} />}
+												{isMissed(missed) ? 
+													<Badge badgeContent={missed} max={35} style={{color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily}}/> : 
+													<CheckIcon style={{color:"green"}} />}
 												{isOpen(check_item.section) ? <ExpandLess sx={{ml:"20px"}} /> : <ExpandMore sx={{ml:"20px"}}/>}
 											</ListItemButton>
 										</ListItem>
@@ -187,7 +191,8 @@ export default function PreviewDrawerLeft(props) {
 															return (
 																<>
 																	<div className="label" style={{display: "flex", flexDirection: "row",  alignItems: "center"}}>
-																		<ListItemText primary={i.label} secondary={i.topic} sx={{ pl: 4 }}/>
+																		<ListItemText primary={i.label} secondary={i.topic} sx={{ pl: 4 }} 
+																		style={{color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily}}/>
 																		<ListItemIcon>
 																			{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																		</ListItemIcon>
@@ -203,8 +208,12 @@ export default function PreviewDrawerLeft(props) {
 																		>
 																			{
 																				item_found_pages[i.label].map((pagenum, page_index) => (
-																				<ToggleButton key={page_index} value={pagenum} aria-label="item page" onClick={() => {handleItemClick(pagenum)}}>
-																					<Typography variant="string">Page: {pagenum}</Typography>
+																				<ToggleButton key={page_index} value={pagenum} aria-label="item page" 
+																					style={{color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily}}
+																					onClick={() => {handleItemClick(pagenum)}}>
+																					<Typography variant="string" style={{color: theme.palette.info.main, fontFamily: theme.typography.fontFamily}}>
+																						Page: {pagenum}
+																					</Typography>
 																				</ToggleButton>
 																				))
 																			}

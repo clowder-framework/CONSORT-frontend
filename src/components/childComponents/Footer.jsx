@@ -23,9 +23,28 @@ const useStyles = makeStyles((theme) => ({
 export default function Footer() {
   const classes = useStyles();
   return (
-    <div className={classes.footer}>
-      <span className={classes.text}>Powered by Clowder</span>
-      <img className={classes.logo} src="../../public/assets/clowder-logo-sm.svg" alt="clowder-logo" width="50" height="50" />
-    </div>
+    <>
+      <div className={classes.footer}>
+        <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gridTemplateColumns: '1fr 1fr' }}>
+          <div style={{ gridColumn: '1 / span 1', gridRow: '1 / span 1' }}>
+            <span className={classes.text}>
+              See our Scientific Data paper for further details.
+            </span>
+          <span className={classes.text}>
+            Jiang L, Vorland CJ, Ying X, Brown AW, Menke JD, Hong G, Lan M, Mayo-Wilson E, Kilicoglu H.  
+            <a href="https://doi.org/10.1038/s41597-025-04629-1" target="_blank" rel="noopener noreferrer" className={classes.citation}>
+              SPIRIT-CONSORT-TM: a corpus for assessing transparency of clinical trial protocol and results publications.
+            </a>
+            Scientific Data. 2025;12(1):355.
+          </span>
+          </div>
+          <div style={{ gridColumn: '2 / span 1', gridRow: '1 / span 1' }}>
+            <span className={classes.text}>
+                Powered by <a href="https://consort.clowderframework.org/clowder/" target="_blank" rel="noopener noreferrer">Clowder</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
   );
 } 
