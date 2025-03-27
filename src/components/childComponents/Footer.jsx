@@ -30,6 +30,7 @@ export default function Footer() {
             <span className={classes.text}>
               See our Scientific Data paper for further details.
             </span>
+          <div style={{ height: '20px' }}></div>
           <span className={classes.text}>
             Jiang L, Vorland CJ, Ying X, Brown AW, Menke JD, Hong G, Lan M, Mayo-Wilson E, Kilicoglu H.  
             <div>

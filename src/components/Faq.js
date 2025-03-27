@@ -63,7 +63,6 @@ function Faq() {
 			<Box sx={{ mt: 4 }}>
 				<Footer />
 			</Box>
-
 		</Container>
 	);
 }

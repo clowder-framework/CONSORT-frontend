@@ -14,7 +14,8 @@ import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
-import { fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
+import {downloadAndSaveFile} from "../../utils/file";
+import {fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
 import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory} from '../../actions/dashboard';
 import config from "../../app.config";
@@ -38,6 +39,8 @@ export default function CreateAndUpload() {
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 	const statementType = useSelector(state => state.statement.statementType); 
 	const userCategory = useSelector(state => state.userCategory.userCategory);
+	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
+	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
 	let pdfExtractor;
 	const rctExtractor = config.rct_extractor;
 	if (userCategory === "author"){
@@ -93,6 +96,12 @@ export default function CreateAndUpload() {
 					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 					const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
 					if (pdfExtractorContent){
+						setPDFMetadata(pdfExtractorContent);
+					}
+					if (rctExtractorContent){
+						setRCTMetadata(rctExtractorContent);
+					}
+					if (pdfExtractorContent){
 						// get pdf preview
 						console.log("pdf extractor preview ", pdfExtractorContent)
 						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"]
@@ -146,10 +155,17 @@ export default function CreateAndUpload() {
 	}, [mouseHover]);
 
 
-	const goToPreviewRoute = () => {
+	const downloadOrPreview = () => {
 		setLoading(false); // stop display of Overlay
-		let path = '/preview';
-		navigate(path);
+		if (userCategory === "author"){
+			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"]
+			const reportFilename = RCTmetadata["extracted_files"][1]["filename"]
+			downloadAndSaveFile(reportFileID, reportFilename).then(r => console.log(r));
+		}
+		else{
+			let path = '/preview';
+			navigate(path);
+		}
 	}
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
@@ -203,7 +219,17 @@ export default function CreateAndUpload() {
 				</div>
 			</div>
 			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
-				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute}> View Results </Button>
+				<Button 
+					variant="contained" 
+					style={{ 
+						color: theme.palette.info.contrastText, 
+						backgroundColor: preview ? 'gray' : theme.palette.primary.dark 
+					}} 
+					disabled={preview} 
+					onClick={downloadOrPreview}
+				> 
+					View Results 
+				</Button>
 			</div>
 
 		</Box>
