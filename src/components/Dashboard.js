@@ -4,8 +4,12 @@ import {AppBar, Box, Button, Dialog, DialogTitle, Grid, Link, ListItem, Tab, Tab
 import TopBar from "./childComponents/TopBar";
 import Intro from "./childComponents/Intro";
 import CreateAndUpload from "./childComponents/CreateAndUpload";
+import Footer from "./childComponents/Footer";
+import { useTheme } from "@material-ui/core/styles";
 
 function Dashboard() {
+	const theme = useTheme();
+	
 	return (
 		<>
 			<TopBar/>
@@ -25,6 +29,7 @@ function Dashboard() {
 					</Grid>
 				</div>
 			</div>
+			<Footer />
 		</>
 	)
 }

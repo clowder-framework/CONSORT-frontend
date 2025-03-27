@@ -19,7 +19,7 @@ config["pymupdf_extractor"] = "pymupdf-extractor";
 // extractor name for SOffice extractor. Triggers on word files and converts them to pdf.
 config["soffice_extractor"] = "soffice-extractor";
 // Add default statement type
-config["statementType"] = "consort";
+config["statementType"] = "spirit";
 // Add default user category
 config["userCategory"] = "author";
 

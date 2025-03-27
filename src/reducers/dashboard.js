@@ -1,6 +1,6 @@
 
 const initialState = {
-    statementType: 'consort',  // default value
+    statementType: 'spirit',  // default value
     userCategory: 'author'
 };
 

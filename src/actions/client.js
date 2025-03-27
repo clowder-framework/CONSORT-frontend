@@ -39,26 +39,26 @@ export function createUploadExtract(file, config) {
 				if (file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type =="application/msword"){
 					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo, dispatch);
 					if (word_pipeline_status) {
-						console.log("File extraction complete");
-						dispatch(setExtractionStatus("File extraction complete"));
+						console.log("Analysis complete");
+						dispatch(setExtractionStatus("Analysis complete"));
 
 					}
 					else {
-						console.error("File extraction failed");
-						dispatch(setExtractionStatus("File extraction failed"));
+						console.error("Analysis failed");
+						dispatch(setExtractionStatus("Analysis failed"));
 					}
 
 				}
 				else if (file.type == "application/pdf") {
 					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch);
 					if (pdf_pipeline_status) {
-						console.log("File extraction complete.");
-						dispatch(setExtractionStatus("File extraction complete"));
+						console.log("Analysis complete.");
+						dispatch(setExtractionStatus("Analysis complete"));
 
 					}
 					else {
-						console.error("File extraction failed");
-						dispatch(setExtractionStatus("File extraction failed"));
+						console.error("Analysis failed");
+						dispatch(setExtractionStatus("Analysis failed"));
 					}
 
 					// TODO add extracted output files to dataset state

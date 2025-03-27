@@ -1,18 +1,39 @@
 import {createTheme} from '@mui/material/styles';
+import { ThemeOptions } from '@mui/material/styles';
+
+// Extend the theme to include custom properties
+declare module '@mui/material/styles' {
+	interface Palette {
+		gradient: {
+			start: string;
+			middle1: string;
+			middle2: string;
+			end: string;
+		};
+	}
+	interface PaletteOptions {
+		gradient?: {
+			start?: string;
+			middle1?: string;
+			middle2?: string;
+			end?: string;
+		};
+	}
+}
 
 // A custom theme for this app
 export const theme = createTheme({
 	typography: {
 		fontFamily: [
-			'Open Sans',
+			'Lexend Deca',
 			'sans-serif',
 		].join(','),
 	},
 	palette: {
 		primary: {
-			light: "#F7941E",
-			main: "#F7941E",
-			dark: "#e65100",
+			light: "#AD8AF8",
+			main: "#8148FC",
+			dark: "#481EC0",
 			contrastText: '#FFFFFF',
 		},
 		secondary: {
@@ -25,6 +46,12 @@ export const theme = createTheme({
 		},
 		background: {
 			default: "#F8F8F8"
+		},
+		gradient: {
+			start: "#CD67F9",
+			middle1: "#AD60F2",
+			middle2: "#7F46FC",
+			end: "#486EF5",
 		}
 	},
 	components: {

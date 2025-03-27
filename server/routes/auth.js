@@ -157,4 +157,9 @@ router.post('/logout', function(req, res, next) {
 	//res.send({isAuth: req.isAuthenticated(), user: req.user})
 });
 
+// Endpoint to check authentication status
+router.get('/status', function(req, res) {
+    res.json({ isAuthenticated: req.isAuthenticated() });
+});
+
 module.exports = router;
