@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { Container, Typography, Box } from '@mui/material';
-
+import Footer from './childComponents/Footer';
+import { Link as RouterLink } from 'react-router-dom';
+import { theme } from '../theme';
 
 const faqData = [
 	{
@@ -27,32 +29,41 @@ const faqData = [
     },
     {
         question: "How can I find the SPIRIT guidelines?",
-        answer: "SPIRIT statement can be found here: https://www.consort-statement.org/spirit/"
+        answer: <span>SPIRIT statement can be found here: <a href="https://www.consort-statement.org/spirit/" target="_blank" rel="noopener noreferrer">https://www.consort-statement.org/spirit/</a></span>
     },
     {
         question: "How can I find the CONSORT guidelines?",
-        answer: "CONSORT statement can be found here: https://www.equator-network.org/reporting-guidelines/consort/"
+        answer: <span>CONSORT statement can be found here: <a href="https://www.equator-network.org/reporting-guidelines/consort/" target="_blank" rel="noopener noreferrer">https://www.equator-network.org/reporting-guidelines/consort/</a></span>
     }
 ];
 
 function Faq() {
 	return (
 		<Container>
-			<Typography variant="h4" gutterBottom>
+			<Typography variant="h4" gutterBottom sx={{ color: theme.palette.primary.main }}>
 				FAQ
 			</Typography>
 			<Box>
 				{faqData.map((item, index) => (
 					<Box key={index} mb={2}>
-						<Typography variant="h6">
+						<Typography variant="h6" sx={{ color: theme.palette.primary.main }}>
 							{index + 1}. {item.question}
 						</Typography>
-						<Typography variant="body1">
+						<Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
 							{item.answer}
 						</Typography>
 					</Box>
 				))}
 			</Box>
+			<Box sx={{ mt: 4, textAlign: 'center' }}>
+				<Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
+					<RouterLink to="/home" style={{ color: 'inherit' }}>Home Page</RouterLink>
+				</Typography>
+			</Box>
+			<Box sx={{ mt: 4 }}>
+				<Footer />
+			</Box>
+
 		</Container>
 	);
 }

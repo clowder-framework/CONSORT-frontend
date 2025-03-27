@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, Link, Toolbar, Typography, Button, Box} from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../../theme';
 
 const useStyles = makeStyles((theme) => ({
@@ -90,16 +91,29 @@ export default function TopBar() {
 							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<Link href="/faq" target="_blank" className={classes.toolBarlink} sx={{marginRight: "100px", fontFamily: theme.typography.fontFamily}}>
-							FAQ</Link>
+						<RouterLink to="/faq" className={classes.toolBarlink} style={{marginRight: "100px", fontFamily: theme.typography.fontFamily}}>
+							FAQ</RouterLink>
 					</Typography>
-					<Button 
+					{/* <Button 
 						variant="contained" 
-						style={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }} 
-						onClick={() => { window.location.href = '/logout'; }}
+						style={{ color: theme.palette.primary.main, backgroundColor: theme.palette.primary.light, fontFamily: theme.typography.fontFamily }} 
+						onClick={async () => {
+							try {
+								await fetch('/logout', {
+									method: 'POST',
+									credentials: 'include',
+									headers: {
+										'CSRF-Token': csrfToken
+									}
+								});
+								window.location.href = '/home';
+							} catch (error) {
+								console.error('Error logging out:', error);
+							}
+						}}
 					>
 						Logout
-					</Button>
+					</Button> */}
 				</Toolbar>
 				
 			</AppBar>

@@ -19,6 +19,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+import { theme } from '../../theme';
 import {downloadAndSaveFile} from "../../utils/file";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
 
@@ -37,6 +38,7 @@ export default function PreviewDrawerLeft(props) {
 	const [checklist, setChecklist] = useState([]);
 	const [openSections, setOpenSections] = useState([]);
 	const [reportFileID, setReportFileID] = useState('');
+	const [reportFilename, setReportFilename] = useState('');
 	const [item_found_pages , setItemFoundPages] = useState({});
 	const pageNumber = (number) => dispatch(setPageNumber(SET_PAGE_NUMBER, Number(number)));
 
@@ -104,7 +106,7 @@ export default function PreviewDrawerLeft(props) {
 	}
 
 	const onDownload = () => {
-		downloadAndSaveFile(reportFileID, "results.pdf").then(r => console.log(r));
+		downloadAndSaveFile(reportFileID, reportFilename).then(r => console.log(r));
 	}
 
 
@@ -116,6 +118,7 @@ export default function PreviewDrawerLeft(props) {
 			setItemsMissed(content["items_missed"]);
 			setChecklist(content["checklist"]);
 			setReportFileID(content["extracted_files"][1]["file_id"])
+			setReportFilename(content["extracted_files"][1]["filename"])
 			setItemFoundPages(get_item_found_pages(content["checklist"]))
 		}
 		if (metadata === undefined){

@@ -32,10 +32,14 @@ export default function Footer() {
             </span>
           <span className={classes.text}>
             Jiang L, Vorland CJ, Ying X, Brown AW, Menke JD, Hong G, Lan M, Mayo-Wilson E, Kilicoglu H.  
-            <a href="https://doi.org/10.1038/s41597-025-04629-1" target="_blank" rel="noopener noreferrer" className={classes.citation}>
-              SPIRIT-CONSORT-TM: a corpus for assessing transparency of clinical trial protocol and results publications.
-            </a>
-            Scientific Data. 2025;12(1):355.
+            <div>
+              <a href="https://doi.org/10.1038/s41597-025-04629-1" target="_blank" rel="noopener noreferrer" className={classes.citation}>
+                SPIRIT-CONSORT-TM: a corpus for assessing transparency of clinical trial protocol and results publications.
+              </a>
+            </div>
+            <div>
+              Scientific Data. 2025;12(1):355.
+            </div>
           </span>
           </div>
           <div style={{ gridColumn: '2 / span 1', gridRow: '1 / span 1' }}>

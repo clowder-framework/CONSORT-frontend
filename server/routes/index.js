@@ -12,9 +12,7 @@ const baseUrl = process.env.BASE_URL;
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	if (!req.user) { return res.render('login'); }
-	next();
-}, function(req, res, next) {
-	res.render('home', { user: req.user });
+	res.redirect('/home');
 });
 
 
