@@ -35,23 +35,29 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 	authHeader.append('Content-Type', 'application/json');
 	const body_data = {"name": dataset_name, "description": dataset_description, "space": config.space};
 	const body = JSON.stringify(body_data);
-	const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
-	if (response.status === 200) {
-		// return the dataset ID {id:xxx}
-		console.log("Creation of dataset successful");
-		return await response.json();
+	try {
+		const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
+		if (response.status === 200) {
+			// return the dataset ID {id:xxx}
+			console.log("Creation of dataset successful");
+			return await response.json();
+		}
+		else if (response.status === 401) {
+			// handle error
+			const responseJson = await response.json();
+			console.log(responseJson);
+			console.error("Creation of dataset failed");
+			return null;
+		} else {
+			// handle error
+			const responseJson = await response.json();
+			console.log(responseJson);
+			console.error("Creation of dataset failed");
+			return null;
+		}
 	}
-	else if (response.status === 401) {
-		// handle error
-		const responseJson = await response.json();
-		console.log(responseJson);
-		console.error("Creation of dataset failed");
-		return null;
-	} else {
-		// handle error
-		const responseJson = await response.json();
-		console.log(responseJson);
-		console.error("Creation of dataset failed");
+	catch (error) {
+		console.error("Creation of dataset failed", error);
 		return null;
 	}
 }
