@@ -145,11 +145,15 @@ export default function PreviewDrawerLeft(props) {
 			>
 				<Toolbar sx={{ justifyContent: "space-between" }}>
 					<Box variant="contained" color="primary">
-						<Typography variant="h6">Items Missed</Typography>
-						<Typography align="center">{itemsMissed}</Typography>
+						<Typography variant="h6" style={{color: theme.palette.primary.dark, fontWeight: "bold"}}>Items Missed</Typography>
+						<Typography align="center" style={{color: theme.palette.primary.main}}>{itemsMissed}</Typography>
 					</Box>
 					<Button onClick={onDownload} variant="contained"
-						style={{ color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily }}  
+						style={{ 
+							color: theme.palette.info.contrastText, 
+							backgroundColor: theme.palette.primary.dark,
+							fontFamily: theme.typography.fontFamily
+						}} 
 						startIcon={<DownloadIcon />}>
 						Export
 					</Button>
@@ -177,9 +181,9 @@ export default function PreviewDrawerLeft(props) {
 									<>
 										<ListItem key={index} divider>
 											<ListItemButton onClick={() => {handleSectionClick(check_item.section)}}>
-												<ListItemText primary={check_item.section} />
+												<ListItemText primary={check_item.section.toUpperCase()} /> 
 												{isMissed(missed) ? 
-													<Badge badgeContent={missed} max={35} style={{color: theme.palette.primary.main, fontFamily: theme.typography.fontFamily}}/> : 
+													<Badge badgeContent={missed} max={35} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}/> : 
 													<CheckIcon style={{color:"green"}} />}
 												{isOpen(check_item.section) ? <ExpandLess sx={{ml:"20px"}} /> : <ExpandMore sx={{ml:"20px"}}/>}
 											</ListItemButton>
@@ -194,8 +198,8 @@ export default function PreviewDrawerLeft(props) {
 															return (
 																<>
 																	<div className="label" style={{display: "flex", flexDirection: "row",  alignItems: "center"}}>
-																		<ListItemText primary={i.label} secondary={i.topic} sx={{ pl: 4 }} 
-																		style={{color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily}}/>
+																		<ListItemText primary={i.label + ":" + i.topic} sx={{ pl: 4 }} 
+																		style={{fontFamily: theme.typography.fontFamily}}/>
 																		<ListItemIcon>
 																			{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
 																		</ListItemIcon>
@@ -214,7 +218,7 @@ export default function PreviewDrawerLeft(props) {
 																				<ToggleButton key={page_index} value={pagenum} aria-label="item page" 
 																					style={{color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily}}
 																					onClick={() => {handleItemClick(pagenum)}}>
-																					<Typography variant="string" style={{color: theme.palette.info.main, fontFamily: theme.typography.fontFamily}}>
+																					<Typography variant="string" style={{color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily}}>
 																						Page: {pagenum}
 																					</Typography>
 																				</ToggleButton>

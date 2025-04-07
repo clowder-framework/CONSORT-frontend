@@ -63,7 +63,8 @@ export default function CreateAndUpload() {
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
-		setSpinner(true)
+		setLoading(true);
+		setSpinner(true);
 		setFilename(file.name);
 		dispatch(createUploadExtract(file, config));
 	};
@@ -114,7 +115,7 @@ export default function CreateAndUpload() {
 					}
 					datasetMetadata(metadata);
 
-					setPreview(false)  // Continue button activated
+					setPreview(false);  // Continue button activated
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
@@ -157,6 +158,7 @@ export default function CreateAndUpload() {
 
 	const downloadOrPreview = () => {
 		setLoading(false); // stop display of Overlay
+		setSpinner(false);
 		if (userCategory === "author"){
 			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"]
 			const reportFilename = RCTmetadata["extracted_files"][1]["filename"]
@@ -188,7 +190,7 @@ export default function CreateAndUpload() {
 
 			<div className="radio-buttons-group-div" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily }}>
+					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>
 						Select Guideline
 					</Typography>
 					<RadioGroup
@@ -197,24 +199,28 @@ export default function CreateAndUpload() {
 						row
 						onChange={handleStatementChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
+						// disable radio buttons if loading is true
+						disabled={loading}
 					>
-						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main}}/>
+						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily}}/>
 						<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }, marginRight: '10px' }}/>
-						<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main}}/>
+						<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily}}/>
 						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }}}/>
 					</RadioGroup>
 				</div>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily}}>Select Use-case</Typography>
+					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>Select Use-case</Typography>
 					<RadioGroup
 						defaultValue={userCategory}
 						name="radio-buttons-group"
 						row
 						onChange={handleUserCategoryChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
+						// disable radio buttons if loading is true
+						disabled={loading}
 					>
-						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}/>
-						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}/>
+						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }}/>
+						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }}/>
 					</RadioGroup>
 				</div>
 			</div>

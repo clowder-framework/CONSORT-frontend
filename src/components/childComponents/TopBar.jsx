@@ -30,6 +30,17 @@ const useStyles = makeStyles((theme) => ({
 		textDecoration: "none",
 		fontSize: theme.typography.fontSize,
 		color: theme.palette.secondary.dark,
+		fontFamily: theme.typography.fontFamily,
+		// do not change color of the link
+		"&:hover": {
+			color: theme.palette.secondary.dark,
+		},
+		"&:active": {
+			color: theme.palette.secondary.dark,
+		},
+		"&:visited": {
+			color: theme.palette.secondary.dark,
+		},
 	},
 	title: {
 		flexGrow: 1,
@@ -86,12 +97,12 @@ export default function TopBar() {
 					<img className={classes.logo} src="../../public/assets/logo.png" alt="logo" width="150"
 						 height="50"/>
 					<Box sx={{ flexGrow: 1 }} />
-					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', fontFamily: theme.typography.fontFamily}}>
-						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink}>
+					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', color: theme.palette.secondary.dark}}>
+						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
 							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/faq" className={classes.toolBarlink} style={{marginRight: "100px", fontFamily: theme.typography.fontFamily}}>
+						<RouterLink to="/faq" className={classes.toolBarlink} style={{marginRight: "100px", color: theme.palette.secondary.dark}}>
 							FAQ</RouterLink>
 					</Typography>
 					{/* <Button 
