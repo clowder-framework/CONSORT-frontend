@@ -1,7 +1,7 @@
 // Create a FAQ page
 
 import React from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Button } from '@mui/material';
 import Footer from './childComponents/Footer';
 import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../theme';
@@ -39,31 +39,52 @@ const faqData = [
 
 function Faq() {
 	return (
-		<Container>
-			<Typography variant="h4" gutterBottom sx={{ color: theme.palette.primary.main }}>
-				FAQ
-			</Typography>
-			<Box>
-				{faqData.map((item, index) => (
-					<Box key={index} mb={2}>
-						<Typography variant="h6" sx={{ color: theme.palette.primary.main }}>
-							{index + 1}. {item.question}
-						</Typography>
-						<Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
-							{item.answer}
-						</Typography>
-					</Box>
-				))}
-			</Box>
-			<Box sx={{ mt: 4, textAlign: 'center' }}>
-				<Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
-					<RouterLink to="/home" style={{ color: 'inherit' }}>Home Page</RouterLink>
+		<>
+			<Container>
+				<Typography variant="h4" gutterBottom sx={{ color: theme.palette.primary.main }}>
+					FAQ
 				</Typography>
-			</Box>
+				<Box>
+					{faqData.map((item, index) => (
+						<Box key={index} mb={2}>
+							<Typography variant="h6" sx={{ color: theme.palette.primary.main }}>
+								{index + 1}. {item.question}
+							</Typography>
+							<Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
+								{item.answer}
+							</Typography>
+						</Box>
+					))}
+				</Box>
+				<Box sx={{ mt: 4, textAlign: 'center' }}>
+					<Button 
+						variant="contained" 
+						color="primary" 
+						component={RouterLink} 
+						to="/home"
+						sx={{
+							background: 'linear-gradient(to right, #CD67F9, #486EF5)',
+							color: 'white',
+							padding: '12px 24px',
+							borderRadius: '4px',
+							textDecoration: 'none',
+							fontWeight: '500',
+							transition: 'opacity 0.2s',
+							'&:hover': {
+								opacity: 0.9
+							}
+						}}
+					>
+						Home
+					</Button>
+				</Box>
+				
+			</Container>
 			<Box sx={{ mt: 4 }}>
 				<Footer />
 			</Box>
-		</Container>
+		</>
+		
 	);
 }
 

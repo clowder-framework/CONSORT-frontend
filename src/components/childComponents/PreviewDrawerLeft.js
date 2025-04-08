@@ -183,7 +183,7 @@ export default function PreviewDrawerLeft(props) {
 											<ListItemButton onClick={() => {handleSectionClick(check_item.section)}}>
 												<ListItemText primary={check_item.section.toUpperCase()} /> 
 												{isMissed(missed) ? 
-													<Badge badgeContent={missed} max={35} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}/> : 
+													<Badge badgeContent={missed} max={35} style={{color: 'red', fontFamily: theme.typography.fontFamily}}/> : 
 													<CheckIcon style={{color:"green"}} />}
 												{isOpen(check_item.section) ? <ExpandLess sx={{ml:"20px"}} /> : <ExpandMore sx={{ml:"20px"}}/>}
 											</ListItemButton>
@@ -198,7 +198,7 @@ export default function PreviewDrawerLeft(props) {
 															return (
 																<>
 																	<div className="label" style={{display: "flex", flexDirection: "row",  alignItems: "center"}}>
-																		<ListItemText primary={i.label + ":" + i.topic} sx={{ pl: 4 }} 
+																		<ListItemText primary={i.label + " : " + i.topic} sx={{ pl: 4 }} 
 																		style={{fontFamily: theme.typography.fontFamily}}/>
 																		<ListItemIcon>
 																			{found ? <CheckIcon style={{color:"green"}} /> : <CancelIcon style={{color:"red"}} />}
@@ -216,9 +216,9 @@ export default function PreviewDrawerLeft(props) {
 																			{
 																				item_found_pages[i.label].map((pagenum, page_index) => (
 																				<ToggleButton key={page_index} value={pagenum} aria-label="item page" 
-																					style={{color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily}}
+																					style={{textTransform: 'none', color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily, fontSize: '0.875rem'}}
 																					onClick={() => {handleItemClick(pagenum)}}>
-																					<Typography variant="string" style={{color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily}}>
+																					<Typography variant="string" style={{color: theme.palette.secondary.light, fontFamily: theme.typography.fontFamily, fontSize: '0.875rem'}}>
 																						Page: {pagenum}
 																					</Typography>
 																				</ToggleButton>

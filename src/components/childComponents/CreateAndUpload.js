@@ -115,7 +115,7 @@ export default function CreateAndUpload() {
 					}
 					datasetMetadata(metadata);
 
-					setPreview(false);  // Continue button activated
+					setPreview(false);  // View Results button activated
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
@@ -157,7 +157,7 @@ export default function CreateAndUpload() {
 
 
 	const downloadOrPreview = () => {
-		setLoading(false); // stop display of Overlay
+		setLoading(false); // stop display of overlay
 		setSpinner(false);
 		if (userCategory === "author"){
 			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"]
@@ -199,12 +199,10 @@ export default function CreateAndUpload() {
 						row
 						onChange={handleStatementChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
-						// disable radio buttons if loading is true
-						disabled={loading}
 					>
-						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily}}/>
+						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
 						<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }, marginRight: '10px' }}/>
-						<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily}}/>
+						<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
 						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }}}/>
 					</RadioGroup>
 				</div>
@@ -216,11 +214,9 @@ export default function CreateAndUpload() {
 						row
 						onChange={handleUserCategoryChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
-						// disable radio buttons if loading is true
-						disabled={loading}
 					>
-						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }}/>
-						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }}/>
+						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
+						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
 					</RadioGroup>
 				</div>
 			</div>
