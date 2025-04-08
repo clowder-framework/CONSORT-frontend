@@ -29,7 +29,7 @@ const faqData = [
     },
     {
         question: "How can I find the SPIRIT guidelines?",
-        answer: <span>SPIRIT statement can be found here: <a href="https://www.consort-statement.org/spirit/" target="_blank" rel="noopener noreferrer">https://www.consort-statement.org/spirit/</a></span>
+        answer: <span>SPIRIT statement can be found here: <a href="https://spirit-statement.org/" target="_blank" rel="noopener noreferrer">https://spirit-statement.org/</a></span>
     },
     {
         question: "How can I find the CONSORT guidelines?",
