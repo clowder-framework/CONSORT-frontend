@@ -26,7 +26,7 @@ export default function FilePreview() {
 	const [previews, setPreviews] = useState([]); // state for file previews
 	const datasetMetadata = useSelector((state) => state.dataset.metadata);
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
-	const [PDFmetadata, setPDFMetadata] = useState({}); // state for RCT metadata
+	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
 
 	// useEffect on filePreviews to download preview resources
 	useEffect( async ()=> {

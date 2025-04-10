@@ -9,11 +9,13 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+import { theme } from "../../theme";
 import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
-import { fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
+import {downloadAndSaveFile} from "../../utils/file";
+import {fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
 import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory} from '../../actions/dashboard';
 import config from "../../app.config";
@@ -37,6 +39,8 @@ export default function CreateAndUpload() {
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 	const statementType = useSelector(state => state.statement.statementType); 
 	const userCategory = useSelector(state => state.userCategory.userCategory);
+	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
+	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
 	let pdfExtractor;
 	const rctExtractor = config.rct_extractor;
 	if (userCategory === "author"){
@@ -59,7 +63,8 @@ export default function CreateAndUpload() {
 
 	const onDropFile = (file) => {
 		setLoadingText("Uploading file");
-		setSpinner(true)
+		setLoading(true);
+		setSpinner(true);
 		setFilename(file.name);
 		dispatch(createUploadExtract(file, config));
 	};
@@ -92,6 +97,12 @@ export default function CreateAndUpload() {
 					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 					const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
 					if (pdfExtractorContent){
+						setPDFMetadata(pdfExtractorContent);
+					}
+					if (rctExtractorContent){
+						setRCTMetadata(rctExtractorContent);
+					}
+					if (pdfExtractorContent){
 						// get pdf preview
 						console.log("pdf extractor preview ", pdfExtractorContent)
 						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"]
@@ -104,7 +115,7 @@ export default function CreateAndUpload() {
 					}
 					datasetMetadata(metadata);
 
-					setPreview(false)  // Continue button activated
+					setPreview(false);  // View Results button activated
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
@@ -145,10 +156,18 @@ export default function CreateAndUpload() {
 	}, [mouseHover]);
 
 
-	const goToPreviewRoute = () => {
-		setLoading(false); // stop display of Overlay
-		let path = '/preview';
-		navigate(path);
+	const downloadOrPreview = () => {
+		setLoading(false); // stop display of overlay
+		setSpinner(false);
+		if (userCategory === "author"){
+			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"]
+			const reportFilename = RCTmetadata["extracted_files"][1]["filename"]
+			downloadAndSaveFile(reportFileID, reportFilename).then(r => console.log(r));
+		}
+		else{
+			let path = '/preview';
+			navigate(path);
+		}
 	}
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
@@ -163,14 +182,17 @@ export default function CreateAndUpload() {
 							"application/msword": [".doc"],
 							"application/pdf": [".pdf"]
 						}}
-						message={"Drag and drop files here"}
+						message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
+						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}
 					/>
 				</div>
 			</LoadingOverlay>
 
 			<div className="radio-buttons-group-div" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6">Select Statement</Typography>
+					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>
+						Select Guideline
+					</Typography>
 					<RadioGroup
 						defaultValue={statementType}
 						name="radio-buttons-group"
@@ -178,14 +200,14 @@ export default function CreateAndUpload() {
 						onChange={handleStatementChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
 					>
-						<FormControlLabel value="consort" control={<Radio />} label="Trial results" />
-						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' } }}/>
-						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" />
-						<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' } }}/>
+						<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
+						<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }, marginRight: '10px' }}/>
+						<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
+						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }}}/>
 					</RadioGroup>
 				</div>
 				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6">Select User Category</Typography>
+					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>Select Use-case</Typography>
 					<RadioGroup
 						defaultValue={userCategory}
 						name="radio-buttons-group"
@@ -193,13 +215,23 @@ export default function CreateAndUpload() {
 						onChange={handleUserCategoryChange}
 						style={{ marginLeft: { xs: '0', sm: '10px' } }}
 					>
-						<FormControlLabel value="author" control={<Radio />} label="Author" />
-						<FormControlLabel value="researcher" control={<Radio />} label="Researcher" />
+						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
+						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
 					</RadioGroup>
 				</div>
 			</div>
 			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
-				<Button variant="contained" disabled={preview} onClick={goToPreviewRoute}> View Results </Button>
+				<Button 
+					variant="contained" 
+					style={{ 
+						color: theme.palette.info.contrastText, 
+						backgroundColor: preview ? 'gray' : theme.palette.primary.dark 
+					}} 
+					disabled={preview} 
+					onClick={downloadOrPreview}
+				> 
+					View Results 
+				</Button>
 			</div>
 
 		</Box>
