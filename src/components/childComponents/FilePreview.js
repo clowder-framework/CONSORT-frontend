@@ -99,7 +99,7 @@ export default function FilePreview() {
 										console.log("previewType pdf or thumbnail");
 										return (
 											<div key={preview["fileid"]}>
-												<Grid container spacing={2} direction="row">
+												<Grid container spacing={2} direction="row" style={{ width: '100vw', height: '100vh' }}>
 													<Grid item xs={5} >
 														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
 													</Grid>
