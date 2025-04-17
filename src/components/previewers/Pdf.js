@@ -25,10 +25,11 @@ export default function Pdf(props) {
 	const {fileId, pdfSrc, metadata, ...other} = props;
 
 	const [content, setContent] = useState({});
-	const [allSentences, setAllSentences] = useState([]);
+	// all sentences from metadata
+	const [allSentences, setAllSentences] = useState([]); // [{label: "label", sentences: [{coords: "coords", text: "text"}]}]
 
-	// const canvas = useRef();
-	const highlightCanvasRef = useRef();
+	const canvas = useRef();
+	// const highlightCanvasRef = useRef();
 	const [isRendered, setIsRendered] = useState();
 	const [numPages, setNumPages] = useState(null);
 	let pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
@@ -128,69 +129,92 @@ export default function Pdf(props) {
 		changePage(1);
 	}
 
-	// Get highlights for the current page
-	function getPageHighlights(){
-		// Group by coordinates first, collecting all labels for each unique coordinate set.
-		const sentenceCoordsToLabels = {}; // { coords: { labels: [], text: "" } }
+	// Get highlights for the current page, grouping labels by coordGroup
+	function getPageHighlights() {
+		// Temporary map to group labels by coordGroup
+		// Structure: { "coordGroupString": { labels: ["label1", "label2"], text: "sentence text" } }
+		const coordGroupMap = {};
 
-		// Filter coordinates with the first element being page number
-		let pageHighlights = allSentences.map(entry => {
-			let label = entry.label;
-			let sentences = entry.sentences;
-			if (sentences.length > 0){
-				const pageSentences = sentences.filter(sentence => {
-					// Split coordinates into groups (separated by semicolon)
-					const coordGroups = sentence.coords.split(';');
-					// Check if coordGroups is valid and has a first element
-					if (coordGroups.length === 0 || !coordGroups[0]) return false;
-					// Get the page number from the first group (first element before comma)
-					const pageNumStr = coordGroups[0].split(',')[0];
-					return pageNumStr === pageNumber.toString();
-				});
-				
+		allSentences.forEach(entry => {
+			const label = entry.label;
+			const sentences = entry.sentences;
 
-				pageSentences.forEach(sentence => {
-					const coords = sentence.coords;
+			if (sentences && sentences.length > 0) {
+				sentences.forEach(sentence => {
 					const sentenceText = sentence.text;
-					// commenting out adding sentence text 
-					// if (!sentenceCoordsToLabels[coords]) {
-					// 	// Initialize with labels array and sentence text
-					// 	sentenceCoordsToLabels[coords] = { labels: [label], sentenceText: sentenceText };
-					// }
-					// else{
-					// 	// Add label if not already present for this coordinate set
-					// 	if (!sentenceCoordsToLabels[coords].labels.includes(label)) {
-					// 		sentenceCoordsToLabels[coords].labels.push(label);
-					// 	}
-					// }
-					if (!sentenceCoordsToLabels[coords]) {
-						sentenceCoordsToLabels[coords] = []
+					// Ensure sentence.coords is a string before splitting
+					if (typeof sentence.coords !== 'string') {
+						// console.warn("Sentence coords are not a string:", sentence.coords);
+						return; // Skip if coords are not a string
 					}
-					if (!sentenceCoordsToLabels[coords].includes(label)) {
-						sentenceCoordsToLabels[coords].push(label);
-					}
+					const coordGroups = sentence.coords.split(';');
+
+					coordGroups.forEach(coordGroup => {
+						if (!coordGroup) return; // Skip empty strings
+
+						const parts = coordGroup.split(',');
+						if (parts.length < 1) {
+							// console.warn("Skipping invalid coordGroup (parts < 1):", coordGroup);
+							return;
+						}
+
+						const pageNumStr = parts[0];
+						if (pageNumStr === pageNumber.toString()) {
+                            // Basic check for expected number of parts (page, x, y, width, height)
+							if (parts.length < 5) {
+								// console.warn("Skipping potentially malformed coordGroup (parts < 5):", coordGroup);
+                                // Allow processing even if malformed for now, downstream checks handle NaN
+							}
+							// This coordGroup is on the current page
+							if (!coordGroupMap[coordGroup]) {
+								// First time seeing this coordGroup on this page
+								coordGroupMap[coordGroup] = {
+									labels: [label],
+									text: sentenceText
+								};
+							} else {
+								// Add label if it's not already associated with this coordGroup
+								if (!coordGroupMap[coordGroup].labels.includes(label)) {
+									coordGroupMap[coordGroup].labels.push(label);
+								}
+							}
+						}
+					});
 				});
 			}
 		});
 
-		// // Convert map to array [{ coords: string, labels: string[] }]
-		// const groupedHighlights = Object.entries(sentenceCoordsToLabels).map(([coords, { labels, sentenceText }]) => ({
-		// 	coords,
-		// 	labels,
-		// 	sentenceText
-		// }));
-		const groupedHighlights = Object.entries(sentenceCoordsToLabels).map(([coords, labels]) => ({
-			coords,
-			labels
-		}));
-
-		return groupedHighlights;
+		// Convert the map into the final array structure
+		// Group highlights by text, with each text having multiple coordGroups and labels
+		const textMap = {}; // {text: string, coordGroups: string[], labels: string[]}
+		Object.entries(coordGroupMap).forEach(([coordGroup, data]) => {
+			const { text, labels } = data;
+			if (!textMap[text]) {
+				textMap[text] = {
+					text,
+					coordGroups: [coordGroup],
+					labels: [...labels]
+				};
+			} else {
+				textMap[text].coordGroups.push(coordGroup);
+				// Add unique labels only
+				labels.forEach(label => {
+					if (!textMap[text].labels.includes(label)) {
+						textMap[text].labels.push(label);
+					}
+				});
+			}
+		});
+		
+		const pageSpecificHighlights = Object.values(textMap);
+		return pageSpecificHighlights;
 	}
 	
 
 	// Draw text highlights on the canvas
-	function highlightText(context, label, x, y, width, height){
+	function highlightText(context, label, x, y, width, height, text){
 		// rectangle highlights styling
+		//console.log("highlightText label, x, y, width, height, text:", label, x, y, width, height, text);
 		context.globalAlpha = 0.2
 		context.fillStyle = statementType === "consort" ? consort_highlight_color[label] : spirit_highlight_color[label];
 		context.fillRect(x , y , width , height );
@@ -199,10 +223,14 @@ export default function Pdf(props) {
 
 	// Draw text labels on the canvas
 	// Accept label_text (to display) and styling_label (for color), calculate dynamic width
-	function highlightLabel(context, label_text, styling_label, x, y){
+	function highlightLabel(context, label_text, styling_label, x, y, text){
+		
 		context.globalAlpha = 1.0
-		// Background color based on styling_label
-		context.fillStyle = statementType === "consort" ? consort_highlight_color[styling_label] : spirit_highlight_color[styling_label];
+		// Background color based on styling_label. default to light gray if no color is defined
+		const rectColor = statementType === "consort" 
+			? (consort_highlight_color[styling_label] || "#f0f0f0") 
+			: (spirit_highlight_color[styling_label] || "#f0f0f0");
+		context.fillStyle = rectColor;
 
 		// Estimate width needed based on text
 		context.font = "bold 12px Verdana"; // Set font before measuring
@@ -214,8 +242,11 @@ export default function Pdf(props) {
 
 		context.fillRect(x, y, rectWidth, rectHeight); // Use dynamic width and calculated height
 
-		// Text color based on styling_label
-		context.fillStyle = statementType === "consort" ? consort_label_color[styling_label] : spirit_label_color[styling_label];
+		// Label color based on styling_label. default to gray if no color is defined
+		const textColor = statementType === "consort" ? 
+			(consort_label_color[styling_label] || "#666666") : 
+			(spirit_label_color[styling_label] || "#666666");
+		context.fillStyle = textColor;
 		context.textAlign = "start";
 		context.textBaseline = "top"; // Y position adjustment based on padding
 		context.fillText(label_text, x + padding, y + padding / 2); // Draw text inside padded rect
@@ -224,8 +255,8 @@ export default function Pdf(props) {
 
 	function renderHighlights() {
 		// Use the dedicated highlight canvas
-		const canvas = highlightCanvasRef.current;
-		if (!canvas) {
+		//const canvas = highlightCanvasRef.current;
+		if (!canvas.current) {
 			console.error("canvas current empty");
 			return;
 		}
@@ -235,78 +266,114 @@ export default function Pdf(props) {
 			return;
 		}
 
-		const context = canvas.getContext('2d');
+		const context = canvas.current.getContext('2d');
+		let canvas_width = canvas.current.width;
+		let canvas_height = canvas.current.height;
+		let scale_x = canvas_width / pageWidth;
+		let scale_y = canvas_height / pageHeight; // reverse of what is there in prev code in main branch
+
 		// Set the overlay canvas dimensions to be wider for margins
-		const canvas_width = scaledPdfWidth + 2 * marginWidth;
-		const canvas_height = scaledPdfHeight;
-		// Fix: Set canvas attributes directly
-		canvas.width = canvas_width;
-		canvas.height = canvas_height
-		// Clear the canvas
-		context.clearRect(0, 0, canvas_width, canvas_height);
+		// const canvas_width = scaledPdfWidth + 2 * marginWidth;
+		// const canvas_height = scaledPdfHeight;
+		// // Fix: Set canvas attributes directly
+		// canvas.width = canvas_width;
+		// canvas.height = canvas_height
+		// // Clear the canvas
+		// context.clearRect(0, 0, canvas_width, canvas_height);
+
+
 
 		// Calculate scaled dimensions for PDF rendering area
-		const scaledPdfWidth = pageWidth * pdf_render_scale;
-		const scaledPdfHeight = pageHeight * pdf_render_scale;
+		// const scaledPdfWidth = pageWidth * pdf_render_scale;
+		// const scaledPdfHeight = pageHeight * pdf_render_scale;
 
-		// Scale the canvas to 2x while keeping PDF at 1.5x
-		let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
-		let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
-		const scale_factor = pdf_render_scale; // Use the same scale as the PDF render
-		// let scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
-		// let scale_y = (scaledPdfHeight / pageHeight);
-		const offset_x = marginWidth;
+		// // Scale the canvas to 2x while keeping PDF at 1.5x
+		// let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
+		// let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
+		// const scale_factor = pdf_render_scale; // Use the same scale as the PDF render
+		// // let scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
+		// // let scale_y = (scaledPdfHeight / pageHeight);
+		// const offset_x = marginWidth;
 
 		const pageHighlights = getPageHighlights();
-		console.log("pageHighlights:", pageHighlights);
-		// Iterate through groupedHighlights
+		console.log("pageHighlights:", pageHighlights); // Add logging
+
+		// Iterate through the list of individual highlights
 		pageHighlights.forEach(item => {
-			const { coords, labels } = item; // Destructure coords, labels, and sentence
-			if (labels.length === 0) return; // Skip if no labels somehow
+			// Destructure the new item structure with labels array
+			const {text, coordGroups, labels} = item; 
+			
+			// Skip if there are no labels for this coordGroup (shouldn't happen with new logic, but safe check)
+			if (labels.length === 0) {
+				console.warn("Skipping coordGroup with empty labels array:", coordGroups);
+				return; 
+			}
 
-			const combinedLabelText = labels.join(', '); // Join labels into a string
-			const stylingLabel = labels[0]; // Use the first label for styling colors
+			// put the label only for the first coordGroup for the sentence
+			const firstCoordGroup = coordGroups[0];
+			const parts = firstCoordGroup.split(',');
+			if (parts.length < 5) {
+				console.warn("Skipping invalid coordGroup:", firstCoordGroup);
+				return; // Skip this item if coordGroup is malformed
+			}
+			const [label_page, label_x, label_y, label_width, label_height] = parts.map(Number);
 
-			let coordsList = coords.split(';');
-			// label sentence first box
-			let [text_p, text_x, text_y, text_width, text_height] = coordsList[0].split(',').map(Number);
-			text_x = (text_x * scale_factor) + offset_x;
-			text_y = text_y * scale_factor;
-			text_width = text_width * scale_factor;
+			// Check if parsing resulted in valid numbers
+			if ([label_page, label_x, label_y, label_width, label_height].some(isNaN)) {
+				console.warn("Skipping coordGroup with NaN values:", firstCoordGroup);
+				return; // Skip if any part is not a number
+			}
 
+			// Calculate scaled drawing coordinates and dimensions
+			let drawX = label_x * scale_x;
+			let drawY = label_y * scale_y;
+			let drawWidth = label_width * scale_x;
+			let drawHeight = label_height * scale_y;
 
 			// --- Label Positioning ---
-			// Estimate label width dynamically
+			// Use the labels array
+			const combinedLabelText = labels.join(', '); // Join all labels for display
+			const stylingLabel = labels[0]; // Use the first label for color styling (consistent)
+			
+			// Estimate label width dynamically based on combined text
 			context.font = "bold 12px Verdana"; // Set font before measuring
-			const textMetrics = context.measureText(combinedLabelText);
+			const textMetrics = context.measureText(combinedLabelText); // Use combined label text
 			const padding = 4;
 			const labelRectWidth = textMetrics.width + padding * 2;
 			const labelRectHeight = 12 + padding;
 
-			// put labels to either side of text - Calculate label position
+			// Calculate label position based on drawX (scaled coordinate)
 			let labelX;
-			if (text_x < scaledPdfWidth / 2){ // Check scaled x against half canvas width
-				// Position on left margin
-				labelX = Math.max(padding, marginWidth - labelRectWidth - padding); // Align to right of left margin
+			// Compare drawX against half of the canvas width
+            if (drawX < canvas_width / 2) { 
+				// Position near left margin
+				labelX = padding + 10; // Position 10px from the left edge plus padding
+			} else {
+				// Position to the right of the highlight box
+				labelX = drawX + drawWidth + 10; // Position 10px to the right of the box
 			}
-			else{
-				// Position in the right margin
-				labelX = text_x + text_width + (2 * scale_factor);
-			}
-			const labelY = text_y; // Use scaled text_y for label Y position
+			// Ensure label doesn't go significantly off canvas on the right (adjust as needed)
+            labelX = Math.min(labelX, canvas_width - labelRectWidth - padding - 10); // Leave 10px buffer
+            // Ensure label doesn't go off canvas on the left
+            labelX = Math.max(labelX, padding);
 
-			// Call modified highlightLabel with combined text and styling label
-			highlightLabel(context, combinedLabelText, stylingLabel, labelX, labelY);
+			const labelY = drawY; // Use scaled drawY for label Y position
 
-			// Draw rectangles based on coordinates
-			// Use the stylingLabel (first label) for highlight color
-			for (let i = 0; i < coordsList.length; i++) {
-				const [p, x, y, width, height] = coordsList[i].split(',').map(Number);
-				const drawX = (x * scale_factor) + offset_x; // Apply scale and offset
-				const drawY = y * scale_factor;           // Apply scale
-				const drawWidth = width * scale_factor;   // Apply scale
-				const drawHeight = height * scale_factor; // Apply scale
-				highlightText(context, stylingLabel, drawX, drawY, drawWidth, drawHeight);
+			// Call highlightLabel with combined text and the chosen styling label
+			highlightLabel(context, combinedLabelText, stylingLabel, labelX, labelY, text);
+
+			for (const coordGroup of coordGroups) {
+				const parts = coordGroup.split(',');
+				if (parts.length < 5) {
+					console.warn("Skipping invalid coordGroup:", coordGroup);
+					continue;
+				}
+				const [p, x, y, w, h] = parts.map(Number);
+				let drawX = x * scale_x;
+				let drawY = y * scale_y;
+				let drawWidth = w * scale_x;
+				let drawHeight = h * scale_y;
+				highlightText(context, stylingLabel, drawX, drawY, drawWidth, drawHeight, text);
 			}
 		});
 
@@ -349,7 +416,7 @@ export default function Pdf(props) {
 					<div style={{ position: 'absolute', left: `${marginWidth}px`, top: '0' }}>
 						<Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
 							<Page className={"PDFPage"}
-								//canvasRef={canvas}
+								canvasRef={canvas}
 								key={`page_${pageNumber + 1}`}
 								pageNumber={pageNumber}
 								onLoadSuccess={onPageLoadSuccess}
@@ -361,12 +428,12 @@ export default function Pdf(props) {
 							/>
 						</Document>
 					</div>
-					{/* Overlay Canvas */}
+					{/* Overlay Canvas
 					<canvas 
 						ref={highlightCanvasRef} 
 						style={{ position: 'absolute', left: '0', top: '0', pointerEvents: 'none' }} 
 				
-					/>
+					/> */}
 				</div>
 			</div>
 		</>
