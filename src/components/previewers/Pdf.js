@@ -272,6 +272,28 @@ export default function Pdf(props) {
 		const pageHighlights = getPageHighlights();
 		console.log("pageHighlights:", pageHighlights); // Add logging
 
+		// --- Collision Detection Setup ---
+		const drawnLabelRects = []; // Stores { x, y, width, height } of drawn labels
+		const labelPadding = 5; // Vertical padding between labels
+
+		function checkCollision(rect) {
+			for (const existingRect of drawnLabelRects) {
+				// Simple Axis-Aligned Bounding Box (AABB) intersection test
+				const intersects = (
+					rect.x < existingRect.x + existingRect.width &&
+					rect.x + rect.width > existingRect.x &&
+					rect.y < existingRect.y + existingRect.height &&
+					rect.y + rect.height > existingRect.y
+				);
+				if (intersects) {
+					return existingRect; // Return the colliding rectangle
+				}
+			}
+			return null; // No collision
+		}
+		// --- End Collision Detection Setup ---
+
+
 		// Iterate through the list of individual highlights
 		pageHighlights.forEach(item => {
 			// Destructure the new item structure with labels array
@@ -298,44 +320,107 @@ export default function Pdf(props) {
 				return; // Skip if any part is not a number
 			}
 
-			// Calculate scaled drawing coordinates and dimensions
+			// Calculate scaled drawing coordinates and dimensions for the highlight label box
 			let drawX = label_x * scale_x;
 			let drawY = label_y * scale_y;
 			let drawWidth = label_width * scale_x;
 			let drawHeight = label_height * scale_y;
 
-			// --- Label Positioning ---
-			// Use the labels array
+			// --- Label Positioning and Collision Avoidance ---
 			const combinedLabelText = labels.join(', '); // Join all labels for display
 			const stylingLabel = labels[0]; // Use the first label for color styling (consistent)
 			
 			// Estimate label width dynamically based on combined text
 			context.font = "bold 12px Verdana"; // Set font before measuring
 			const textMetrics = context.measureText(combinedLabelText); // Use combined label text
-			const padding = 4;
-			const labelRectWidth = textMetrics.width + padding * 2;
-			const labelRectHeight = 12 + padding;
+			const textPadding = 4; // Original padding within the label rectangle
+			const labelRectWidth = textMetrics.width + textPadding * 2;
+			const labelRectHeight = 12 + textPadding; // Original label height calculation
 
-			// Calculate label position based on drawX (scaled coordinate)
-			let labelX;
-			// Compare drawX against half of the canvas width
-            if (drawX < canvas_width / 2) { 
+			// Calculate initial proposed label position based on highlight box position (drawX)
+			let proposedLabelX;
+			if (drawX < canvas_width / 2) { 
 				// Position near left margin
-				labelX = padding + offset_x; // Position 10px from the left edge plus padding
+				proposedLabelX = textPadding + offset_x; // Position from the left edge + padding
 			} else {
 				// Position to the right of the highlight box
-				labelX = drawX + drawWidth + offset_x + 10; // Position 10px to the right of the box
+				proposedLabelX = drawX + drawWidth + offset_x + 10; // Position 10px to the right of the box
 			}
-			// Ensure label doesn't go significantly off canvas on the right (adjust as needed)
-            labelX = Math.min(labelX, canvas_width - labelRectWidth - padding - 10); // Leave 10px buffer
-            // Ensure label doesn't go off canvas on the left
-            labelX = Math.max(labelX, padding);
+			// Ensure initial label doesn't go significantly off canvas on the right
+            proposedLabelX = Math.min(proposedLabelX, canvas_width - labelRectWidth - textPadding - 10); 
+            // Ensure initial label doesn't go off canvas on the left
+            proposedLabelX = Math.max(proposedLabelX, textPadding);
 
-			const labelY = drawY; // Use scaled drawY for label Y position
+			let proposedLabelY = drawY; // Initial Y based on highlight box
 
-			// Call highlightLabel with combined text and the chosen styling label
-			highlightLabel(context, combinedLabelText, stylingLabel, labelX, labelY, text);
+			let finalLabelX = proposedLabelX;
+			let finalLabelY = proposedLabelY;
+			let attempts = 0;
+			const maxAttempts = 10; // Prevent infinite loops
 
+			// Loop to find non-colliding position
+			while (attempts < maxAttempts) {
+				const proposedRect = {
+					x: finalLabelX,
+					y: finalLabelY,
+					width: labelRectWidth,
+					height: labelRectHeight
+				};
+				const collidingRect = checkCollision(proposedRect);
+
+				if (collidingRect) {
+					// Collision detected, adjust X position to the right of the colliding label
+					const previousLabelX = finalLabelX; // Store before modification
+					finalLabelX = collidingRect.x + collidingRect.width + labelPadding; // Add padding
+					attempts++;
+
+					// Check if moving right pushed it off-canvas
+					if (finalLabelX + labelRectWidth > canvas_width) {
+						console.warn("Label pushed off-canvas to the right, attempting to place below initial Y instead:", combinedLabelText);
+						// Fallback strategy: Reset X to its original proposed position
+						// and try moving Y down from the *initial* Y position
+						finalLabelX = proposedLabelX; // Reset X
+						finalLabelY = proposedLabelY + labelRectHeight + labelPadding; // Move down from original Y
+						// Need to re-run collision check for this new Y position immediately
+						// This simple fallback might still collide if many labels stack vertically
+						// A more robust solution might involve a grid or more complex placement logic
+						continue; // Re-check collision with new Y
+					}
+
+				} else {
+					// No collision, position is good
+					break;
+				}
+
+				// Removed the check for going off the bottom as we prioritize moving right first
+				/*
+				// Optional: Add check to prevent label going off bottom of canvas
+				if (finalLabelY + labelRectHeight > canvas_height) {
+					console.warn("Label placed partially or fully off-canvas:", combinedLabelText);
+					// Could try alternative placement (e.g., above, adjust X) or just accept it
+					break; // Stop trying if it goes off canvas
+				}
+				*/
+			}
+			if (attempts === maxAttempts) {
+				console.warn("Could not find non-colliding position for label after max attempts:", combinedLabelText);
+				// Draw at the last attempted position, even if it overlaps
+			}
+			// --- End Label Positioning and Collision Avoidance ---
+
+			// Call highlightLabel with the *final* non-colliding coordinates
+			highlightLabel(context, combinedLabelText, stylingLabel, finalLabelX, finalLabelY, text);
+
+			// Add the final bounding box of the drawn label to the tracking array
+			drawnLabelRects.push({
+				x: finalLabelX,
+				y: finalLabelY,
+				width: labelRectWidth,
+				height: labelRectHeight
+			});
+
+
+			// Draw the highlight boxes for the text
 			for (const coordGroup of coordGroups) {
 				const parts = coordGroup.split(',');
 				if (parts.length < 5) {
@@ -343,14 +428,13 @@ export default function Pdf(props) {
 					continue;
 				}
 				const [p, x, y, w, h] = parts.map(Number);
-				let drawX = x * scale_x + offset_x;
-				let drawY = y * scale_y;
-				let drawWidth = w * scale_x;
-				let drawHeight = h * scale_y;
-				highlightText(context, stylingLabel, drawX, drawY, drawWidth, drawHeight, text);
+				let highlightDrawX = x * scale_x + offset_x; // Use separate vars for clarity
+				let highlightDrawY = y * scale_y;
+				let highlightDrawWidth = w * scale_x;
+				let highlightDrawHeight = h * scale_y;
+				highlightText(context, stylingLabel, highlightDrawX, highlightDrawY, highlightDrawWidth, highlightDrawHeight, text);
 			}
 		});
-
 	}
 
 
