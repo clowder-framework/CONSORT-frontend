@@ -384,30 +384,46 @@ export default function Pdf(props) {
 					<input name="pageInput" type="text" value={pageNumber.toString()} onChange={onPageChange} style={{margin: "10px", width: "50px"}} />
 				</div>
 
-				{/* Relative positioning container for PDF and overlay canvas */}
-				<div style={{ position: 'relative', width: `${(pageWidth * pdf_render_scale) + (3 * marginWidth)}px`, height: `${pageHeight * pdf_render_scale}px` }}>
-					{/* PDF Document Rendering */}
-					<div style={{ position: 'absolute', left: `${marginWidth}px`, top: '0' }}>
-						<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
-							<Page className={"PDFPage"}
-								// canvasRef={canvas}
-								key={`page_${pageNumber + 1}`}
-								pageNumber={pageNumber}
-								onLoadSuccess={onPageLoadSuccess}
-								onRenderSuccess={renderHighlights}
-								renderTextLayer={true}
-								renderAnnotationLayer={false}
-								width={pageWidth * pdf_render_scale}
-								//height={pageHeight * pdf_render_scale}
-							/>
-						</Document>
+				{/* Relative positioning container for PDF and overlay canvas with scrollable content */}
+				<div style={{ 
+					position: 'relative', 
+					width: `${(pageWidth * pdf_render_scale) + (3 * marginWidth)}px`, 
+					maxHeight: '80vh', // Limit height to 80% of viewport height
+					overflowY: 'scroll', // Add vertical scrollbar when content exceeds maxHeight
+					border: '1px solid #ccc' // Optional: add border to visualize the scrollable area
+				}}>
+					{/* Inner container to set the full height for scrolling content */}
+					<div style={{ 
+						position: 'relative', 
+						height: `${pageHeight * pdf_render_scale}px`, 
+						width: '100%' 
+					}}>
+						{/* PDF Document Rendering */}
+						<div style={{ position: 'absolute', left: `${marginWidth}px`, top: '0' }}>
+							<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
+								<Page className={"PDFPage"}
+									// canvasRef={canvas}
+									key={`page_${pageNumber + 1}`}
+									pageNumber={pageNumber}
+									onLoadSuccess={onPageLoadSuccess}
+									onRenderSuccess={renderHighlights}
+									renderTextLayer={true}
+									renderAnnotationLayer={false}
+									width={pageWidth * pdf_render_scale}
+									//height={pageHeight * pdf_render_scale}
+								/>
+							</Document>
+						</div>
+						{/* Overlay Canvas */}
+						<canvas 
+							ref={highlightCanvasRef} 
+							style={{ position: 'absolute', left: '0', top: '0', pointerEvents: 'none' }} 
+							// Width should match the scrollable container's width, not just the PDF area + margins
+							width={pageWidth * pdf_render_scale + 3 * marginWidth} 
+							// Height should match the inner container's height (full PDF scaled height)
+							height={pageHeight * pdf_render_scale} 
+						/>
 					</div>
-					{/* Overlay Canvas */}
-					<canvas 
-						ref={highlightCanvasRef} 
-						style={{ position: 'absolute', left: '0', top: '0', pointerEvents: 'none' }} 
-						width={pageWidth * pdf_render_scale + 3 * marginWidth}
-					/>
 				</div>
 			</div>
 		</>
