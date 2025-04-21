@@ -11,13 +11,8 @@ import {
     spirit_label_color 
 } from '../styledComponents/HighlightColors';
 
-import pdfFile from "./Cicero.pdf";
-import metadataFile from "./Cicero_highlights_0230.json";
-
-console.log("metadataFile:", metadataFile);
-
-
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
 
 export default function Pdf(props) {
 	const dispatch = useDispatch();
@@ -28,8 +23,7 @@ export default function Pdf(props) {
 	// all sentences from metadata
 	const [allSentences, setAllSentences] = useState([]); // [{label: "label", sentences: [{coords: "coords", text: "text"}]}]
 
-	const canvas = useRef();
-	// const highlightCanvasRef = useRef();
+	const highlightCanvasRef = useRef();
 	const [isRendered, setIsRendered] = useState();
 	const [numPages, setNumPages] = useState(null);
 	let pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
@@ -42,8 +36,8 @@ export default function Pdf(props) {
 	const [pageHeight, setPageHeight]= useState(799);
 	let [scale_x, setScaleX] = useState(1); // recalculated dynamically in renderHighlights
 	let [scale_y, setScaleY] = useState(1); // recalculated dynamically in renderHighlights
-	let pdf_render_scale = 1;
-	let canvas_render_scale = 1; // keep same as pdf_render_scale for coordinate highlighting
+	let pdf_render_scale = 1.5;
+	let canvas_render_scale = 1.5; // keep same as pdf_render_scale for coordinate highlighting
 
 
 	useEffect(() => {
@@ -64,23 +58,8 @@ export default function Pdf(props) {
 			setAllSentences(sentences_list);
 		}
 		if (metadata === undefined){
-			// console.error("Error metadata undefined");
-			// const sentences_list = []
-			// setAllSentences(sentences_list);
-			let content = metadataFile['content'];
-			console.log("content:", content);
-			setContent(content);
-			setPageWidth(parseInt(content['page_dimensions']['width']));
-			setPageHeight(parseInt(content['page_dimensions']['height']));
-			const checklist = content['checklist'];
+			console.error("Error metadata undefined");
 			const sentences_list = []
-			checklist.forEach((section) => {
-				section.items.forEach((i) => {
-					const sentences = i.sentences || [];
-					const label = i.label;
-					sentences_list.push({"label":label, "sentences":sentences});
-				});
-			});
 			setAllSentences(sentences_list);
 		}
 
@@ -106,7 +85,6 @@ export default function Pdf(props) {
 
 	function onDocumentLoadSuccess({ numPages }) {
 		setNumPages(numPages);
-
 	}
 
 	function onPageLoadSuccess(){
@@ -214,7 +192,6 @@ export default function Pdf(props) {
 	// Draw text highlights on the canvas
 	function highlightText(context, label, x, y, width, height, text){
 		// rectangle highlights styling
-		//console.log("highlightText label, x, y, width, height, text:", label, x, y, width, height, text);
 		context.globalAlpha = 0.2
 		context.fillStyle = statementType === "consort" ? consort_highlight_color[label] : spirit_highlight_color[label];
 		context.fillRect(x , y , width , height );
@@ -224,7 +201,6 @@ export default function Pdf(props) {
 	// Draw text labels on the canvas
 	// Accept label_text (to display) and styling_label (for color), calculate dynamic width
 	function highlightLabel(context, label_text, styling_label, x, y, text){
-		
 		context.globalAlpha = 1.0
 		// Background color based on styling_label. default to light gray if no color is defined
 		const rectColor = statementType === "consort" 
@@ -255,9 +231,9 @@ export default function Pdf(props) {
 
 	function renderHighlights() {
 		// Use the dedicated highlight canvas
-		//const canvas = highlightCanvasRef.current;
-		if (!canvas.current) {
-			console.error("canvas current empty");
+		const canvas = highlightCanvasRef.current;
+		if (!canvas) {
+			console.error("canvas.current is empty");
 			return;
 		}
 		// Ensure we have page dimensions
@@ -266,34 +242,32 @@ export default function Pdf(props) {
 			return;
 		}
 
-		const context = canvas.current.getContext('2d');
-		let canvas_width = canvas.current.width;
-		let canvas_height = canvas.current.height;
-		let scale_x = canvas_width / pageWidth;
-		let scale_y = canvas_height / pageHeight; // reverse of what is there in prev code in main branch
-
-		// Set the overlay canvas dimensions to be wider for margins
-		// const canvas_width = scaledPdfWidth + 2 * marginWidth;
-		// const canvas_height = scaledPdfHeight;
-		// // Fix: Set canvas attributes directly
-		// canvas.width = canvas_width;
-		// canvas.height = canvas_height
-		// // Clear the canvas
-		// context.clearRect(0, 0, canvas_width, canvas_height);
-
-
+		// const context = canvas.current.getContext('2d');
+		// let canvas_width = canvas.current.width;
+		// let canvas_height = canvas.current.height;
+		// let scale_x = canvas_width / pageWidth;
+		// let scale_y = canvas_height / pageHeight; // reverse of what is there in prev code in main branch
 
 		// Calculate scaled dimensions for PDF rendering area
-		// const scaledPdfWidth = pageWidth * pdf_render_scale;
-		// const scaledPdfHeight = pageHeight * pdf_render_scale;
+		const scaledPdfWidth = pageWidth * pdf_render_scale;
+		const scaledPdfHeight = pageHeight * pdf_render_scale;
+
+		// Set the overlay canvas dimensions to be wider for margins
+		const context = canvas.getContext('2d');
+		const canvas_width = scaledPdfWidth + 3 * marginWidth;
+		const canvas_height = scaledPdfHeight;
+		canvas.width = canvas_width;
+		canvas.height = canvas_height
+		// Clear the canvas
+		context.clearRect(0, 0, canvas_width, canvas_height);
 
 		// // Scale the canvas to 2x while keeping PDF at 1.5x
 		// let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
 		// let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
-		// const scale_factor = pdf_render_scale; // Use the same scale as the PDF render
-		// // let scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
-		// // let scale_y = (scaledPdfHeight / pageHeight);
-		// const offset_x = marginWidth;
+		const scale_factor = pdf_render_scale; // Use the same scale as the PDF render
+		let scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
+		let scale_y = (scaledPdfHeight / pageHeight);
+		const offset_x = marginWidth;
 
 		const pageHighlights = getPageHighlights();
 		console.log("pageHighlights:", pageHighlights); // Add logging
@@ -347,10 +321,10 @@ export default function Pdf(props) {
 			// Compare drawX against half of the canvas width
             if (drawX < canvas_width / 2) { 
 				// Position near left margin
-				labelX = padding + 10; // Position 10px from the left edge plus padding
+				labelX = padding + offset_x; // Position 10px from the left edge plus padding
 			} else {
 				// Position to the right of the highlight box
-				labelX = drawX + drawWidth + 10; // Position 10px to the right of the box
+				labelX = drawX + drawWidth + offset_x + 10; // Position 10px to the right of the box
 			}
 			// Ensure label doesn't go significantly off canvas on the right (adjust as needed)
             labelX = Math.min(labelX, canvas_width - labelRectWidth - padding - 10); // Leave 10px buffer
@@ -369,7 +343,7 @@ export default function Pdf(props) {
 					continue;
 				}
 				const [p, x, y, w, h] = parts.map(Number);
-				let drawX = x * scale_x;
+				let drawX = x * scale_x + offset_x;
 				let drawY = y * scale_y;
 				let drawWidth = w * scale_x;
 				let drawHeight = h * scale_y;
@@ -382,41 +356,41 @@ export default function Pdf(props) {
 
 	return (
 		<>
-			<div>
-				{/* Page Navigation Controls */}
-				<p>
-					Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
-				</p>
-				<button
-					type="button"
-					disabled={pageNumber <= 1}
-					onClick={previousPage}
-					style={{margin: "10px"}}
-				>
-					Previous
-				</button>
-				<button
-					type="button"
-					disabled={pageNumber >= numPages}
-					onClick={nextPage}
-					style={{margin: "10px"}}
-				>
-					Next
-				</button>
-				Page Number :
-				<input name="pageInput" type="text" value={pageNumber.toString()} onChange={onPageChange} style={{margin: "10px"}} />
+			{/* PDF Rendering Area and Navigation Container */}
+			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}> 
+				{/* Page Navigation Controls - Moved Here and Centered */}
+				<div style={{display: "flex", alignItems: "center", marginBottom: "20px"}}> {/* Added marginBottom, removed marginRight */}
+					{/* Page Navigation Controls */}
+					<p>
+						Page {pageNumber || (numPages ? 1 : '--')} of {numPages || '--'}
+					</p>
+					<button
+						type="button"
+						disabled={pageNumber <= 1}
+						onClick={previousPage}
+						style={{margin: "10px"}}
+					>
+						Previous
+					</button>
+					<button
+						type="button"
+						disabled={pageNumber >= numPages}
+						onClick={nextPage}
+						style={{margin: "10px"}}
+					>
+						Next
+					</button>
+					Page Number :
+					<input name="pageInput" type="text" value={pageNumber.toString()} onChange={onPageChange} style={{margin: "10px", width: "50px"}} />
+				</div>
 
-			</div>
-
-			{/* PDF Rendering Area */}
-			<div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}> 
 				{/* Relative positioning container for PDF and overlay canvas */}
-				<div style={{ position: 'relative', width: `${(pageWidth * pdf_render_scale) + (2 * marginWidth)}px`, height: `${pageHeight * pdf_render_scale}px` }}>
+				<div style={{ position: 'relative', width: `${(pageWidth * pdf_render_scale) + (3 * marginWidth)}px`, height: `${pageHeight * pdf_render_scale}px` }}>
 					{/* PDF Document Rendering */}
 					<div style={{ position: 'absolute', left: `${marginWidth}px`, top: '0' }}>
-						<Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+						<Document file={pdfSrc} onLoadSuccess={onDocumentLoadSuccess}>
 							<Page className={"PDFPage"}
-								canvasRef={canvas}
+								// canvasRef={canvas}
 								key={`page_${pageNumber + 1}`}
 								pageNumber={pageNumber}
 								onLoadSuccess={onPageLoadSuccess}
@@ -428,12 +402,12 @@ export default function Pdf(props) {
 							/>
 						</Document>
 					</div>
-					{/* Overlay Canvas
+					{/* Overlay Canvas */}
 					<canvas 
 						ref={highlightCanvasRef} 
 						style={{ position: 'absolute', left: '0', top: '0', pointerEvents: 'none' }} 
-				
-					/> */}
+						width={pageWidth * pdf_render_scale + 3 * marginWidth}
+					/>
 				</div>
 			</div>
 		</>

@@ -96,31 +96,27 @@ export default function FilePreview() {
 									// 		</div>
 									// 	);
 									} else if (preview["previewType"] === "pdf" || preview["previewType"] === "thumbnail") {
-										console.log("previewType pdf or thumbnail");
+										console.log("previewType is ", preview["previewType"]);
 										return (
-											<div key={preview["fileid"]}>
-												<Grid container spacing={2} direction="row" style={{ width: '100vw', height: '100vh' }}>
-													<Grid item xs={5} >
-														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
-													</Grid>
-													<Grid item xs={7} >
-														<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
-													</Grid>
-												</Grid>
-											</div>
+											<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+												{/* Drawer takes its fixed width */}
+												<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
+												{/* Main content area for PDF, allows it to grow and centers the PDF viewer */}
+												<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1, display: 'flex', justifyContent: 'center' }}>
+													<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
+												</Box>
+											</Box>
 										);
 									} else if (preview["previewType"] === "html") {
 										return (
-											<div key={preview["fileid"]}>
-												<Grid container spacing={2} direction="row">
-													<Grid item xs={3} >
-														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
-													</Grid>
-													<Grid item xs={9} >
-														<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
-													</Grid>
-												</Grid>
-											</div>
+											<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+												{/* Drawer takes its fixed width */}
+												<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
+												{/* Main content area for HTML, allows it to grow */}
+												<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+													<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
+												</Box>
+											</Box>
 										);
 									}
 
