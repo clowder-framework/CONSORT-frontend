@@ -70,66 +70,58 @@ export default function FilePreview() {
 
 	return (
 		<>
-			<div className="outer-container">
-				<div className="inner-container">
-					<Box className="filepreview">
-						<div className="previewBox">
-							{
-								previews.map((preview) => {
-									if (preview["previewType"] === "audio") {
-										return (
-											<div key={preview["fileid"]}>
-												<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>
-											</div>
-										);
-									} else if (preview["previewType"] === "video") {
-										return (
-											<div key={preview["fileid"]}>
-												<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>
-											</div>
-										);
-									// } else if (preview["previewType"] === "thumbnail") {
-									// 	return (
-									// 		<div key={preview["fileid"]}>
-									// 			<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
-									// 					   imgSrc={preview["resource"]}/>
-									// 		</div>
-									// 	);
-									} else if (preview["previewType"] === "pdf" || preview["previewType"] === "thumbnail") {
-										console.log("previewType pdf or thumbnail");
-										return (
-											<div key={preview["fileid"]}>
-												<Grid container spacing={2} direction="row">
-													<Grid item xs={5} >
-														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
-													</Grid>
-													<Grid item xs={7} >
-														<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
-													</Grid>
-												</Grid>
-											</div>
-										);
-									} else if (preview["previewType"] === "html") {
-										return (
-											<div key={preview["fileid"]}>
-												<Grid container spacing={2} direction="row">
-													<Grid item xs={3} >
-														<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
-													</Grid>
-													<Grid item xs={9} >
-														<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
-													</Grid>
-												</Grid>
-											</div>
-										);
-									}
-
-								})
+			<Box className="filepreview">
+				<div className="previewBox">
+					{
+						previews.map((preview) => {
+							if (preview["previewType"] === "audio") {
+								return (
+									<div key={preview["fileid"]}>
+										<Audio fileId={preview["fileid"]} audioSrc={preview["resource"]}/>
+									</div>
+								);
+							} else if (preview["previewType"] === "video") {
+								return (
+									<div key={preview["fileid"]}>
+										<Video fileId={preview["fileid"]} videoSrc={preview["resource"]}/>
+									</div>
+								);
+							// } else if (preview["previewType"] === "thumbnail") {
+							// 	return (
+							// 		<div key={preview["fileid"]}>
+							// 			<Thumbnail fileId={preview["fileid"]} fileType={preview["fileType"]}
+							// 					   imgSrc={preview["resource"]}/>
+							// 		</div>
+							// 	);
+							} else if (preview["previewType"] === "pdf" || preview["previewType"] === "thumbnail") {
+								console.log("previewType is ", preview["previewType"]);
+								return (
+									<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+										{/* Drawer takes its fixed width */}
+										<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
+										{/* Main content area for PDF, allows it to grow and centers the PDF viewer */}
+										<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1, display: 'flex', justifyContent: 'center' }}>
+											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
+										</Box>
+									</Box>
+								);
+							} else if (preview["previewType"] === "html") {
+								return (
+									<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+										{/* Drawer takes its fixed width */}
+										<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
+										{/* Main content area for HTML, allows it to grow */}
+										<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+											<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
+										</Box>
+									</Box>
+								);
 							}
-						</div>
-					</Box>
+
+						})
+					}
 				</div>
-			</div>
+			</Box>
 		</>
 
 	)

@@ -22,16 +22,16 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.secondary.main,
     },
     "& a:hover": {
-      color: theme.palette.secondary.dark,
+      color: "#0086A1",
     },
     "& a:active": {
-      color: theme.palette.secondary.dark,
+      color: "#0086A1",
     },
     "& a:visited": {
       color: theme.palette.secondary.dark,
     },
     "& a:focus": {
-      color: theme.palette.secondary.dark,
+      color: "#0086A1",
     },
 
   },
@@ -45,7 +45,7 @@ export default function Footer() {
         <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gridTemplateColumns: '1fr 1fr' }}>
           <div style={{ gridColumn: '1 / span 1', gridRow: '1 / span 1' }}>
             <span className={classes.text} style={{color: theme.palette.secondary.dark}}>
-              See our Scientific Data paper for further details.
+              See our scientific data paper for further details.
             </span>
           <div style={{ height: '20px' }}></div>
           <span className={classes.text} style={{color: theme.palette.secondary.dark}}>

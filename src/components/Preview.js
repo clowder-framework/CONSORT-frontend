@@ -6,11 +6,9 @@ function Preview() {
 	return (
 		<>
 			<div className="outer-container">
-				<div className="inner-container">
-					<Box className="filePreview">
-						<FilePreview />
-					</Box>
-				</div>
+				<Box className="filePreview">
+					<FilePreview />
+				</Box>
 			</div>
 		</>
 	)
