@@ -122,30 +122,7 @@ export default function TopBar() {
 					>
 						{isAuthenticated ? 'Logout' : 'Login'}
 					</Button>
-
-
-					{/* <Button 
-						variant="contained" 
-						style={{ color: theme.palette.primary.main, backgroundColor: theme.palette.primary.light, fontFamily: theme.typography.fontFamily }} 
-						onClick={async () => {
-							try {
-								await fetch('/logout', {
-									method: 'POST',
-									credentials: 'include',
-									headers: {
-										'CSRF-Token': csrfToken
-									}
-								});
-								window.location.href = '/home';
-							} catch (error) {
-								console.error('Error logging out:', error);
-							}
-						}}
-					>
-						Logout
-					</Button> */}
 				</Toolbar>
-				
 			</AppBar>
 		</div>
 	);
