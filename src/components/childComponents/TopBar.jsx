@@ -53,21 +53,21 @@ export default function TopBar() {
 	const classes = useStyles();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-	// useEffect(() => {
-	// 	const checkAuthStatus = async () => {
-	// 		try {
-	// 			const response = await fetch('/status', {
-	// 				method: 'GET',
-	// 				credentials: 'include',
-	// 			});
-	// 			const data = await response.json();
-	// 			setIsAuthenticated(data.isAuthenticated);
-	// 		} catch (error) {
-	// 			console.error('Error checking authentication status:', error);
-	// 		}
-	// 	};
-	// 	checkAuthStatus();
-	// }, []);
+	useEffect(() => {
+		const checkAuthStatus = async () => {
+			try {
+				const response = await fetch('/isAuthenticated', {
+					method: 'GET',
+					credentials: 'include',
+				});
+				const data = await response.json();
+				setIsAuthenticated(data.isAuthenticated);
+			} catch (error) {
+				console.error('Error checking authentication status:', error);
+			}
+		};
+		checkAuthStatus();
+	}, []);
 
 	// const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -105,6 +105,25 @@ export default function TopBar() {
 						<RouterLink to="/faq" className={classes.toolBarlink} style={{marginRight: "100px", color: theme.palette.secondary.dark}}>
 							FAQ</RouterLink>
 					</Typography>
+					<Button 
+						variant="contained" 
+						style={{ 
+							color: '#FFFFFF',
+							backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)',
+							fontFamily: theme.typography.fontFamily 
+						}} 
+						onClick={async () => {
+							if (!isAuthenticated) {
+								window.location.href = '/login';
+							} else {
+								window.location.href = '/logout';
+							}
+						}}
+					>
+						{isAuthenticated ? 'Logout' : 'Login'}
+					</Button>
+
+
 					{/* <Button 
 						variant="contained" 
 						style={{ color: theme.palette.primary.main, backgroundColor: theme.palette.primary.light, fontFamily: theme.typography.fontFamily }} 

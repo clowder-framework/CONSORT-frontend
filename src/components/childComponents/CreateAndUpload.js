@@ -31,6 +31,7 @@ export default function CreateAndUpload() {
 	const [filename, setFilename] = useState(''); // uploaded filename
 	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
+	const [isAuthenticated, setIsAuthenticated] = useState(false); // state for authentication
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
@@ -135,6 +136,23 @@ export default function CreateAndUpload() {
 		}
 	}, [extractionStatus]); // TODO: This useEffect will trigger again when the extractionStatus is completed 
 
+	// Check authentication status on mount
+	useEffect(() => {
+		const checkAuthStatus = async () => {
+			try {
+				const response = await fetch('/isAuthenticated', {
+					method: 'GET',
+					credentials: 'include',
+				});
+				const data = await response.json();
+				setIsAuthenticated(data.isAuthenticated);
+			} catch (error) {
+				console.error('Error checking authentication status:', error);
+				setIsAuthenticated(false);
+			}
+		};
+		checkAuthStatus();
+	}, []);
 
 	// onDrop function to trigger createUploadExtract action dispatch
 	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
@@ -206,19 +224,21 @@ export default function CreateAndUpload() {
 						<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }}}/>
 					</RadioGroup>
 				</div>
-				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>Select Use-case</Typography>
-					<RadioGroup
-						defaultValue={userCategory}
-						name="radio-buttons-group"
-						row
-						onChange={handleUserCategoryChange}
-						style={{ marginLeft: { xs: '0', sm: '10px' } }}
-					>
-						<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
-						<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
-					</RadioGroup>
-				</div>
+				{isAuthenticated && (
+					<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
+						<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>Select Use-case</Typography>
+						<RadioGroup
+							defaultValue={userCategory}
+							name="radio-buttons-group"
+							row
+							onChange={handleUserCategoryChange}
+							style={{ marginLeft: { xs: '0', sm: '10px' } }}
+						>
+							<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
+							<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
+						</RadioGroup>
+					</div>
+				)}
 			</div>
 			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
 				<Button 

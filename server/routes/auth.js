@@ -157,8 +157,22 @@ router.post('/logout', function(req, res, next) {
 	//res.send({isAuth: req.isAuthenticated(), user: req.user})
 });
 
+/* GET /logout
+ *
+ * This route logs the user out.
+ */
+router.get('/logout', function(req, res, next) {
+	req.logout(function(err) {
+	    if (err) { return next(err); }
+		res.clearCookie('connect.sid');
+	    res.redirect('/');
+    });
+	
+	//res.send({isAuth: req.isAuthenticated(), user: req.user})
+});
+
 // Endpoint to check authentication status
-router.get('/status', function(req, res) {
+router.get('/isAuthenticated', function(req, res) {
     res.json({ isAuthenticated: req.isAuthenticated() });
 });
 
