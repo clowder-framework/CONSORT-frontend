@@ -176,4 +176,17 @@ router.get('/isAuthenticated', function(req, res) {
     res.json({ isAuthenticated: req.isAuthenticated() });
 });
 
+// Endpoint to get username
+router.get('/getUser', function(req, res) {
+    if (req.isAuthenticated() && req.user) {
+        res.json({
+            username: req.user.name || null,
+        });
+    } else {
+        res.json({
+            username: "anonymous",
+        });
+    }
+});
+
 module.exports = router;
