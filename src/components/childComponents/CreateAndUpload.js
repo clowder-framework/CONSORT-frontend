@@ -212,7 +212,7 @@ export default function CreateAndUpload() {
 						Select Guideline
 					</Typography>
 					<RadioGroup
-						defaultValue={statementType}
+						value={statementType}
 						name="radio-buttons-group"
 						row
 						onChange={handleStatementChange}
@@ -245,16 +245,20 @@ export default function CreateAndUpload() {
 				)}
 			</div>
 			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
-				<Button 
-					variant="contained" 
-					style={{ 
-						color: theme.palette.info.contrastText, 
-						backgroundColor: preview ? 'gray' : theme.palette.primary.dark 
-					}} 
-					disabled={preview} 
+				<Button
+					variant="contained"
+					style={{
+						color: theme.palette.info.contrastText,
+						...(preview ? 
+							{ backgroundColor: 'gray' } : 
+							{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
+						),
+						fontFamily: theme.typography.fontFamily
+					}}
+					disabled={preview}
 					onClick={downloadOrPreview}
-				> 
-					View Results 
+				>
+					View Results
 				</Button>
 			</div>
 
