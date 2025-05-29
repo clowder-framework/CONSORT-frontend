@@ -1,6 +1,6 @@
 {
   "name": "consort-server",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Consort server side app",
   "license": "Unlicense",
@@ -14,7 +14,7 @@
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
     "dotenv": "^8.6.0",
-    "ejs": "~2.6.1",
+    "ejs": "~3.1.10",
     "express": "~4.16.1",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
