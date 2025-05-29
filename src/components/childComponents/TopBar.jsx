@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
 	},
 	toolBarItem: {
 		margin: "auto 12px auto 12px",
+		display: 'flex',
+		alignItems: 'center',
+		visibility: 'visible',
+		opacity: 1
 	},
 	toolBarlink: {
 		textDecoration: "none",
@@ -52,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 export default function TopBar() {
 	const classes = useStyles();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [username, setUsername] = useState("anonymous");
 
 	useEffect(() => {
 		const checkAuthStatus = async () => {
@@ -67,6 +72,23 @@ export default function TopBar() {
 			}
 		};
 		checkAuthStatus();
+		
+		const getUsername = async () => {
+			try {
+				console.log('Fetching username...');
+				const response = await fetch('/getUser', {
+					method: 'GET',
+					credentials: 'include',
+				});
+				const data = await response.json();
+				setUsername(data.username);
+				console.log('Username set to:', data.username);
+			} catch (error) {
+				console.error('Error fetching username:', error);
+				setUsername('anonymous');
+			}
+		}
+		getUsername();
 	}, []);
 
 	// const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -96,6 +118,25 @@ export default function TopBar() {
 				<Toolbar className={classes.toolBar}>
 					<img className={classes.logo} src="../../public/assets/logo.png" alt="logo" width="150"
 						 height="50"/>
+					{username !== 'anonymous' && (
+						<div style={{ 
+							marginLeft: '16px',
+							display: 'flex', 
+							alignItems: 'center',
+							backgroundImage: `linear-gradient(to right, ${theme.palette.gradient.start}, ${theme.palette.gradient.middle1}, ${theme.palette.gradient.middle2}, ${theme.palette.gradient.end})`,
+							padding: '6px 16px',
+							borderRadius: '4px',
+							color: 'transparent',
+							fontFamily: theme.typography.fontFamily,
+							WebkitBackgroundClip: 'text',
+							fontSize: '16px',
+							fontWeight: 'bold',
+						}}>
+							<span>
+								Welcome, {username}!
+							</span>
+						</div>
+					)}
 					<Box sx={{ flexGrow: 1 }} />
 					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', color: theme.palette.secondary.dark}}>
 						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
@@ -105,6 +146,7 @@ export default function TopBar() {
 						<RouterLink to="/faq" className={classes.toolBarlink} style={{marginRight: "100px", color: theme.palette.secondary.dark}}>
 							FAQ</RouterLink>
 					</Typography>
+					
 					<Button 
 						variant="contained" 
 						style={{ 
