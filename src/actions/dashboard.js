@@ -22,3 +22,19 @@ export function setUserCategory(type, category) {
 	};
 }
 
+// Reset action types
+export const RESET_STATEMENT_TO_DEFAULT = "RESET_STATEMENT_TO_DEFAULT";
+export const RESET_USER_CATEGORY_TO_DEFAULT = "RESET_USER_CATEGORY_TO_DEFAULT";
+
+export function resetStatementToDefault() {
+	return {
+		type: RESET_STATEMENT_TO_DEFAULT
+	};
+}
+
+export function resetUserCategoryToDefault() {
+	return {
+		type: RESET_USER_CATEGORY_TO_DEFAULT
+	};
+}
+

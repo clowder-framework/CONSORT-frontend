@@ -7,7 +7,35 @@ const clientInfo = await getClientInfo();
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
-export const receiveDatasets = (type, json) => ({type: type, datasets: json, receivedAt: Date.now()});
+export const receiveDatasets = (type, json) => ({type: type, datasets: json});
+
+// receive dataset about action
+export const RECEIVE_DATASET_ABOUT = "RECEIVE_DATASET_ABOUT";
+export const receiveDatasetAbout = (type, json) => ({type: type, about: json});
+
+// receive files in dataset action
+export const RECEIVE_FILES_IN_DATASET = "RECEIVE_FILES_IN_DATASET";
+export const receiveFilesInDataset = (type, json) => ({type: type, files: json});
+
+// create datasets action
+export const CREATE_DATASETS = "CREATE_DATASETS";
+export const createDataset = (type, json) => ({type: type, datasets: json});
+
+// add file to dataset action
+export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
+export const addFileToDataset = (type, json) => ({type: type, files: json});
+
+// delete dataset action
+export const DELETE_DATASET = "DELETE_DATASET";
+
+// update dataset status action
+export const UPDATE_DATASET_STATUS = "UPDATE_DATASET_STATUS";
+export const updateDatasetStatus = (datasetId, status) => ({
+    type: UPDATE_DATASET_STATUS,
+    datasetId,
+    status
+});
+
 // fetchDatasets thunk function
 export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 	const dataset_json = await getDatasetsRequest(title, limit); // list of datasets
@@ -15,26 +43,6 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 		dispatch(receiveDatasets(RECEIVE_DATASETS, dataset_json));
 	}
 };
-
-// create datasets action
-export const CREATE_DATASETS = "CREATE_DATASETS";
-export const createDataset = (type, json) => ({type: type, datasets: json});
-// add file to dataset action
-export const ADD_FILE_TO_DATASET = "ADD_FILE_TO_DATASET";
-export const addFileToDataset = (type, file_json) => ({type: type, files: file_json});
-
-
-export const RECEIVE_FILES_IN_DATASET = "RECEIVE_FILES_IN_DATASET";
-export function receiveFilesInDataset(type, json) {
-	return (dispatch) => {
-		dispatch({
-			type: type,
-			files: json,
-			receivedAt: Date.now(),
-		});
-	};
-}
-
 
 export function fetchFilesInDataset(id) {
 	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/files?superAdmin=true`;
@@ -48,18 +56,6 @@ export function fetchFilesInDataset(id) {
 			} else {
 				dispatch(receiveFilesInDataset(RECEIVE_FILES_IN_DATASET, []));
 			}
-		});
-	};
-}
-
-export const RECEIVE_DATASET_ABOUT = "RECEIVE_DATASET_ABOUT";
-
-export function receiveDatasetAbout(type, json) {
-	return (dispatch) => {
-		dispatch({
-			type: type,
-			about: json,
-			receivedAt: Date.now(),
 		});
 	};
 }
@@ -80,7 +76,6 @@ export function fetchDatasetAbout(id) {
 	};
 }
 
-
 export const SET_DATASET_METADATA = "SET_DATASET_METADATA";
 export function setDatasetMetadata(type, json) {
 	return (dispatch) => {
@@ -91,7 +86,6 @@ export function setDatasetMetadata(type, json) {
 		});
 	};
 }
-
 
 export function postDatasetMetadata(id, metadata) {
 	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/metadata.jsonld`;
@@ -111,9 +105,6 @@ export function postDatasetMetadata(id, metadata) {
 	};
 }
 
-
-export const DELETE_DATASET = "DELETE_DATASET";
-
 export function deleteDataset(datasetId) {
 	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${datasetId}?superAdmin=true`;
 	return (dispatch) => {
@@ -123,19 +114,23 @@ export function deleteDataset(datasetId) {
 				response.json().then(json => {
 					dispatch({
 						type: DELETE_DATASET,
-						dataset: {"id": datasetId, "status": json["status"] === undefined ? json["status"] : "success"},
+						dataset: {"id": datasetId},
 						receivedAt: Date.now(),
 					});
 				});
 			} else {
 				response.json().then(json => {
-					dispatch({
-						type: DELETE_DATASET,
-						dataset: {"id": null, "status": json["status"] === undefined ? json["status"] : "fail"},
-						receivedAt: Date.now(),
-					});
+					console.error("Failed to delete dataset:", json);
 				});
 			}
 		});
+	};
+}
+
+export const RESET_DATASET_TO_DEFAULT = "RESET_DATASET_TO_DEFAULT";
+
+export function resetDatasetToDefault() {
+	return {
+		type: RESET_DATASET_TO_DEFAULT
 	};
 }
