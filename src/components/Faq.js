@@ -5,6 +5,7 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import Footer from './childComponents/Footer';
 import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../theme';
+import TopBar from "./childComponents/TopBar";
 
 const faqData = [
 	{
@@ -40,6 +41,7 @@ const faqData = [
 function Faq() {
 	return (
 		<>
+			<TopBar/>
 			<Container>
 				<Typography variant="h4" gutterBottom sx={{ color: theme.palette.primary.main }}>
 					FAQ
