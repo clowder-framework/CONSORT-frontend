@@ -20,8 +20,6 @@ function Preview() {
 			}
 		};
 		checkAuthStatus();
-		
-		// No cleanup here - we need to preserve states for FilePreview
 	}, []);
 	
 	return (
