@@ -216,14 +216,16 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 	if (response.status === 200) {
 		let blob = await response.blob();
 		if (window.navigator.msSaveOrOpenBlob) {
-			window.navigator.msSaveBlob(blob, filename);
+			window.navigator.msSaveBlob(blob, "RCTCheck_" + filename);
+			console.log("RCTCheck_" + filename + " downloaded");
 		} else {
 			let anchor = window.document.createElement("a");
 			anchor.href = window.URL.createObjectURL(blob);
-			anchor.download = filename;
+			anchor.download = "RCTCheck_" + filename;
 			document.body.appendChild(anchor);
 			anchor.click();
 			document.body.removeChild(anchor);
+			console.log("RCTCheck_" + filename + " downloaded");
 		}
 	} else if (response.status === 401) {
 		// TODO
@@ -231,6 +233,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 	} else {
 		console.error(response.json());
 	}
+	return "RCTCheck_" + filename;
 }
 
 

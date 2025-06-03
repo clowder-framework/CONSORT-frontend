@@ -116,8 +116,9 @@ export default function TopBar() {
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.appBar}>
 				<Toolbar className={classes.toolBar}>
-					<img className={classes.logo} src="../../public/assets/logo.png" alt="logo" width="150"
-						 height="50"/>
+					<RouterLink to="/home" className={classes.logo}>
+						<img src="../../public/assets/logo.png" alt="logo" width="150" height="50"/>
+					</RouterLink>
 					{username !== 'anonymous' && (
 						<div style={{ 
 							marginLeft: '16px',
@@ -143,8 +144,12 @@ export default function TopBar() {
 							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/faq" className={classes.toolBarlink} style={{marginRight: "100px", color: theme.palette.secondary.dark}}>
+						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
 							FAQ</RouterLink>
+					</Typography>
+					<Typography className={classes.toolBarItem}>
+						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark}}>
+							Home</RouterLink>
 					</Typography>
 					
 					<Button 

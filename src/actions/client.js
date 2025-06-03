@@ -12,6 +12,11 @@ import {wordPipeline} from "../utils/word_pipeline";
 import {pdfPipeline} from "../utils/pdf_pipeline";
 import {SET_EXTRACTION_STATUS, setExtractionStatus} from "./file";
 import {ADD_FILE_TO_DATASET, addFileToDataset, CREATE_DATASETS, createDataset} from "./dataset";
+import {resetFileToDefault} from "./file";
+import {resetDatasetToDefault} from "./dataset";
+import {resetPdfPreviewToDefault} from "./pdfpreview";
+import {resetStatementToDefault} from "./dashboard";
+import {resetUserCategoryToDefault} from "./dashboard";
 
 
 const clientInfo = await getClientInfo();
@@ -81,6 +86,11 @@ export function createUploadExtract(file, config) {
 		else {
 			console.error("Error in dataset creation");
 			dispatch(setExtractionStatus("Error in dataset creation"));
+			dispatch(resetFileToDefault());
+			dispatch(resetDatasetToDefault());
+			dispatch(resetPdfPreviewToDefault());
+			dispatch(resetStatementToDefault());
+			dispatch(resetUserCategoryToDefault());
 		}
 	};
 }

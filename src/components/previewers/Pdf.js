@@ -39,6 +39,23 @@ export default function Pdf(props) {
 	let pdf_render_scale = 1.5;
 	let canvas_render_scale = 1.5; // keep same as pdf_render_scale for coordinate highlighting
 
+	// Cleanup effect when component unmounts
+	useEffect(() => {
+		return () => {
+			// Clear local states
+			setContent({});
+			setAllSentences([]);
+			setIsRendered(false);
+			setNumPages(null);
+			setPageWidth(500);
+			setPageHeight(799);
+			setScaleX(1);
+			setScaleY(1);
+			
+			// Reset page number in Redux
+			dispatchPageNumber(1);
+		};
+	}, []);
 
 	useEffect(() => {
 		if (metadata !== undefined){

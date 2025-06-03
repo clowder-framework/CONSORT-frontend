@@ -5,6 +5,7 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import Footer from './childComponents/Footer';
 import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../theme';
+import TopBar from "./childComponents/TopBar";
 
 const faqData = [
 	{
@@ -29,7 +30,7 @@ const faqData = [
     },
     {
         question: "How can I find the SPIRIT guidelines?",
-        answer: <span>SPIRIT statement can be found here: <a href="https://spirit-statement.org/" target="_blank" rel="noopener noreferrer">https://spirit-statement.org/</a></span>
+        answer: <span>SPIRIT statement can be found here: <a href="https://www.equator-network.org/reporting-guidelines/spirit-2013-statement-defining-standard-protocol-items-for-clinical-trials/" target="_blank" rel="noopener noreferrer">https://www.equator-network.org/reporting-guidelines/spirit-2013-statement-defining-standard-protocol-items-for-clinical-trials/</a></span>
     },
     {
         question: "How can I find the CONSORT guidelines?",
@@ -40,6 +41,7 @@ const faqData = [
 function Faq() {
 	return (
 		<>
+			<TopBar/>
 			<Container>
 				<Typography variant="h4" gutterBottom sx={{ color: theme.palette.primary.main }}>
 					FAQ

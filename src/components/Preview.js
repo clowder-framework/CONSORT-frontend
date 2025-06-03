@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {Box, Button, Grid, ListItem, Typography} from "@material-ui/core";
 import FilePreview from "./childComponents/FilePreview";
+import TopBar from "./childComponents/TopBar";
 
 function Preview() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	
 	useEffect(() => {
 		const checkAuthStatus = async () => {
 			try {
@@ -22,6 +24,7 @@ function Preview() {
 	
 	return (
 		<>
+			<TopBar/>
 			<div className="outer-container">
 				<Box className="filePreview">
 					{isAuthenticated ? (

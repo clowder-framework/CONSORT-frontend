@@ -138,6 +138,7 @@ export default function PreviewDrawerLeft(props) {
 					'& .MuiDrawer-paper': {
 						width: drawerWidth,
 						boxSizing: 'border-box',
+						marginTop: '64px',
 					},
 				}}
 				variant="permanent"

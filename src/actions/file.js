@@ -151,3 +151,11 @@ export function deleteFile(fileId) {
 		});
 	};
 }
+
+export const RESET_FILE_TO_DEFAULT = "RESET_FILE_TO_DEFAULT";
+
+export function resetFileToDefault() {
+	return {
+		type: RESET_FILE_TO_DEFAULT
+	};
+}

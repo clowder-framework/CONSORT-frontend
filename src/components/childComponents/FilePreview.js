@@ -16,20 +16,25 @@ import CreateAndUpload from "./CreateAndUpload";
 import {getClientInfo} from "../../utils/common";
 import config from "../../app.config";
 
-
 export default function FilePreview() {
 
 	const pdfExtractor = config.pdf_extractor;
 	const rctExtractor = config.rct_extractor;
+	const dispatch = useDispatch();
 
 	const filePreviews = useSelector((state) => state.file.previews);
 	const [previews, setPreviews] = useState([]); // state for file previews
 	const datasetMetadata = useSelector((state) => state.dataset.metadata);
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
+	
+	// We don't want to clear states here as they're needed for preview
 
 	// useEffect on filePreviews to download preview resources
 	useEffect( async ()=> {
+		// Reset the local previews state when filePreviews changes
+		setPreviews([]);
+		
 		if (filePreviews !== undefined && filePreviews.length > 0) {
 			const previewsTemp = [];
 			// get either pdf preview / html preview
@@ -53,7 +58,7 @@ export default function FilePreview() {
 
 	// useEffect on datasetMetadata to load preview leftdrawer metadata
 	useEffect( async ()=> {
-		if (datasetMetadata !== undefined) {
+		if (datasetMetadata !== undefined && Array.isArray(datasetMetadata)) {
 			const contentList = datasetMetadata.map(item => item.content);
 			const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 			const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
