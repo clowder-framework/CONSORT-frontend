@@ -6,9 +6,25 @@ import Intro from "./childComponents/Intro";
 import CreateAndUpload from "./childComponents/CreateAndUpload";
 import Footer from "./childComponents/Footer";
 import { useTheme } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
+import { resetFileToDefault } from "../actions/file";
+import { resetDatasetToDefault } from "../actions/dataset";
+import { resetPdfPreviewToDefault } from "../actions/pdfpreview";
+import { resetStatementToDefault, resetUserCategoryToDefault } from "../actions/dashboard";
 
 function Dashboard() {
 	const theme = useTheme();
+	const dispatch = useDispatch();
+	
+	// Clear all Redux states when Dashboard component mounts
+	useEffect(() => {
+		// This ensures states are cleared when returning to home page
+		dispatch(resetFileToDefault());
+		dispatch(resetDatasetToDefault());
+		dispatch(resetPdfPreviewToDefault());
+		dispatch(resetStatementToDefault());
+		dispatch(resetUserCategoryToDefault());
+	}, [dispatch]);
 	
 	return (
 		<>

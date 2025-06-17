@@ -121,6 +121,13 @@ export default function Dataset() {
 		listDatasetAbout(datasetId);
 	}, []);
 
+	// Redirect if dataset is deleted
+	useEffect(() => {
+		if (datasetAbout && datasetAbout.status === "deleted") {
+			history("/");
+		}
+	}, [datasetAbout]);
+
 	// get metadata of each files; because we need the thumbnail of each file!!!
 	useEffect(() => {
 
@@ -291,6 +298,7 @@ export default function Dataset() {
 										<Typography className="content">Owner: {datasetAbout["authorId"]}</Typography>
 										<Typography className="content">Description: {datasetAbout["description"]}</Typography>
 										<Typography className="content">Created on: {datasetAbout["created"]}</Typography>
+										<Typography className="content">Status: {datasetAbout["status"] || "created"}</Typography>
 										{/*/!*TODO use this to get thumbnail*!/*/}
 										<Typography className="content">Thumbnail: {datasetAbout["thumbnail"]}</Typography>
 										{/*<Typography className="content">Belongs to spaces: {datasetAbout["authorId"]}</Typography>*/}

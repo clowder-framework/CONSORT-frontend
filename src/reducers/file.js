@@ -3,7 +3,8 @@ import {
 	RECEIVE_FILE_EXTRACTED_METADATA,
 	RECEIVE_FILE_METADATA,
 	RECEIVE_FILE_METADATA_JSONLD,
-	RECEIVE_PREVIEWS
+	RECEIVE_PREVIEWS,
+	RESET_FILE_TO_DEFAULT
 } from "../actions/file";
 
 const defaultState = {metadata: {}, extractedMetadata: {}, metadataJsonld: [], previews: [], extractionStatus: null};
@@ -23,6 +24,10 @@ const file = (state = defaultState, action) => {
 			};
 		case SET_EXTRACTION_STATUS:
 			return Object.assign({}, state, {extractionStatus: action.extractionStatus});
+		case 'RESET_FILE_PREVIEWS':
+			return { ...state, previews: [] };
+		case RESET_FILE_TO_DEFAULT:
+			return defaultState;
 		default:
 			return state;
 	}

@@ -9,3 +9,11 @@ export function setPageNumber(type, page) {
 		});
 	};
 }
+
+export const RESET_PDFPREVIEW_TO_DEFAULT = "RESET_PDFPREVIEW_TO_DEFAULT";
+
+export function resetPdfPreviewToDefault() {
+	return {
+		type: RESET_PDFPREVIEW_TO_DEFAULT
+	};
+}

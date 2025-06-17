@@ -1,6 +1,6 @@
 // Create a dataset and upload a file. Submit for extraction and get file previews
 
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -17,8 +17,11 @@ import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {downloadAndSaveFile} from "../../utils/file";
 import {fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
-import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory} from '../../actions/dashboard';
+import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault} from '../../actions/dashboard';
 import config from "../../app.config";
+import {resetFileToDefault} from '../../actions/file';
+import {resetDatasetToDefault} from '../../actions/dataset';
+import {resetPdfPreviewToDefault} from '../../actions/pdfpreview';
 
 
 export default function CreateAndUpload() {
@@ -40,6 +43,8 @@ export default function CreateAndUpload() {
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 	const statementType = useSelector(state => state.statement.statementType); 
 	const userCategory = useSelector(state => state.userCategory.userCategory);
+	const datasetStatus = useSelector(state => state.dataset.status);
+
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
 	let pdfExtractor;
@@ -50,6 +55,27 @@ export default function CreateAndUpload() {
 	else{
 		pdfExtractor = config.pdf_extractor;
 	}
+
+	// Reference to track any active timeouts
+	const timeoutsRef = useRef([]);
+
+	// Check authentication status on mount
+	useEffect(() => {
+		const checkAuthStatus = async () => {
+			try {
+				const response = await fetch('/isAuthenticated', {
+					method: 'GET',
+					credentials: 'include',
+				});
+				const data = await response.json();
+				setIsAuthenticated(data.isAuthenticated);
+			} catch (error) {
+				console.error('Error checking authentication status:', error);
+				setIsAuthenticated(false);
+			}
+		};
+		checkAuthStatus();
+	}, []);
 
 
 	const handleStatementChange = (event) => {
@@ -63,23 +89,76 @@ export default function CreateAndUpload() {
 	};
 
 	const onDropFile = (file) => {
+		// Reset previous extraction state and previews
+		dispatch(setExtractionStatus(null));
+		dispatch({type: 'RESET_FILE_PREVIEWS'});
+		dispatch({type: 'RESET_DATASET_METADATA'});
+		
 		setLoadingText("Uploading file");
 		setLoading(true);
 		setSpinner(true);
+		setPreview(true);
 		setFilename(file.name);
 		dispatch(createUploadExtract(file, config));
 	};
 
+	// onDrop function to trigger createUploadExtract action dispatch
+	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+		// this callback function is triggered when a file is dropped into the dropzone
+		
+		// Reset all Redux states for a fresh upload
+		dispatch(resetFileToDefault());
+		dispatch(resetDatasetToDefault());
+		dispatch(resetPdfPreviewToDefault());
+		
+		// Reset all local states for a fresh upload
+		setLoading(true);
+		setPreview(true); // disable preview button
+		setRCTMetadata({});
+		setPDFMetadata({});
+		
+		// Clear any pending timeouts
+		timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
+		timeoutsRef.current = [];
+		
+		try {
+			acceptedFiles.map(file => {
+				onDropFile(file)
+			})
+			rejectedFiles.map(file => {
+				dispatch(setExtractionStatus("File rejected"));
+				setSpinner(false);
+			})
+		}
+		catch(error) {
+			dispatch(setExtractionStatus("Upload failed"));
+			setSpinner(false);
+		}
+	}, [mouseHover]);
+
+
 	// useEffect on extractionStatus for preview generation
 	useEffect(async () => {
-		if (extractionStatus !== null) {
+		// Skip processing if we're in a state cleanup situation
+		if (filename === '') {
+			return;
+		}
+		
+		if (extractionStatus !== null && datasetStatus !== "completed") {
 			setLoadingText(extractionStatus);
 			const clientInfo = await getClientInfo();
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
+			
+			// Make sure datasets exist before proceeding
+			if (!datasets || datasets.length === 0) {
+				console.log("No datasets available");
+				return;
+			}
+			
 			const dataset_id = datasets[0].id;
 			let highlights_filename;
-			// check extraction status and html file generation in loop
-			const html_file_loop = async () => {
+			// check extraction status and highlights file generation in loop
+			const highlights_file_loop = async () => {
 				if (pdfExtractor === config.pymupdf_extractor){
 					highlights_filename = file_name + "-pymupdf" + '_highlights' + '.json'
 				}
@@ -120,12 +199,32 @@ export default function CreateAndUpload() {
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
-					setTimeout(html_file_loop, 5000);
+					const timeoutId = setTimeout(highlights_file_loop, 5000);
+					timeoutsRef.current.push(timeoutId);
 				}
 			};
 
 			if (dataset_id !== null) {
-				await html_file_loop(); // call the loop to check extractions
+				// Set a timeout to stop the loop after 20 minutes (1200000 ms)
+				const startTime = Date.now();
+				const timeoutDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
+				
+				// Create a modified loop function that checks timeout
+				const timeoutCheckedLoop = async () => {
+					// Check if 20 minutes have passed
+					if (Date.now() - startTime > timeoutDuration) {
+						// If timeout reached and dataset status is still not completed
+						if (datasetStatus !== "completed") {
+							dispatch(setExtractionStatus("Failed: 20 minute timeout reached"));
+							setSpinner(false);
+							return; // Stop the loop
+						}
+					}
+					
+					await highlights_file_loop();
+				};
+				
+				await timeoutCheckedLoop(); // Start the loop with timeout checking
 			} else {
 				console.error("Dataset does not exist");
 			}
@@ -134,44 +233,14 @@ export default function CreateAndUpload() {
 			dispatch(setExtractionStatus("Error in extraction"));
 			setSpinner(false); // stop display of spinner
 		}
-	}, [extractionStatus]); // TODO: This useEffect will trigger again when the extractionStatus is completed 
+	}, [extractionStatus, datasetStatus]);
 
-	// Check authentication status on mount
+	// Watch for dataset status changes
 	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const response = await fetch('/isAuthenticated', {
-					method: 'GET',
-					credentials: 'include',
-				});
-				const data = await response.json();
-				setIsAuthenticated(data.isAuthenticated);
-			} catch (error) {
-				console.error('Error checking authentication status:', error);
-				setIsAuthenticated(false);
-			}
-		};
-		checkAuthStatus();
-	}, []);
-
-	// onDrop function to trigger createUploadExtract action dispatch
-	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-		// this callback function is triggered when a file is dropped into the dropzone
-		setLoading(true);
-		try {
-			acceptedFiles.map(file => {
-				onDropFile(file)
-			})
-			rejectedFiles.map(file => {
-				dispatch(setExtractionStatus("File rejected"));
-				setSpinner(false);
-			})
+		if (datasetStatus === "completed") {
+			setPreview(false);
 		}
-		catch(error) {
-			dispatch(setExtractionStatus("Upload failed"));
-			setSpinner(false);
-		}
-	}, [mouseHover]);
+	}, [datasetStatus]);
 
 
 	const downloadOrPreview = () => {
@@ -180,13 +249,38 @@ export default function CreateAndUpload() {
 		if (userCategory === "author"){
 			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"]
 			const reportFilename = RCTmetadata["extracted_files"][1]["filename"]
-			downloadAndSaveFile(reportFileID, reportFilename).then(r => console.log(r));
+			downloadAndSaveFile(reportFileID, reportFilename).then(r => {
+				console.log(r);
+				// Clear all states
+				setLoading(false);
+				setSpinner(false);
+				setLoadingText("Processing");
+				setFilename('');
+				setPreview(true);
+				setRCTMetadata({});
+				setPDFMetadata({});
+				// Clear Redux states
+				dispatch(resetFileToDefault());
+				dispatch(resetDatasetToDefault());
+				dispatch(resetPdfPreviewToDefault());
+				dispatch(resetStatementToDefault());
+				dispatch(resetUserCategoryToDefault());
+			});
 		}
 		else{
 			let path = '/preview';
 			navigate(path);
 		}
 	}
+	
+	// Add timeout cleanup to prevent memory leaks when component unmounts
+	useEffect(() => {
+		return () => {
+			// Only clear timeouts when unmounting, don't reset any states
+			timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
+			timeoutsRef.current = [];
+		};
+	}, []);
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
@@ -212,7 +306,7 @@ export default function CreateAndUpload() {
 						Select Guideline
 					</Typography>
 					<RadioGroup
-						defaultValue={statementType}
+						value={statementType}
 						name="radio-buttons-group"
 						row
 						onChange={handleStatementChange}
@@ -245,16 +339,20 @@ export default function CreateAndUpload() {
 				)}
 			</div>
 			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
-				<Button 
-					variant="contained" 
-					style={{ 
-						color: theme.palette.info.contrastText, 
-						backgroundColor: preview ? 'gray' : theme.palette.primary.dark 
-					}} 
-					disabled={preview} 
+				<Button
+					variant="contained"
+					style={{
+						color: theme.palette.info.contrastText,
+						...(preview ? 
+							{ backgroundColor: 'gray' } : 
+							{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
+						),
+						fontFamily: theme.typography.fontFamily
+					}}
+					disabled={preview}
 					onClick={downloadOrPreview}
-				> 
-					View Results 
+				>
+					View Results
 				</Button>
 			</div>
 
