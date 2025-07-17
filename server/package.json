@@ -1,6 +1,6 @@
 {
   "name": "consort-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Consort server side app",
   "license": "Unlicense",
@@ -24,6 +24,7 @@
     "passport": "^0.6.0",
     "passport-google-oidc": "^0.1.0",
     "passport-oauth2": "^1.7.0",
+    "pg": "^8.11.3",
     "pluralize": "^8.0.0",
     "sqlite3": "^5.0.2"
   }
