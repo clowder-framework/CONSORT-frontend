@@ -1,11 +1,13 @@
 import { 
     SET_STATEMENT_TYPE, SET_USER_CATEGORY, 
-    RESET_STATEMENT_TO_DEFAULT, RESET_USER_CATEGORY_TO_DEFAULT 
+    RESET_STATEMENT_TO_DEFAULT, RESET_USER_CATEGORY_TO_DEFAULT,
+    SET_USER, RESET_USER_TO_DEFAULT
 } from '../actions/dashboard';
 
 const initialState = {
     statementType: 'spirit',  // default value
-    userCategory: 'author'
+    userCategory: 'author',
+    userName: 'anonymous'
 };
 
 export function statement(state = initialState, action) {
@@ -36,6 +38,23 @@ export function userCategory(state = initialState, action) {
             return {
                 ...initialState,
                 userCategory: initialState.userCategory
+            };
+        default:
+            return state;
+    }
+}
+
+export function user(state = initialState, action) {
+    switch (action.type) {
+        case SET_USER:
+            return {
+                ...state,
+                userName: action.userName
+            };
+        case RESET_USER_TO_DEFAULT:
+            return {
+                ...initialState,
+                userName: initialState.userName
             };
         default:
             return state;
