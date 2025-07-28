@@ -100,6 +100,22 @@ export async function getPublications(options = {}) {
 }
 
 /**
+ * Post a publication
+ * @param {Object} publication - Publication object
+ * @returns {Promise<Object>} - Response from server
+ */
+export async function postPublication(publication) {
+    try {
+        const response = await apiClient.post('/publications', publication);
+        console.log('Publication posted:', response);
+        return response;
+    } catch (error) {
+        console.error('Failed to post publication:', error);
+        throw error;
+    }
+}
+
+/**
  * Get sentences for a specific publication
  * @param {number} publicationId - Publication ID
  * @param {Object} options - Query options
@@ -160,6 +176,21 @@ export async function submitFeedback(annId, userId, feedback) {
         return response;
     } catch (error) {
         console.error('Failed to submit feedback:', error);
+        throw error;
+    }
+}
+
+/**
+ * Post a user
+ * @param {Object} user - User object
+ * @returns {Promise<Object>} - Response from server
+ */
+export async function postUser(user) {
+    try {
+        const response = await apiClient.post('/users', user);
+        return response;
+    } catch (error) {
+        console.error('Failed to post user:', error);
         throw error;
     }
 }
