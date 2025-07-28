@@ -233,6 +233,30 @@ router.post('/feedback', requireAuth, validateFeedback, asyncHandler(async (req,
 }));
 
 /**
+ * POST /api/rctdb/users
+ * Create a new user
+ */
+router.post('/users', requireAuth, asyncHandler(async (req, res) => {
+    const { name, email, role } = req.body;
+    // check if user already exists
+    const user = await database.query(
+        'SELECT * FROM users WHERE name = $1',
+        [name]
+    );
+    if (user.rows.length > 0) {
+        // update user
+        console.log('User already exists:', user.rows[0]);
+    } else {
+        // create user
+        const result = await database.query(
+            'INSERT INTO users (name, email, role, createtime) VALUES ($1, $2, $3, NOW()) RETURNING *',
+            [name, email, role]
+        );
+        console.log('User created:', result.rows[0]);
+    }
+}));
+
+/**
  * GET /api/rctdb/users/:email
  * Get or create a user by email
  * Requires authentication
