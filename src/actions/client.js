@@ -17,6 +17,7 @@ import {resetDatasetToDefault} from "./dataset";
 import {resetPdfPreviewToDefault} from "./pdfpreview";
 import {resetStatementToDefault} from "./dashboard";
 import {resetUserCategoryToDefault} from "./dashboard";
+import {postPublication} from "../utils/rctdb-client";
 
 
 const clientInfo = await getClientInfo();
@@ -29,10 +30,10 @@ export function createUploadExtract(file, config) {
 		console.log("StatementType", config.statementType)
 		console.log("UserCategory", config.userCategory)
 		// Clowder API call to create empty dataset
-		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
-		const file_description = file.type;
-		console.log("Uploading file", file_name);
-		const dataset_json = await createEmptyDatasetRequest(file_name, file_description, clientInfo); // returns the dataset ID {id:xxx}
+		const dataset_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
+		const description = "RCT extractor file: " + file.name + " (" + file.type + ")" + " for statement type: " + config.statementType + " and user category: " + config.userCategory;
+		console.log("Uploading file", file.name);
+		const dataset_json = await createEmptyDatasetRequest(dataset_name, description, clientInfo); // returns the dataset ID {id:xxx}
 		if (dataset_json !== undefined && dataset_json !== null) {
 			dispatch(createDataset(CREATE_DATASETS, dataset_json));
 			// upload input file to dataset
@@ -40,6 +41,23 @@ export function createUploadExtract(file, config) {
 			if (file_json !== undefined){
 				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
+				dispatch(setExtractionStatus("Submitting file to database"));
+				const publication_db_json = await postPublication({
+					fileid: file_json.id,
+					fileformat: file.type,
+					journalname: file.name,
+					datasetid: dataset_json.id,
+					statement: config.statementType,
+					source: "clowder",
+					fileuploadtime: new Date().toISOString(),
+
+				});
+				if (publication_db_json.success) {
+					dispatch(setExtractionStatus("File submitted to database"));
+				}
+				else {
+					dispatch(setExtractionStatus("Error in submitting file to database"));
+				}
 				dispatch(setExtractionStatus("Analyzing file"));
 				if (file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type =="application/msword"){
 					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo, dispatch);
