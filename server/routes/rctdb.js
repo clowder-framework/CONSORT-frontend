@@ -82,7 +82,7 @@ router.post('/annotations', requireAuth, validateAnnotationData, asyncHandler(as
  * Uses optional auth to provide user context but allow anonymous access
  */
 router.get('/publications', optionalAuth, asyncHandler(async (req, res) => {
-    const { datasetId, limit = 50, offset = 0 } = req.query;
+    const { datasetId, limit = 1, offset = 0 } = req.query;
     
     let query = 'SELECT * FROM publication';
     let params = [];
