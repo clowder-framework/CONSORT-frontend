@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('todos:server');
 var http = require('http');
+var database = require('../rctdb');
 
 /**
  * Get port from environment and store in Express.
@@ -28,6 +29,59 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+/**
+ * Graceful shutdown function
+ */
+async function gracefulShutdown(signal) {
+    console.log(`\nReceived ${signal}. Starting graceful shutdown...`);
+    
+    // Close HTTP server
+    server.close(async (err) => {
+        if (err) {
+            console.error('Error closing HTTP server:', err);
+        } else {
+            console.log('HTTP server closed.');
+        }
+        
+        try {
+            // Close database connection
+            console.log('Shutting down RCT database connection...');
+            await database.closeDb();
+            console.log('RCT Database connection closed');
+            
+            console.log('Graceful shutdown completed');
+            process.exit(0);
+        } catch (error) {
+            console.error('Error during graceful shutdown:', error);
+            process.exit(1);
+        }
+    });
+    
+    // Force exit after 10 seconds if graceful shutdown fails
+    setTimeout(() => {
+        console.error('Forceful shutdown after timeout');
+        process.exit(1);
+    }, 10000);
+}
+
+/**
+ * Handle process termination signals
+ */
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    gracefulShutdown('uncaughtException');
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    gracefulShutdown('unhandledRejection');
+});
 
 /**
  * Normalize a port into a number, string, or false.

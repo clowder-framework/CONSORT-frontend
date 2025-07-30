@@ -3,6 +3,9 @@ import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, Link, Toolbar, Typography, Button, Box} from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../../theme';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../actions/dashboard';
+import { postUser } from '../../utils/rctdb-client';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -57,7 +60,7 @@ export default function TopBar() {
 	const classes = useStyles();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [username, setUsername] = useState("anonymous");
-
+	const dispatch = useDispatch();
 	useEffect(() => {
 		const checkAuthStatus = async () => {
 			try {
@@ -81,10 +84,18 @@ export default function TopBar() {
 					credentials: 'include',
 				});
 				const data = await response.json();
+				dispatch(setUser(data.username));
 				setUsername(data.username);
 				console.log('Username set to:', data.username);
+				postUser({
+					name: data.username,
+					email: "guest@guest.com",
+					role: useSelector(state => state.userCategory.userCategory) || "author"
+				});
+				console.log('User posted:', data.username);
 			} catch (error) {
 				console.error('Error fetching username:', error);
+				dispatch(setUser('anonymous'));
 				setUsername('anonymous');
 			}
 		}

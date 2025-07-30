@@ -25,6 +25,7 @@ export function setUserCategory(type, category) {
 // Reset action types
 export const RESET_STATEMENT_TO_DEFAULT = "RESET_STATEMENT_TO_DEFAULT";
 export const RESET_USER_CATEGORY_TO_DEFAULT = "RESET_USER_CATEGORY_TO_DEFAULT";
+export const RESET_USER_TO_DEFAULT = "RESET_USER_TO_DEFAULT";
 
 export function resetStatementToDefault() {
 	return {
@@ -38,3 +39,16 @@ export function resetUserCategoryToDefault() {
 	};
 }
 
+export const SET_USER = "SET_USER";
+export function setUser(user) {
+	return {
+		type: SET_USER,
+		user: user
+	};
+}
+
+export function resetUserToDefault() {
+	return {
+		type: RESET_USER_TO_DEFAULT
+	};
+}
