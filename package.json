@@ -25,7 +25,8 @@
 		"lint:fix": "npm run lint -- --fix",
 		"codegen": "./node_modules/.bin/openapi -i https://consort.clowderframework.org/clowder/swagger -o src/openapi/v1",
 		"codegen:dev": "./node_modules/.bin/openapi -i {CLOWDER_REMOTE_HOSTNAME}/swagger -o src/openapi/v1",
-		"docs": "typedoc"
+		"docs": "typedoc",
+		"rctdb:examples": "babel-node src/utils/rctdb-client-example.js"
 	},
 	"author": "NCSA",
 	"dependencies": {

@@ -5,7 +5,16 @@
   "description": "Consort server side app",
   "license": "Unlicense",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "db:migrate": "node ./rctdb/migrate.js",
+    "db:test": "node ./rctdb/connection.js",
+    "db:examples": "node ./rctdb/examples.js",
+    "db:health": "node -e \"require('./rctdb/connection').testConnection().then(r => process.exit(r ? 0 : 1))\"",
+    "db:generate": "npx drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:pull": "drizzle-kit pull",
+    "db:migrate:drizzle": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "connect-ensure-login": "^0.1.1",
@@ -14,6 +23,7 @@
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
     "dotenv": "^8.6.0",
+    "drizzle-orm": "^0.44.4",
     "ejs": "~3.1.10",
     "express": "~4.16.1",
     "express-session": "^1.17.2",
@@ -24,7 +34,12 @@
     "passport": "^0.6.0",
     "passport-google-oidc": "^0.1.0",
     "passport-oauth2": "^1.7.0",
+    "pg": "^8.16.3",
     "pluralize": "^8.0.0",
     "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4"
   }
 }
