@@ -3,6 +3,9 @@ import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, Link, Toolbar, Typography, Button, Box} from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../../theme';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../actions/dashboard';
+
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -56,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 export default function TopBar() {
 	const classes = useStyles();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
-	const [username, setUsername] = useState("anonymous");
+	const [username, setUsername] = useState("Anonymous");
 
 	useEffect(() => {
 		const checkAuthStatus = async () => {
@@ -85,7 +88,7 @@ export default function TopBar() {
 				console.log('Username set to:', data.username);
 			} catch (error) {
 				console.error('Error fetching username:', error);
-				setUsername('anonymous');
+				setUsername('Anonymous');
 			}
 		}
 		getUsername();
@@ -119,7 +122,7 @@ export default function TopBar() {
 					<RouterLink to="/home" className={classes.logo}>
 						<img src="../../public/assets/logo.png" alt="logo" width="150" height="50"/>
 					</RouterLink>
-					{username !== 'anonymous' && (
+					{username !== 'Anonymous' && (
 						<div style={{ 
 							marginLeft: '16px',
 							display: 'flex', 
