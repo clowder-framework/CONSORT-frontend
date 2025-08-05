@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------
 
 FROM --platform=linux/amd64 node:14.21.2 AS consort-build
-#ENV NODE_ENV=production
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
 # development or production
