@@ -19,15 +19,17 @@ webpack(config).run((error, stats) => {
 	const jsonStats = stats.toJson();
 
 	if (stats.hasErrors()) {
-		return jsonStats.errors.map(error => console.log(chalkError(error)));
+		console.log(chalkError("Webpack errors:"));
+		jsonStats.errors.forEach(error => console.log(chalkError(JSON.stringify(error, null, 2))));
+		return 1;
 	}
 
 	if (stats.hasWarnings()) {
 		console.log(chalkWarning("Webpack generated the following warnings: "));
-		jsonStats.warnings.map(warning => console.log(chalkWarning(warning)));
+		jsonStats.warnings.forEach(warning => console.log(chalkWarning(warning)));
 	}
 
-	console.log(`Webpack stats: ${stats}`);
+	console.log("Webpack stats:", stats.toString({ colors: true }));
 
 	// if we got this far, the build succeeded.
 	console.log(chalkSuccess("Your app is compiled in production mode in /dist. It\"s ready to roll!"));
