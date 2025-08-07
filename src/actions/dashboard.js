@@ -38,3 +38,17 @@ export function resetUserCategoryToDefault() {
 	};
 }
 
+
+export const SET_USER = "SET_USER";
+export function setUser(user) {
+	return {
+		type: SET_USER,
+		user: user
+	};
+}
+
+export function resetUserToDefault() {
+	return {
+		type: RESET_USER_TO_DEFAULT
+	};
+}
