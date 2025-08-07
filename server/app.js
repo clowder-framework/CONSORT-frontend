@@ -71,7 +71,7 @@ app.use('/public',express.static('../dist/public'));
 app.use('/public', express.static('public'));
 
 
-app.get('/client', function (req, res, next){
+app.get('/client',ensureLoggedIn, function (req, res, next){
 	// get env variables for header
 	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 	var APIKEY = process.env.APIKEY;

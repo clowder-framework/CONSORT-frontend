@@ -2,7 +2,7 @@
 # First stage, compile application
 # ----------------------------------------------------------------------
 
-FROM --platform=linux/amd64 node:14.21.2 AS consort-build
+FROM --platform=linux/amd64 node:22.0.0 AS consort-build
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
@@ -13,7 +13,7 @@ WORKDIR /usr/src/app
 # copy only package for caching purposes
 COPY ["package.json", "package-lock.json*", "./"]
 COPY tools/ /usr/src/app/tools/
-RUN npm install
+RUN npm install --include=dev
 
 # copy rest of application
 COPY .babelrc .eslintrc .istanbul.yml *.js /usr/src/app/
@@ -26,7 +26,7 @@ RUN npm run build
 # Second stage, final image
 # ----------------------------------------------------------------------
 
-FROM --platform=linux/amd64 node:14.21.2
+FROM --platform=linux/amd64 node:22.0.0
 WORKDIR /app
 COPY package.json ./
 COPY package-lock.json ./

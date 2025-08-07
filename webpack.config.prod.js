@@ -139,7 +139,7 @@ export default {
 			{
 				test: /\.(pdf|gif|png|jpe?g|svg)$/,
 				use: 'file-loader?name=[path][name].[ext]',
-			}
+			},
 			// {
 			// 	test: /\.json$/,
 			// 	loader: "json-loader"
