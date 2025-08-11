@@ -19,8 +19,9 @@ custom react frontend working with consort clowder instance
 run `npm run codegen`
 
 ### Dev
+run `npm start`
 
-run `npm run codegen:dev`
+<!--- run `npm run codegen:dev` --->
 
 ## Build and push image to NCSA hub
 
