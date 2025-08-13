@@ -5,6 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../../theme';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../actions/dashboard';
+import { rctdbClient } from '../../utils/rctdb-client';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,6 +61,7 @@ export default function TopBar() {
 	const classes = useStyles();
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [username, setUsername] = useState("Anonymous");
+    const dispatch = useDispatch();
 
 	useEffect(() => {
 		const checkAuthStatus = async () => {
@@ -83,9 +85,13 @@ export default function TopBar() {
 					method: 'GET',
 					credentials: 'include',
 				});
-				const data = await response.json();
-				setUsername(data.username);
-				console.log('Username set to:', data.username);
+                const data = await response.json();
+                setUsername(data.name);
+                dispatch(setUser(data.name));
+				console.log('User name set to:', data.name);
+				await rctdbClient.upsertUser({
+					name: data.name
+				});
 			} catch (error) {
 				console.error('Error fetching username:', error);
 				setUsername('Anonymous');

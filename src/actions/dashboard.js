@@ -40,6 +40,8 @@ export function resetUserCategoryToDefault() {
 
 
 export const SET_USER = "SET_USER";
+export const RESET_USER_TO_DEFAULT = "RESET_USER_TO_DEFAULT";
+
 export function setUser(user) {
 	return {
 		type: SET_USER,

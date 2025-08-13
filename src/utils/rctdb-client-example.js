@@ -4,7 +4,7 @@
  * This file demonstrates how to use the RCTDB client to interact with the RCTDB API.
  * Make sure to install axios first: npm install axios
  */
-
+import React from 'react';
 import { rctdbClient, rctdbAPI, createRCTDBClient } from './rctdb-client.js';
 
 // ============ BASIC USAGE EXAMPLES ============

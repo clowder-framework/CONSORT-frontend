@@ -1,4 +1,4 @@
-const { eq, and, desc, asc } = require('drizzle-orm');
+const { eq, and, desc, asc, sql } = require('drizzle-orm');
 const { rctdb } = require('./connection');
 const { 
   users, 
@@ -13,14 +13,21 @@ const {
 
 // User operations
 const userQueries = {
-  // Create a new user
-  async createUser(userData) {
-    return await rctdb.insert(users).values(userData).returning();
+  // Upsert a user
+  async upsertUser(userData) {
+    return await rctdb
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.name,
+        set: { lastlogin: sql`now()` }
+      })
+      .returning();
   },
 
-  // Get user by email
-  async getUserByEmail(email) {
-    return await rctdb.select().from(users).where(eq(users.email, email));
+  // Get user by name
+  async getUserByName(name) {
+    return await rctdb.select().from(users).where(eq(users.name, name));
   },
 
   // Get user by UUID
@@ -39,6 +46,14 @@ const publicationQueries = {
   // Create a new publication
   async createPublication(publicationData) {
     return await rctdb.insert(publication).values(publicationData).returning();
+  },
+
+  // Upsert a publication
+  async upsertPublication(publicationData) {
+    return await rctdb.insert(publication).values(publicationData).onConflictDoUpdate({
+      target: publication.datasetid,
+      set: publicationData
+    }).returning();
   },
 
   // Get publication by UUID

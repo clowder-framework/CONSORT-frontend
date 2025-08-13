@@ -66,7 +66,7 @@ class RCTDBClient {
    * @param {Object} userData - User data object
    * @returns {Promise<Object>} Created user object
    */
-  async createUser(userData) {
+  async upsertUser(userData) {
     const response = await this.client.post('/users', userData);
     return response.data;
   }
@@ -76,8 +76,8 @@ class RCTDBClient {
    * @param {number} uuid - User UUID
    * @returns {Promise<Object>} User object
    */
-  async getUserByUuid(uuid) {
-    const response = await this.client.get(`/users/${uuid}`);
+  async getUserByEmail(email) {
+    const response = await this.client.get(`/users/${email}`);
     return response.data;
   }
 
@@ -97,7 +97,7 @@ class RCTDBClient {
    * @param {Object} publicationData - Publication data object
    * @returns {Promise<Object>} Created publication object
    */
-  async createPublication(publicationData) {
+  async upsertPublication(publicationData) {
     const response = await this.client.post('/publications', publicationData);
     return response.data;
   }

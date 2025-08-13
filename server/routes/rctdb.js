@@ -21,9 +21,8 @@ router.get('/users', async (req, res) => {
 
 router.post('/users', async (req, res) => {
   try {
-    const user = await userQueries.createUser({
-      ...req.body,
-      createtime: new Date()
+    const user = await userQueries.upsertUser({
+      ...req.body
     });
     res.status(201).json(user[0]);
   } catch (error) {
@@ -32,12 +31,23 @@ router.post('/users', async (req, res) => {
   }
 });
 
-router.get('/users/:uuid', async (req, res) => {
+// TODO: need to be implemented
+router.get('/users/:email', async (req, res) => {
   try {
-    const user = await userQueries.getUserByUuid(parseInt(req.params.uuid));
+    const user = await userQueries.getUserByEmail(req.params.email);
     if (user.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
+    res.json(user[0]);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+});
+
+router.get('/users/:name', async (req, res) => {
+  try {
+    const user = await userQueries.getUserByName(req.params.name);
     res.json(user[0]);
   } catch (error) {
     console.error('Error fetching user:', error);
@@ -58,9 +68,8 @@ router.get('/publications', async (req, res) => {
 
 router.post('/publications', async (req, res) => {
   try {
-    const publication = await publicationQueries.createPublication({
-      ...req.body,
-      fileuploadtime: new Date()
+    const publication = await publicationQueries.upsertPublication({
+      ...req.body
     });
     res.status(201).json(publication[0]);
   } catch (error) {

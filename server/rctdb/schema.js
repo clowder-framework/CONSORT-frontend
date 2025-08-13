@@ -1,30 +1,33 @@
-const { pgTable, serial, integer, varchar, timestamp, real, boolean, foreignKey } = require('drizzle-orm/pg-core');
+const { pgTable, serial, integer, varchar, timestamp, real, boolean } = require('drizzle-orm/pg-core');
+const { sql } = require('drizzle-orm');
 
 // Users table
 const users = pgTable('users', {
   useruuid: serial('useruuid').primaryKey(),
-  name: varchar('name'),
-  email: varchar('email'),
-  role: varchar('role'),
-  createtime: timestamp('createtime'),
-  lastlogin: timestamp('lastlogin')
+  name: varchar('name').notNull().unique(), // All anonymous users will have a name of "Anonymous" and a role of "author" and one useruuid
+  email: varchar('email').notNull().unique(),
+  role: varchar('role').default('author'),
+  createtime: timestamp('createtime').default(sql`now()`),
+  lastlogin: timestamp('lastlogin').default(sql`now()`)
 });
 
 // Publication table
 const publication = pgTable('publication', {
   publicationuuid: serial('publicationuuid').primaryKey(),
   source: varchar('source').default('clowder'),
-  fileid: varchar('fileid'),
-  datasetid: varchar('datasetid'),
-  fileformat: varchar('fileformat'),
-  journalname: varchar('journalname'),
-  statement: varchar('statement').default('consort'),
-  fileuploadtime: timestamp('fileuploadtime'),
-  pagewidth: real('pagewidth'),
-  pageheight: real('pageheight'),
-  inferencetime: timestamp('inferencetime'),
-  nummissed: integer('nummissed'),
-  useruuid: integer('useruuid').notNull().references(() => users.useruuid)
+  fileid: varchar('fileid').notNull(), // uploaded fileID from clowder
+  datasetid: varchar('datasetid').notNull().unique(), // datasetID from clowder
+  datasetname: varchar('datasetname').notNull(), // dataset name from clowder. This is the name of the uploaded file without the extension
+  fileformat: varchar('fileformat').notNull(), // uploadedfile format from clowder
+  journalname: varchar('journalname').notNull(), // uploaded file name from clowder
+  statement: varchar('statement').notNull().default('consort'), // statement type from clowder. spirit or consort
+  fileuploadtime: timestamp('fileuploadtime').notNull(), // time of file upload to clowder
+  pagewidth: real('pagewidth'), // page width from grobid output
+  pageheight: real('pageheight'), // page height from grobid output
+  inferencetime: timestamp('inferencetime'), // time of inference completion from model
+  nummissed: integer('nummissed'), // number of missed checklist items from model
+  useruuid: integer('useruuid').notNull().references(() => users.useruuid), // useruuid from users table
+  othermetadata: varchar('othermetadata') // other metadata from clowder
 });
 
 // Section table
