@@ -17,6 +17,7 @@ import {resetDatasetToDefault} from "./dataset";
 import {resetPdfPreviewToDefault} from "./pdfpreview";
 import {resetStatementToDefault} from "./dashboard";
 import {resetUserCategoryToDefault} from "./dashboard";
+import {rctdbClient} from "../utils/rctdb";
 
 
 const clientInfo = await getClientInfo();
@@ -24,10 +25,27 @@ const clientInfo = await getClientInfo();
 
 // createUploadExtract thunk function
 export function createUploadExtract(file, config) {
-	return async function createUploadExtractThunk(dispatch) {
+    return async function createUploadExtractThunk(dispatch, getState) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
 		console.log("StatementType", config.statementType)
 		console.log("UserCategory", config.userCategory)
+        // read username from redux state set by SET_USER
+        let usernameFromState = "Anonymous";
+        try {
+            const state = typeof getState === "function" ? getState() : undefined;
+            if (state) {
+                if (state.user && typeof state.user.userName === "string" && state.user.userName.trim() !== "") {
+                    usernameFromState = state.user.userName;
+                }
+            }
+        } catch (e) {
+            // keep default "Anonymous" on any unexpected error
+            console.warn("Could not read username from state.", e);
+        }
+        const userData = await rctdbClient.upsertUser({ name: usernameFromState, role: config.userCategory });
+		console.log("User upserted to RCTDB", usernameFromState);
+		console.log("User data updated in RCTDB", userData);
+
 		// Clowder API call to create empty dataset
 		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 		const file_description = file.type;
@@ -38,6 +56,11 @@ export function createUploadExtract(file, config) {
 			// upload input file to dataset
 			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file, clientInfo); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
+				const publicationData = {source: "Clowder", useruuid: userData.uuid, datasetid: dataset_json.id, datasetname: file_name,
+					fileid: file_json.id, fileuploadtime: new Date().toISOString(), fileformat: file.type, journalname: file.name,
+					statement: config.statementType, useruuid: userData.uuid};
+				await rctdbClient.upsertPublication(publicationData);
+				console.log("Publication created in RCTDB", publicationData);
 				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
 				dispatch(setExtractionStatus("Analyzing file"));
