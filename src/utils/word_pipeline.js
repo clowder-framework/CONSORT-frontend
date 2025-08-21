@@ -4,6 +4,7 @@ import {submitForExtraction} from "../utils/file";
 import {pdfPipeline} from "../utils/pdf_pipeline";
 import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
+import {rctdbClient} from "../utils/rctdb";
 
 // word_pipeline function
 export async function wordPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
@@ -25,6 +26,8 @@ export async function wordPipeline(file_json, dataset_json, config, clientInfo, 
 			const fileNameWithoutExtension = filename.split('.').slice(0, -1).join('.');
 			const pdf_file_name = fileNameWithoutExtension + '.pdf';  
             const extracted_pdf_file = await getFileInDataset(datasetid, "application/pdf", pdf_file_name, clientInfo);
+            const publicationData = {datasetid: datasetid, extractedpdffileid: extracted_pdf_file.id};
+            await rctdbClient.upsertPublication(publicationData);
             const pdf_pipeline_status = await pdfPipeline(extracted_pdf_file, dataset_json, config, clientInfo, dispatch);
             if (pdf_pipeline_status) {
                 dispatch(updateDatasetStatus(datasetid, "pdf-completed"));

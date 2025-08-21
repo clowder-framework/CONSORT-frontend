@@ -56,8 +56,8 @@ export function createUploadExtract(file, config) {
 			// upload input file to dataset
 			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file, clientInfo); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
-				const publicationData = {source: "Clowder", useruuid: userData.uuid, datasetid: dataset_json.id, datasetname: file_name,
-					fileid: file_json.id, fileuploadtime: new Date().toISOString(), fileformat: file.type, journalname: file.name,
+				const publicationData = {source: "Clowder", datasetid: dataset_json.id, datasetname: file_name,
+					sourcefileid: file_json.id, sourcefileuploadtime: new Date().toISOString(), sourcefileformat: file.type, sourcefilename: file.name,
 					statement: config.statementType, useruuid: userData.uuid};
 				await rctdbClient.upsertPublication(publicationData);
 				console.log("Publication created in RCTDB", publicationData);

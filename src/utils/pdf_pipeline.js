@@ -4,6 +4,7 @@ import {submitForExtraction} from "../utils/file";
 import {csvPipeline} from "../utils/csv_pipeline";
 import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
+import {rctdbClient} from "../utils/rctdb";
 
 // pdf_pipeline function
 export async function pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
@@ -40,6 +41,8 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo, d
             
             if (extracted_csv_file !== null && typeof extracted_csv_file.id === "string") {
                 console.log("Extracted csv file found after pdf extraction", extracted_csv_file);
+                const publicationData = {datasetid: datasetid, extractedcsvfileid: extracted_csv_file.id};
+                await rctdbClient.upsertPublication(publicationData);
                 const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, clientInfo, dispatch)
                 if (csv_pipeline_status) {
                     dispatch(updateDatasetStatus(datasetid, "csv-completed"));
