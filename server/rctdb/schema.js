@@ -15,16 +15,25 @@ const users = pgTable('users', {
 const publication = pgTable('publication', {
   publicationuuid: serial('publicationuuid').primaryKey(),
   source: varchar('source').default('clowder'),
-  fileid: varchar('fileid').notNull(), // uploaded fileID from clowder
+  sourcefileid: varchar('sourcefileid').notNull(), // uploaded fileID from clowder
+  sourcefileformat: varchar('sourcefileformat').notNull(), // uploadedfile format from clowder
+  sourcefilename: varchar('sourcefilename').notNull(), // uploaded file name from clowder
+  sourcefileuploadtime: timestamp('sourcefileuploadtime').notNull(), // time of file upload to clowder
   datasetid: varchar('datasetid').notNull().unique(), // datasetID from clowder
-  datasetname: varchar('datasetname').notNull(), // dataset name from clowder. This is the name of the uploaded file without the extension
-  fileformat: varchar('fileformat').notNull(), // uploadedfile format from clowder
-  journalname: varchar('journalname').notNull(), // uploaded file name from clowder
+  datasetname: varchar('datasetname').notNull(), // dataset name from clowder. This is the name of the uploaded file without the extension.
+  
   statement: varchar('statement').notNull().default('consort'), // statement type from clowder. spirit or consort
-  fileuploadtime: timestamp('fileuploadtime').notNull(), // time of file upload to clowder
-  pagewidth: real('pagewidth'), // page width from grobid output
-  pageheight: real('pageheight'), // page height from grobid output
+  pagewidth: real('pagewidth').default(500), // page width from grobid output
+  pageheight: real('pageheight').default(799), // page height from grobid output
+  extractedpdffileid: varchar('extractedpdffileid'), // extracted pdf fileID from sOffice extractor
+  extractedxmlfileid: varchar('extractedxmlfileid'), // extracted xml fileID from pdf2text extractor
+  extractedjsonfileid: varchar('extractedjsonfileid'), // extracted json fileID from pdf2text extractor
+  extractedcsvfileid: varchar('extractedcsvfileid'), // extracted csv fileID from pdf2text or pymupdf extractor
   inferencetime: timestamp('inferencetime'), // time of inference completion from model
+  predictioncsvfileid: varchar('predictioncsvfileid'), // prediction csv fileID from rct extractor
+  highlightsjsonfileid: varchar('highlightsjsonfileid'), // highlights json fileID from rct extractor
+  reportcsvfileid: varchar('reportcsvfileid'), // report csv fileID from rct extractor
+  reportpdffileid: varchar('reportpdffileid'), // report pdf fileID from rct extractor
   nummissed: integer('nummissed'), // number of missed checklist items from model
   useruuid: integer('useruuid').notNull().references(() => users.useruuid), // useruuid from users table
   othermetadata: varchar('othermetadata') // other metadata from clowder
@@ -34,7 +43,7 @@ const publication = pgTable('publication', {
 const section = pgTable('section', {
   sectionuuid: serial('sectionuuid').primaryKey(),
   publicationuuid: integer('publicationuuid').notNull().references(() => publication.publicationuuid),
-  sectionname: varchar('sectionname')
+  sectionname: varchar('sectionname').default('')
 });
 
 // Sentence table
