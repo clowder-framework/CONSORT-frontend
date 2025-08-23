@@ -72,7 +72,6 @@ const statementTopic = pgTable('statement_topic', {
   statementsectionuuid: integer('statementsectionuuid').notNull().references(() => statementSection.statementsectionuuid),
   publicationuuid: integer('publicationuuid').notNull().references(() => publication.publicationuuid),
   statementtopicname: varchar('statementtopicname'),
-  statementtopicfound: boolean('statementtopicfound') 
 });
 
 // Annotation table
@@ -82,7 +81,7 @@ const annotation = pgTable('annotation', {
   publicationuuid: integer('publicationuuid').notNull().references(() => publication.publicationuuid),
   statementtopicuuid: integer('statementtopicuuid').notNull().references(() => statementTopic.statementtopicuuid),
   label: varchar('label'),
-  labelscore: real('labelscore'),
+  labelscore: real('labelscore').default(0.0),
   modelname: varchar('modelname'),
   statementsectionname: varchar('statementsectionname'),
   statementtopicname: varchar('statementtopicname')
@@ -94,7 +93,7 @@ const annotationFeedback = pgTable('annotationfeedback', {
   annuuid: integer('annuuid').notNull().references(() => annotation.annuuid),
   useruuid: integer('useruuid').notNull().references(() => users.useruuid),
   publicationuuid: integer('publicationuuid').notNull().references(() => publication.publicationuuid),
-  delete: boolean('delete'),
+  delete: boolean('delete').default(false),
   newlabel: varchar('newlabel'),
   time: timestamp('time')
 });
