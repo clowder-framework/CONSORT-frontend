@@ -19,6 +19,7 @@ var SQLiteStore = require('connect-sqlite3')(session);
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var rctdbRouter = require('./routes/rctdb');
 
 var app = express();
 
@@ -56,6 +57,7 @@ app.use(function(req, res, next) {
 //const baseUrl = process.env.BASE_URL;
 app.use('/', indexRouter);
 app.use('/', authRouter);
+app.use('/api/rctdb', rctdbRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{
