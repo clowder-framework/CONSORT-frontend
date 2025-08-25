@@ -7,7 +7,7 @@ import {updateDatasetStatus} from "../actions/dataset";
 import {rctdbClient} from "../utils/rctdb";
 
 // pdf_pipeline function
-export async function pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
+export async function pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch, user = null) {
     
     const fileid = file_json.id;
 	const filename = file_json.filename;
@@ -21,7 +21,7 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo, d
     dispatch(setExtractionStatus("Extracting sentences and metadata from file"));
     dispatch(updateDatasetStatus(datasetid, "in progress"));
     
-    const pdf_extraction_submission = await submitForExtraction(fileid, pdf_extractor, statementType, clientInfo);
+    const pdf_extraction_submission = await submitForExtraction(fileid, pdf_extractor, statementType, clientInfo, user);
     if (pdf_extraction_submission) {
         const pdf_extraction_metadata = await getDatasetMetadataLoop(datasetid, pdf_extractor, clientInfo);
         if (pdf_extraction_metadata !== null && pdf_extraction_metadata !== undefined){
@@ -43,7 +43,7 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo, d
                 console.log("Extracted csv file found after pdf extraction", extracted_csv_file);
                 const publicationData = {datasetid: datasetid, extractedcsvfileid: extracted_csv_file.id};
                 await rctdbClient.upsertPublication(publicationData);
-                const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, clientInfo, dispatch)
+                const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, clientInfo, dispatch, user)
                 if (csv_pipeline_status) {
                     dispatch(updateDatasetStatus(datasetid, "csv-completed"));
                 } else {

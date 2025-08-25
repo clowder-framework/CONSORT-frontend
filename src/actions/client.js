@@ -65,7 +65,7 @@ export function createUploadExtract(file, config) {
 				// submit uploaded file for extraction
 				dispatch(setExtractionStatus("Analyzing file"));
 				if (file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type =="application/msword"){
-					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo, dispatch);
+					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo, dispatch, usernameFromState);
 					if (word_pipeline_status) {
 						console.log("Analysis complete");
 						dispatch(setExtractionStatus("Analysis complete"));
@@ -78,7 +78,7 @@ export function createUploadExtract(file, config) {
 
 				}
 				else if (file.type == "application/pdf") {
-					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch);
+					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch, usernameFromState);
 					if (pdf_pipeline_status) {
 						console.log("Analysis complete.");
 						dispatch(setExtractionStatus("Analysis complete"));
