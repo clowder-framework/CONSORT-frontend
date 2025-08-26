@@ -6,14 +6,38 @@ async function rctdbMigrate() {
   const rctdbclient = await rctdbpool.connect();
   
   try {
-    // Read the SQL schema file
-    const rctdbschemaPath = path.join(__dirname, '../rctdbschema.sql');
-    const rctdbschema = fs.readFileSync(rctdbschemaPath, 'utf8');
+    // Read the Drizzle journal file to get the latest migration
+    const drizzlePath = path.join(__dirname, '../drizzle');
+    const journalPath = path.join(drizzlePath, 'meta/_journal.json');
     
-    console.log('🚀 Running database migration...');
+    if (!fs.existsSync(journalPath)) {
+      throw new Error('Drizzle journal file not found at meta/_journal.json');
+    }
     
-    // Execute the schema
-    await rctdbclient.query(rctdbschema);
+    const journalContent = fs.readFileSync(journalPath, 'utf8');
+    const journal = JSON.parse(journalContent);
+    
+    if (!journal.entries || journal.entries.length === 0) {
+      throw new Error('No migration entries found in journal file');
+    }
+    
+    // Get the latest migration entry (highest idx or most recent timestamp)
+    const latestEntry = journal.entries.reduce((latest, current) => {
+      return (current.when > latest.when) ? current : latest;
+    });
+    
+    const latestSqlFile = `${latestEntry.tag}.sql`;
+    const migrationPath = path.join(drizzlePath, latestSqlFile);
+    
+    if (!fs.existsSync(migrationPath)) {
+      throw new Error(`Migration file not found: ${latestSqlFile}`);
+    }
+    
+    console.log(`🚀 Running database migration from: ${latestSqlFile} (${latestEntry.tag})...`);
+    
+    // Read and execute the latest migration SQL
+    const migrationSql = fs.readFileSync(migrationPath, 'utf8');
+    await rctdbclient.query(migrationSql);
     
     console.log('✅ Migration completed successfully!');
     
