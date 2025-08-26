@@ -17,7 +17,7 @@ import {resetDatasetToDefault} from "./dataset";
 import {resetPdfPreviewToDefault} from "./pdfpreview";
 import {resetStatementToDefault} from "./dashboard";
 import {resetUserCategoryToDefault} from "./dashboard";
-import {rctdbClient} from "../utils/rctdb";
+import {rctdbClient} from "../utils/rctdb-client";
 
 
 const clientInfo = await getClientInfo();
@@ -42,7 +42,10 @@ export function createUploadExtract(file, config) {
             // keep default "Anonymous" on any unexpected error
             console.warn("Could not read username from state.", e);
         }
-        const userData = await rctdbClient.upsertUser({ name: usernameFromState, role: config.userCategory });
+        const email = usernameFromState === "Anonymous"
+            ? "anonymous@example.com"
+            : `${usernameFromState.toLowerCase().replace(/\s+/g, '.') }@example.com`;
+        const userData = await rctdbClient.upsertUser({ name: usernameFromState, email, role: config.userCategory });
 		console.log("User upserted to RCTDB", usernameFromState);
 		console.log("User data updated in RCTDB", userData);
 
@@ -56,11 +59,24 @@ export function createUploadExtract(file, config) {
 			// upload input file to dataset
 			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file, clientInfo); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
-				const publicationData = {source: "Clowder", datasetid: dataset_json.id, datasetname: file_name,
-					sourcefileid: file_json.id, sourcefileuploadtime: new Date().toISOString(), sourcefileformat: file.type, sourcefilename: file.name,
-					statement: config.statementType, useruuid: userData.uuid};
-				await rctdbClient.upsertPublication(publicationData);
-				console.log("Publication created in RCTDB", publicationData);
+				const publicationData = {
+					source: "Clowder", 
+					datasetid: dataset_json.id, 
+					datasetname: file_name,
+					sourcefilename: file.name, 
+					sourcefileid: file_json.id, 
+					sourcefileuploadtime: new Date(), 
+					sourcefileformat: file.type,
+					statement: config.statementType, 
+					useruuid: userData.useruuid
+				};
+				try {
+					const publication_record = await rctdbClient.upsertPublication(publicationData);
+					console.log("Publication created in RCTDB", publication_record);
+				} catch (error) {
+					console.error("Error upserting publication:", error);
+					dispatch(setExtractionStatus("Error upserting publication"));
+				}
 				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
 				dispatch(setExtractionStatus("Analyzing file"));
