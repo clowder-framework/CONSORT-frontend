@@ -4,7 +4,7 @@ import {submitForExtraction} from "../utils/file";
 import {csvPipeline} from "../utils/csv_pipeline";
 import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
-import {rctdbClient} from "../utils/rctdb";
+import {rctdbClient} from "./rctdb-client";
 
 // pdf_pipeline function
 export async function pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch, user = null) {

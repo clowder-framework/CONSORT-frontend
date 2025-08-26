@@ -4,7 +4,7 @@ import {submitForExtraction} from "../utils/file";
 import {pdfPipeline} from "../utils/pdf_pipeline";
 import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
-import {rctdbClient} from "../utils/rctdb";
+import {rctdbClient} from "./rctdb-client";
 
 // word_pipeline function
 export async function wordPipeline(file_json, dataset_json, config, clientInfo, dispatch, user = null) {
