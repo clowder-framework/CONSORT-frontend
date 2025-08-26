@@ -5,7 +5,8 @@ const {
   publicationQueries, 
   annotationQueries, 
   feedbackQueries, 
-  contentQueries 
+  contentQueries,
+  statementQueries
 } = require('../rctdb/queries');
 
 // Users routes
@@ -21,13 +22,17 @@ router.get('/users', async (req, res) => {
 
 router.post('/users', async (req, res) => {
   try {
-    const user = await userQueries.upsertUser({
-      ...req.body
-    });
+    const userData = { 
+      name: req.body.name,
+      email: req.body.email,
+      role: req.body.role,
+      lastlogin: new Date()
+    };
+    const user = await userQueries.upsertUser(userData)
     res.status(201).json(user[0]);
   } catch (error) {
     console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user' });
+    res.status(500).json({ error: 'Failed to create user', details: error.message });
   }
 });
 
@@ -91,6 +96,17 @@ router.get('/publications/:uuid', async (req, res) => {
   }
 });
 
+router.get('/publications/dataset/:datasetId', async (req, res) => {
+
+  try {
+    const publication = await publicationQueries.getPublicationByDatasetId(req.params.datasetId);
+    res.json(publication[0]);
+  } catch (error) {
+    console.error('Error fetching publication:', error);
+    res.status(500).json({ error: 'Failed to fetch publication' });
+  }
+});
+
 router.get('/publications/:uuid/annotations', async (req, res) => {
   try {
     const annotations = await annotationQueries.getAnnotationsWithContext(parseInt(req.params.uuid));
@@ -100,6 +116,47 @@ router.get('/publications/:uuid/annotations', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch annotations' });
   }
 });
+
+router.get('/publications/:uuid/statementsection', async (req, res) => {
+  try {
+    const statementSection = await statementQueries.getStatementSectionByPublication(parseInt(req.params.uuid));
+    res.json(statementSection);
+  } catch (error) {
+    console.error('Error fetching statement section:', error);
+    res.status(500).json({ error: 'Failed to fetch statement section' });
+  }
+});
+
+router.get('/publications/:uuid/statementtopic', async (req, res) => {
+  try {
+    const statementTopic = await statementQueries.getStatementTopicByPublication(parseInt(req.params.uuid));
+    res.json(statementTopic);
+  } catch (error) {
+    console.error('Error fetching statement topic:', error);
+    res.status(500).json({ error: 'Failed to fetch statement topic' });
+  }
+});
+
+router.get('/publications/:uuid/statementsection/:statementsectionname', async (req, res) => {
+  try {
+    const statementSection = await statementQueries.getStatementSectionByPublicationAndName(parseInt(req.params.uuid), req.params.statementsectionname);
+    res.json(statementSection);
+  } catch (error) {
+    console.error('Error fetching statement section:', error);
+    res.status(500).json({ error: 'Failed to fetch statement section' });
+  }
+});
+
+router.get('/publications/:uuid/statementtopic/:statementtopicname', async (req, res) => {
+  try {
+    const statementTopic = await statementQueries.getStatementTopicByPublicationAndName(parseInt(req.params.uuid), req.params.statementtopicname);
+    res.json(statementTopic);
+  } catch (error) {
+    console.error('Error fetching statement topic:', error);
+    res.status(500).json({ error: 'Failed to fetch statement topic' });
+  }
+});
+
 
 // Annotations routes
 router.post('/annotations', async (req, res) => {

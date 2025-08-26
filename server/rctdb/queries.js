@@ -48,12 +48,39 @@ const publicationQueries = {
     return await rctdb.insert(publication).values(publicationData).returning();
   },
 
-  // Upsert a publication
+  // Upsert a publication - handles both create and update scenarios
   async upsertPublication(publicationData) {
-    return await rctdb.insert(publication).values(publicationData).onConflictDoUpdate({
-      target: publication.datasetid,
-      set: publicationData
-    }).returning();
+    // Process the data to ensure timestamps are proper Date objects
+    const processedData = { ...publicationData };
+    
+    // Handle timestamps
+    if (processedData.sourcefileuploadtime && !(processedData.sourcefileuploadtime instanceof Date)) {
+      processedData.sourcefileuploadtime = new Date(processedData.sourcefileuploadtime);
+    }
+    if (processedData.inferencetime && !(processedData.inferencetime instanceof Date)) {
+      processedData.inferencetime = new Date(processedData.inferencetime);
+    }
+
+    // Check if publication already exists
+    const existingPublication = await rctdb.select()
+      .from(publication)
+      .where(eq(publication.datasetid, processedData.datasetid))
+      .limit(1);
+
+    if (existingPublication.length > 0) {
+      // Publication exists, update only the provided fields
+      const { datasetid, ...updateFields } = processedData; // Exclude datasetid from updates
+      
+      return await rctdb.update(publication)
+        .set(updateFields)
+        .where(eq(publication.datasetid, datasetid))
+        .returning();
+    } else {
+      // Publication doesn't exist, create new one
+      return await rctdb.insert(publication)
+        .values(processedData)
+        .returning();
+    }
   },
 
   // Get publication by UUID
@@ -61,11 +88,16 @@ const publicationQueries = {
     return await rctdb.select().from(publication).where(eq(publication.publicationuuid, uuid));
   },
 
+  // Get publication by dataset ID
+  async getPublicationByDatasetId(datasetId) {
+    return await rctdb.select().from(publication).where(eq(publication.datasetid, datasetId));
+  },
+
   // Get publications by user
   async getPublicationsByUser(userUuid) {
     return await rctdb.select().from(publication)
       .where(eq(publication.useruuid, userUuid))
-      .orderBy(desc(publication.fileuploadtime));
+      .orderBy(desc(publication.sourcefileuploadtime));
   },
 
   // Get all publications with user info
@@ -75,7 +107,7 @@ const publicationQueries = {
       user: users
     }).from(publication)
       .leftJoin(users, eq(publication.useruuid, users.useruuid))
-      .orderBy(desc(publication.fileuploadtime));
+      .orderBy(desc(publication.sourcefileuploadtime));
   },
 
   // Update publication
@@ -107,8 +139,14 @@ const annotationQueries = {
       sentence: sentence,
       section: section
     }).from(annotation)
-      .leftJoin(sentence, eq(annotation.sentenceuuid, sentence.sentenceuuid))
-      .leftJoin(section, eq(sentence.sectionuuid, section.sectionuuid))
+      .leftJoin(sentence, and(
+        eq(annotation.sentenceuuid, sentence.sentenceuuid),
+        eq(sentence.publicationuuid, publicationUuid)
+      ))
+      .leftJoin(section, and(
+        eq(sentence.sectionuuid, section.sectionuuid),
+        eq(section.publicationuuid, publicationUuid)
+      ))
       .where(eq(annotation.publicationuuid, publicationUuid));
   },
 
@@ -169,10 +207,43 @@ const contentQueries = {
   }
 };
 
+const statementQueries = {
+  // Get statement section by publication
+  async getStatementSectionByPublication(publicationUuid) {
+    return await rctdb.select().from(statementSection)
+      .where(eq(statementSection.publicationuuid, publicationUuid));
+  },
+
+  // Get statement section by publication and statementsectionname
+  async getStatementSectionByPublicationAndName(publicationUuid, statementSectionName) {
+    return await rctdb.select().from(statementSection)
+      .where(and(
+        eq(statementSection.publicationuuid, publicationUuid),
+        eq(statementSection.statementsectionname, statementSectionName)
+      ));
+  },
+
+  // Get statement topic by publication
+  async getStatementTopicByPublication(publicationUuid) {
+    return await rctdb.select().from(statementTopic)
+      .where(eq(statementTopic.publicationuuid, publicationUuid));
+  },
+
+  // Get statement topic by publication and statementtopicname
+  async getStatementTopicByPublicationAndName(publicationUuid, statementTopicName) {
+    return await rctdb.select().from(statementTopic)
+      .where(and(
+        eq(statementTopic.publicationuuid, publicationUuid),
+        eq(statementTopic.statementtopicname, statementTopicName)
+      ));
+  }
+}
+
 module.exports = {
   userQueries,
   publicationQueries,
   annotationQueries,
   feedbackQueries,
-  contentQueries
+  contentQueries,
+  statementQueries
 }; 
