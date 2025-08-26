@@ -13,8 +13,9 @@ import {getPreviewResources} from "../../utils/file";
 import PreviewDrawerLeft from "./PreviewDrawerLeft";
 import Intro from "./Intro";
 import CreateAndUpload from "./CreateAndUpload";
-import {getClientInfo} from "../../utils/common";
+import {getClientInfo, getJsonList} from "../../utils/common";
 import config from "../../app.config";
+import {rctdbClient} from "../../utils/rctdb-client";
 
 export default function FilePreview() {
 
@@ -24,11 +25,36 @@ export default function FilePreview() {
 
 	const filePreviews = useSelector((state) => state.file.previews);
 	const [previews, setPreviews] = useState([]); // state for file previews
+	const datasets = useSelector((state) => state.dataset.datasets); // [{id: '68adf5f9e4b04fc9ce8e5811', status: 'csv-completed'}]
+	const datasetId = datasets[0].id;
+
 	const datasetMetadata = useSelector((state) => state.dataset.metadata);
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
+	const [publication, setPublication] = useState({}); // state for publication
+	const [annotations, setAnnotations] = useState([]); // state for annotations
+	const [statementSection, setStatementSection] = useState({}); // state for statement section
+	const [statementTopic, setStatementTopic] = useState({}); // state for statement topic
 	
 	// We don't want to clear states here as they're needed for preview
+
+	// get publication by datasetId
+	useEffect( async ()=> {
+		const publication = await rctdbClient.getPublicationByDatasetId(datasetId);
+		console.log("Publication:", publication);
+		setPublication(publication);
+		const annotations = await rctdbClient.getPublicationAnnotations(publication.publicationuuid);
+		console.log("Annotations:", annotations);
+		setAnnotations(annotations);
+		const statementSection = await rctdbClient.getPublicationStatementSection(publication.publicationuuid);
+		console.log("Statement Section:", statementSection);
+		setStatementSection(statementSection);
+		const statementTopic = await rctdbClient.getPublicationStatementTopic(publication.publicationuuid);
+		console.log("Statement Topic:", statementTopic);
+		setStatementTopic(statementTopic);
+		const jsonList = getJsonList(publication, annotations, statementSection, statementTopic);
+		console.log("jsonList:", jsonList);
+	}, [datasetId]);
 
 	// useEffect on filePreviews to download preview resources
 	useEffect( async ()=> {
@@ -103,10 +129,20 @@ export default function FilePreview() {
 								return (
 									<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
 										{/* Drawer takes its fixed width */}
-										<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
+										<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}
+											publication={publication}
+											statementSection={statementSection}
+											statementTopic={statementTopic}
+											annotations={annotations}
+										/>
 										{/* Main content area for PDF, allows it to grow and centers the PDF viewer */}
 										<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1, display: 'flex', justifyContent: 'center' }}>
-											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
+											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}
+												publication={publication}
+												statementSection={statementSection}
+												statementTopic={statementTopic}
+												annotations={annotations}
+											/>
 										</Box>
 									</Box>
 								);
