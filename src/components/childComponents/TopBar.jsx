@@ -89,9 +89,6 @@ export default function TopBar() {
                 setUsername(data.name);
                 dispatch(setUser(data.name));
 				console.log('User name set to:', data.name);
-				await rctdbClient.upsertUser({
-					name: data.name
-				});
 			} catch (error) {
 				console.error('Error fetching username:', error);
 				setUsername('Anonymous');
