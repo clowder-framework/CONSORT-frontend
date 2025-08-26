@@ -5,7 +5,7 @@ const { sql } = require('drizzle-orm');
 const users = pgTable('users', {
   useruuid: serial('useruuid').primaryKey(),
   name: varchar('name').notNull().unique(), // All anonymous users will have a name of "Anonymous" and a role of "author" and one useruuid
-  email: varchar('email').notNull().unique(),
+  email: varchar('email').notNull(),
   role: varchar('role').default('author'),
   createtime: timestamp('createtime').default(sql`now()`),
   lastlogin: timestamp('lastlogin').default(sql`now()`)
@@ -31,9 +31,13 @@ const publication = pgTable('publication', {
   extractedcsvfileid: varchar('extractedcsvfileid'), // extracted csv fileID from pdf2text or pymupdf extractor
   inferencetime: timestamp('inferencetime'), // time of inference completion from model
   predictioncsvfileid: varchar('predictioncsvfileid'), // prediction csv fileID from rct extractor
+  predictioncsvfilename: varchar('predictioncsvfilename'), // prediction csv file name from rct extractor
   highlightsjsonfileid: varchar('highlightsjsonfileid'), // highlights json fileID from rct extractor
+  highlightsjsonfilename: varchar('highlightsjsonfilename'), // highlights json file name from rct extractor
   reportcsvfileid: varchar('reportcsvfileid'), // report csv fileID from rct extractor
+  reportcsvfilename: varchar('reportcsvfilename'), // report csv file name from rct extractor
   reportpdffileid: varchar('reportpdffileid'), // report pdf fileID from rct extractor
+  reportpdffilename: varchar('reportpdffilename'), // report pdf file name from rct extractor
   nummissed: integer('nummissed'), // number of missed checklist items from model
   useruuid: integer('useruuid').notNull().references(() => users.useruuid), // useruuid from users table
   othermetadata: varchar('othermetadata') // other metadata from clowder
