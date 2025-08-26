@@ -112,6 +112,11 @@ class RCTDBClient {
     return response.data;
   }
 
+  async getPublicationByDatasetId(datasetId) {
+    const response = await this.client.get(`/publications/dataset/${datasetId}`);
+    return response.data;
+  }
+
   /**
    * Get annotations for a specific publication
    * @param {number} publicationUuid - Publication UUID
@@ -121,6 +126,19 @@ class RCTDBClient {
     const response = await this.client.get(`/publications/${publicationUuid}/annotations`);
     return response.data;
   }
+
+  // Statement section from publicationuuid
+  async getPublicationStatementSection(publicationUuid) {
+    const response = await this.client.get(`/publications/${publicationUuid}/statementsection`);
+    return response.data;
+  }
+
+  // Statement topic from publicationuuid
+  async getPublicationStatementTopic(publicationUuid) {
+    const response = await this.client.get(`/publications/${publicationUuid}/statementtopic`);
+    return response.data;
+  }
+
 
   // ============ ANNOTATION METHODS ============
 
