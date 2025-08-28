@@ -19,8 +19,38 @@ var SQLiteStore = require('connect-sqlite3')(session);
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var rctdbRouter = require('./routes/rctdb');
+
+// Import database connection and migration functions
+var { rctdbTestConnection } = require('./rctdb/connection');
+var { rctdbMigrate } = require('./rctdb/migrate');
 
 var app = express();
+
+// Database initialization function
+async function initializeDatabase() {
+  try {
+    console.log('🔍 Testing database connection...');
+    const isConnected = await rctdbTestConnection();
+    
+    if (!isConnected) {
+      throw new Error('Database connection failed');
+    }
+    
+    console.log('🚀 Running database migrations...');
+    await rctdbMigrate();
+    console.log('✅ Database initialized successfully');
+    
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error.message);
+    console.error('Application will continue but database features may not work properly');
+    // Don't exit the process - let the app start even if DB fails
+    // This allows for graceful degradation
+  }
+}
+
+// Initialize database on startup
+initializeDatabase();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,7 +69,13 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
 }));
-app.use(csrf());
+// Apply CSRF protection to all routes except API routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/rctdb')) {
+    return next();
+  }
+  return csrf()(req, res, next);
+});
 app.use(passport.authenticate('session'));
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
@@ -49,6 +85,9 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(function(req, res, next) {
+  if (req.path.startsWith('/api/rctdb')) {
+    return next();
+  }
   res.locals.csrfToken = req.csrfToken();
   next();
 });
@@ -56,6 +95,7 @@ app.use(function(req, res, next) {
 //const baseUrl = process.env.BASE_URL;
 app.use('/', indexRouter);
 app.use('/', authRouter);
+app.use('/api/rctdb', rctdbRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{

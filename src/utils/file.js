@@ -5,11 +5,12 @@ import config from "../app.config";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-export async function submitForExtraction(file_id, extractor_name, statementType, clientInfo){
+export async function submitForExtraction(file_id, extractor_name, statementType, clientInfo, user = null){
 	// submits file for extraction and returns true if extraction is successful, else returns false
+	// user parameter contains the username from redux store
 	let body = {}
 	if (extractor_name === config.rct_extractor){
-		body = {"extractor": extractor_name, "parameters": {"statement": statementType}};
+		body = {"extractor": extractor_name, "parameters": {"statement": statementType, "user": user}};
 	}
 	else{
 		body = {"extractor": extractor_name};

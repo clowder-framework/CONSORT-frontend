@@ -31,7 +31,7 @@ export default function PreviewDrawerLeft(props) {
 	const statementType = useSelector((state) => state.statement.statementType);
 	const statementString = statementType.toUpperCase();
 
-	const {fileId, fileSrc, metadata, ...other} = props;
+	const {fileId, fileSrc, metadata, publication, statementSection, statementTopic, annotations, ...other} = props;
 	const [extractor, setExtractor] = useState('');
 	const [content, setContent] = useState({});
 	const [itemsMissed, setItemsMissed] = useState('');
@@ -115,9 +115,11 @@ export default function PreviewDrawerLeft(props) {
 			let content = metadata;
 			setContent(content);
 			setExtractor(content["extractor"]);
-			setItemsMissed(content["items_missed"]);
+			//setItemsMissed(content["items_missed"]);
+			setItemsMissed(publication["nummissed"]);
 			setChecklist(content["checklist"]);
-			setReportFileID(content["extracted_files"][1]["file_id"])
+			//setReportFileID(content["extracted_files"][1]["file_id"])
+			setReportFileID(publication["reportpdffileid"])
 			setReportFilename(content["extracted_files"][1]["filename"])
 			setItemFoundPages(get_item_found_pages(content["checklist"]))
 		}

@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 var express = require('express');
 var passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
-var db = require('../db');
+var db = require('../sessiondb');
 
 
 
@@ -64,6 +64,13 @@ const CIlogon_idp = [
 const encodedEntityIDs = CIlogon_idp.map(item => encodeURIComponent(item.EntityID));
 const concatenatedEntityIDs = encodedEntityIDs.join(',');
 
+function lookupIdpMeta(entityId) {
+  if (!entityId) return { organizationName: null, idpDisplayName: null };
+  const found = CIlogon_idp.find((item) => item.EntityID === entityId);
+  if (!found) return { organizationName: null, idpDisplayName: null };
+  return { organizationName: found.OrganizationName || null, idpDisplayName: found.DisplayName || null };
+}
+
 // authenticate use CILogon
 passport.use(new OAuth2Strategy({
 	state: true,
@@ -94,6 +101,7 @@ passport.use(new OAuth2Strategy({
 // and deserialized.
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
+    // TODO: how to get user profile info from CILogon? like institution, email, etc.
     cb(null, { id: user.id, username: user.username, name: user.name });
   });
 });
@@ -180,11 +188,11 @@ router.get('/isAuthenticated', function(req, res) {
 router.get('/getUser', function(req, res) {
     if (req.isAuthenticated() && req.user) {
         res.json({
-            username: req.user.name || null,
+            name: req.user.name || null,
         });
     } else {
         res.json({
-            username: "anonymous",
+            name: "Anonymous",
         });
     }
 });
