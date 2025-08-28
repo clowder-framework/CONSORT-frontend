@@ -40,3 +40,6 @@ yarn-error.log*
 # data folder
 /data
 
+# random files
+**/*.pdf
+**/*.json
