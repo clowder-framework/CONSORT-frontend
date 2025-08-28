@@ -108,7 +108,7 @@ if (metadata == undefined){
 - The colors used for highlights for different statement (spirit/consort) is in `components/styledComponents/HighlightColors.js`
 - The labels for the sentences are placed on the sides/margin of the page next to the sentence. Theres a collision avoidance mechanism given that there can be multiple labels per sentence. From the testings, 3 labels per sentence can be shown without major rendering issues.
 
-5. PdfDrawerLeft component
+5. PreviewDrawerLeft component
 - This component drives the left side drawer. In file `childComponents/PreviewDrawerLeft`
 - Uses the data in highlights json file to render this
 
