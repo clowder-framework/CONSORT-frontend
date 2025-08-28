@@ -2,6 +2,9 @@
 
 custom react frontend working with consort clowder instance
 
+## Project documentation
+https://uofi.app.box.com/folder/338244434169
+
 ## Install Dependencies
 - Install node version 22.0.0, npm version 10.5.1
 - Run `npm install`
