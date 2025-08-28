@@ -98,4 +98,16 @@ if (metadata == undefined){
 - Get file previews using method `getPreviewResources`
 - If the preview type is "thumbnail" or "pdf" the original pdf file with highlights and a PreviewDrawerLeft component is shown.
 
+4. Pdf Preview
+- The pdf file rendering with canvas highlights is done in this component. In `components/previewers/Pdf.js`
+- The content from the highlights json file is used to render this.
+- The highlights/content is rendered page py page using method `getPageHighlights`
+- The colors used for highlights for different statement (spirit/consort) is in `components/styledComponents/HighlightColors.js`
+- The labels for the sentences are placed on the sides/margin of the page next to the sentence. Theres a collision avoidance mechanism given that there can be multiple labels per sentence. From the testings, 3 labels per sentence can be shown without major rendering issues.
+
+5. PdfDrawerLeft component
+- This component drives the left side drawer. In file `childComponents/PreviewDrawerLeft`
+- Uses the data in highlights json file to render this
+
+
 
