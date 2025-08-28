@@ -91,7 +91,7 @@ if (metadata == undefined){
 
 2.5 csvPipeline `utils.csv_pipeline`
 - Submits file for rct-extractor
-- Checks if a dataset metada is created with the extractor name of rct-extractor.
+- Checks if a dataset metada is created with the extractor name of rct-extractor for completing the process.
 
 3. Previews
 - FilePreview component is shown in `/preview` route.
