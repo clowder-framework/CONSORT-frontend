@@ -1,0 +1,733 @@
+{
+  "id": "b08fb748-16b2-4b80-86e5-3869fc05e4a0",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "useruuid": {
+          "name": "useruuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'author'"
+        },
+        "createtime": {
+          "name": "createtime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "lastlogin": {
+          "name": "lastlogin",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_name_unique": {
+          "name": "users_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.publication": {
+      "name": "publication",
+      "schema": "",
+      "columns": {
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'clowder'"
+        },
+        "sourcefileid": {
+          "name": "sourcefileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sourcefileformat": {
+          "name": "sourcefileformat",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sourcefilename": {
+          "name": "sourcefilename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sourcefileuploadtime": {
+          "name": "sourcefileuploadtime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datasetid": {
+          "name": "datasetid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "datasetname": {
+          "name": "datasetname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "statement": {
+          "name": "statement",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'consort'"
+        },
+        "pagewidth": {
+          "name": "pagewidth",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 500
+        },
+        "pageheight": {
+          "name": "pageheight",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 799
+        },
+        "extractedpdffileid": {
+          "name": "extractedpdffileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "extractedxmlfileid": {
+          "name": "extractedxmlfileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "extractedjsonfileid": {
+          "name": "extractedjsonfileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "extractedcsvfileid": {
+          "name": "extractedcsvfileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inferencetime": {
+          "name": "inferencetime",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "predictioncsvfileid": {
+          "name": "predictioncsvfileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "predictioncsvfilename": {
+          "name": "predictioncsvfilename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "highlightsjsonfileid": {
+          "name": "highlightsjsonfileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "highlightsjsonfilename": {
+          "name": "highlightsjsonfilename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reportcsvfileid": {
+          "name": "reportcsvfileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reportcsvfilename": {
+          "name": "reportcsvfilename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reportpdffileid": {
+          "name": "reportpdffileid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reportpdffilename": {
+          "name": "reportpdffilename",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nummissed": {
+          "name": "nummissed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "useruuid": {
+          "name": "useruuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "othermetadata": {
+          "name": "othermetadata",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "publication_useruuid_users_useruuid_fk": {
+          "name": "publication_useruuid_users_useruuid_fk",
+          "tableFrom": "publication",
+          "tableTo": "users",
+          "columnsFrom": [
+            "useruuid"
+          ],
+          "columnsTo": [
+            "useruuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "publication_datasetid_unique": {
+          "name": "publication_datasetid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "datasetid"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.section": {
+      "name": "section",
+      "schema": "",
+      "columns": {
+        "sectionuuid": {
+          "name": "sectionuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sectionname": {
+          "name": "sectionname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "section_publicationuuid_publication_publicationuuid_fk": {
+          "name": "section_publicationuuid_publication_publicationuuid_fk",
+          "tableFrom": "section",
+          "tableTo": "publication",
+          "columnsFrom": [
+            "publicationuuid"
+          ],
+          "columnsTo": [
+            "publicationuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.sentence": {
+      "name": "sentence",
+      "schema": "",
+      "columns": {
+        "sentenceuuid": {
+          "name": "sentenceuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sectionuuid": {
+          "name": "sectionuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sentenceno": {
+          "name": "sentenceno",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sentencetext": {
+          "name": "sentencetext",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "coordinates": {
+          "name": "coordinates",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "beginpage": {
+          "name": "beginpage",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "endpage": {
+          "name": "endpage",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sentence_publicationuuid_publication_publicationuuid_fk": {
+          "name": "sentence_publicationuuid_publication_publicationuuid_fk",
+          "tableFrom": "sentence",
+          "tableTo": "publication",
+          "columnsFrom": [
+            "publicationuuid"
+          ],
+          "columnsTo": [
+            "publicationuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "sentence_sectionuuid_section_sectionuuid_fk": {
+          "name": "sentence_sectionuuid_section_sectionuuid_fk",
+          "tableFrom": "sentence",
+          "tableTo": "section",
+          "columnsFrom": [
+            "sectionuuid"
+          ],
+          "columnsTo": [
+            "sectionuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.statement_section": {
+      "name": "statement_section",
+      "schema": "",
+      "columns": {
+        "statementsectionuuid": {
+          "name": "statementsectionuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "statementsectionname": {
+          "name": "statementsectionname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "statementsectionnummissed": {
+          "name": "statementsectionnummissed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "statement_section_publicationuuid_publication_publicationuuid_fk": {
+          "name": "statement_section_publicationuuid_publication_publicationuuid_fk",
+          "tableFrom": "statement_section",
+          "tableTo": "publication",
+          "columnsFrom": [
+            "publicationuuid"
+          ],
+          "columnsTo": [
+            "publicationuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.statement_topic": {
+      "name": "statement_topic",
+      "schema": "",
+      "columns": {
+        "statementtopicuuid": {
+          "name": "statementtopicuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "statementsectionuuid": {
+          "name": "statementsectionuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "statementtopicname": {
+          "name": "statementtopicname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "statement_topic_statementsectionuuid_statement_section_statementsectionuuid_fk": {
+          "name": "statement_topic_statementsectionuuid_statement_section_statementsectionuuid_fk",
+          "tableFrom": "statement_topic",
+          "tableTo": "statement_section",
+          "columnsFrom": [
+            "statementsectionuuid"
+          ],
+          "columnsTo": [
+            "statementsectionuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "statement_topic_publicationuuid_publication_publicationuuid_fk": {
+          "name": "statement_topic_publicationuuid_publication_publicationuuid_fk",
+          "tableFrom": "statement_topic",
+          "tableTo": "publication",
+          "columnsFrom": [
+            "publicationuuid"
+          ],
+          "columnsTo": [
+            "publicationuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.annotation": {
+      "name": "annotation",
+      "schema": "",
+      "columns": {
+        "annuuid": {
+          "name": "annuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sentenceuuid": {
+          "name": "sentenceuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "statementtopicuuid": {
+          "name": "statementtopicuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "labelscore": {
+          "name": "labelscore",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "modelname": {
+          "name": "modelname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "statementsectionname": {
+          "name": "statementsectionname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "statementtopicname": {
+          "name": "statementtopicname",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "annotation_sentenceuuid_sentence_sentenceuuid_fk": {
+          "name": "annotation_sentenceuuid_sentence_sentenceuuid_fk",
+          "tableFrom": "annotation",
+          "tableTo": "sentence",
+          "columnsFrom": [
+            "sentenceuuid"
+          ],
+          "columnsTo": [
+            "sentenceuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "annotation_publicationuuid_publication_publicationuuid_fk": {
+          "name": "annotation_publicationuuid_publication_publicationuuid_fk",
+          "tableFrom": "annotation",
+          "tableTo": "publication",
+          "columnsFrom": [
+            "publicationuuid"
+          ],
+          "columnsTo": [
+            "publicationuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "annotation_statementtopicuuid_statement_topic_statementtopicuuid_fk": {
+          "name": "annotation_statementtopicuuid_statement_topic_statementtopicuuid_fk",
+          "tableFrom": "annotation",
+          "tableTo": "statement_topic",
+          "columnsFrom": [
+            "statementtopicuuid"
+          ],
+          "columnsTo": [
+            "statementtopicuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.annotationfeedback": {
+      "name": "annotationfeedback",
+      "schema": "",
+      "columns": {
+        "feedbackuuid": {
+          "name": "feedbackuuid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "annuuid": {
+          "name": "annuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "useruuid": {
+          "name": "useruuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "publicationuuid": {
+          "name": "publicationuuid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delete": {
+          "name": "delete",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "newlabel": {
+          "name": "newlabel",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "annotationfeedback_annuuid_annotation_annuuid_fk": {
+          "name": "annotationfeedback_annuuid_annotation_annuuid_fk",
+          "tableFrom": "annotationfeedback",
+          "tableTo": "annotation",
+          "columnsFrom": [
+            "annuuid"
+          ],
+          "columnsTo": [
+            "annuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "annotationfeedback_useruuid_users_useruuid_fk": {
+          "name": "annotationfeedback_useruuid_users_useruuid_fk",
+          "tableFrom": "annotationfeedback",
+          "tableTo": "users",
+          "columnsFrom": [
+            "useruuid"
+          ],
+          "columnsTo": [
+            "useruuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "annotationfeedback_publicationuuid_publication_publicationuuid_fk": {
+          "name": "annotationfeedback_publicationuuid_publication_publicationuuid_fk",
+          "tableFrom": "annotationfeedback",
+          "tableTo": "publication",
+          "columnsFrom": [
+            "publicationuuid"
+          ],
+          "columnsTo": [
+            "publicationuuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

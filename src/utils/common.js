@@ -55,3 +55,29 @@ export function dataURItoFile(dataURI) {
 	const blob = new Blob([new Uint8Array(array)], {type: mime});
 	return new File([blob], filename, {type: mime, lastModified: new Date()});
 }
+
+
+  // content = {"extractor": rctextractor_name, "extracted_files": extracted_files, "page_dimensions": page_dimensions,
+  // "items_missed": str(items_missed), "checklist": checklist}
+  // checklist = [ {"section": section_name1, "missed":num, "items": [{"topic": topic_name1, "item":item_name1, "found": "No/Yes", "sentences":[{text:'', coords:''}]}, {"topic": topic_name2, "item":item_name2, "found": "No/Yes"}] }, {"section": section_name2, "missed":num, "items":[]},]
+
+  // get checklist from publication, annotations, statementSection, statementTopic
+  export function getJsonList(publication, annotations, statementSection, statementTopic) {
+    const jsonList = [];
+	const page_width = publication["pagewidth"];
+	const page_height = publication["pageheight"];
+	const items_missed = publication["nummissed"];
+	const reportpdffileid = publication["reportpdffileid"];
+	const reportpdffilename = publication["reportpdffilename"];
+	const extractor = "rctextractor_name";
+	const content = {
+		"extractor": extractor,
+		"extracted_files": [{"file_id": reportpdffileid, "filename": reportpdffilename}],
+		"page_dimensions": {"width": page_width, "height": page_height},
+		"items_missed": items_missed,
+		"checklist": []
+	}
+
+	jsonList.push(content);
+    return jsonList;
+  }
