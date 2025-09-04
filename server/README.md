@@ -130,7 +130,6 @@ server/
 │   ├── auth.js          # Authentication routes
 │   └── index.js         # Main routes
 ├── drizzle.config.js    # Drizzle configuration
-└── rctdbschema.sql # Original SQL schema
 ```
 
 ## Development
