@@ -1,6 +1,6 @@
 {
 	"name": "consort-frontend",
-	"version": "0.15.0",
+	"version": "0.17.0",
 	"description": "",
 	"engines": {
 		"npm": ">=10",
@@ -25,11 +25,13 @@
 		"lint:fix": "npm run lint -- --fix",
 		"codegen": "./node_modules/.bin/openapi -i https://consort.clowderframework.org/clowder/swagger -o src/openapi/v1",
 		"codegen:dev": "./node_modules/.bin/openapi -i {CLOWDER_REMOTE_HOSTNAME}/swagger -o src/openapi/v1",
-		"docs": "typedoc"
+		"docs": "typedoc",
+		"rctdb:examples": "babel-node src/utils/rctdb-client-example.js"
 	},
 	"author": "NCSA",
 	"dependencies": {
 		"@allenai/pdf-components": "^1.0.1",
+		"axios": "^1.6.0",
 		"@emotion/react": "^11.7.1",
 		"@emotion/styled": "^11.6.0",
 		"@material-ui/core": "^4.12.3",

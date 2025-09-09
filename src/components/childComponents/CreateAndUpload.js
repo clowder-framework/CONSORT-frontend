@@ -44,6 +44,7 @@ export default function CreateAndUpload() {
 	const statementType = useSelector(state => state.statement.statementType); 
 	const userCategory = useSelector(state => state.userCategory.userCategory);
 	const datasetStatus = useSelector(state => state.dataset.status);
+	const username = useSelector(state => state.user.userName) || 'Anonymous';
 
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata

@@ -1,7 +1,18 @@
+# Database Configuration
+PGSERVER='localhost'
+PGPORT=5432
+PGUSER=postgres
+PGPASSWORD=postgres
+PGDATABASE=consort
+PGSSL=false
+
+# Authentication Configuration
 CILOGON_CLIENT_ID=
 CILOGON_CLIENT_SECRET=
 CILOGON_CALLBACK_URL=''
 UI_URL=
+
+# Clowder Configuration
 CLOWDER_PREFIX=''
 CLOWDER_REMOTE_HOSTNAME=
 APIKEY=
