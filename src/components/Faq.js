@@ -40,9 +40,9 @@ const faqData = [
 
 function Faq() {
 	return (
-		<>
+		<div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 			<TopBar/>
-			<Container>
+			<Container style={{ flex: 1 }}>
 				<Typography variant="h4" gutterBottom sx={{ color: theme.palette.primary.main }}>
 					FAQ
 				</Typography>
@@ -82,10 +82,8 @@ function Faq() {
 				</Box>
 				
 			</Container>
-			<Box sx={{ mt: 4 }}>
-				<Footer />
-			</Box>
-		</>
+			<Footer />
+		</div>
 		
 	);
 }
