@@ -42,8 +42,8 @@ export default function Footer() {
   return (
     <>
       <div className={classes.footer}>
-        <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gridTemplateColumns: '1fr 1fr' }}>
-          <div style={{ gridColumn: '1 / span 1', gridRow: '1 / span 1' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+          <div>
             <span className={classes.text} style={{color: theme.palette.secondary.dark}}>
               See our scientific data paper for further details.
             </span>
@@ -60,7 +60,7 @@ export default function Footer() {
             </div>
           </span>
           </div>
-          <div style={{ gridColumn: '2 / span 1', gridRow: '1 / span 1' }}>
+          <div style={{ marginTop: '20px' }}>
             <span className={classes.text} style={{color: theme.palette.secondary.dark}}>
                 Powered by <a href="https://consort.clowderframework.org/clowder/" target="_blank" rel="noopener noreferrer" style={{color: theme.palette.secondary.dark}}>Clowder</a>
             </span>

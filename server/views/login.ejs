@@ -85,9 +85,8 @@
             text-decoration: underline;
         }
         .footer-grid {
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
@@ -123,7 +122,7 @@
 </div>
 <footer class="footer">
     <div class="footer-grid">
-        <div style="grid-column: 1 / span 1; grid-row: 1 / span 1;">
+        <div>
             <span class="footer-text">
                 See our scientific data paper for further details.
             </span>
@@ -139,8 +138,9 @@
                 </div>
             </span>
         </div>
-        <div style="grid-column: 2 / span 1; grid-row: 1 / span 1;">
+        <div style="margin-top: 20px;">
             <span class="footer-text">
+                asdfasdf
                 Powered by <a href="https://consort.clowderframework.org/clowder/" target="_blank" rel="noopener noreferrer" class="footer-link" style="color: #0086A1;">Clowder</a>
             </span>
         </div>
