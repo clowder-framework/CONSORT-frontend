@@ -41,7 +41,7 @@ export default function CreateAndUpload() {
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
 	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
-	const statementType = useSelector(state => state.statement.statementType); 
+	const statementType = useSelector(state => state.statement.statementType);
 	const userCategory = useSelector(state => state.userCategory.userCategory);
 	const datasetStatus = useSelector(state => state.dataset.status);
 
@@ -93,7 +93,7 @@ export default function CreateAndUpload() {
 		dispatch(setExtractionStatus(null));
 		dispatch({type: 'RESET_FILE_PREVIEWS'});
 		dispatch({type: 'RESET_DATASET_METADATA'});
-		
+
 		setLoadingText("Uploading file");
 		setLoading(true);
 		setSpinner(true);
@@ -105,22 +105,22 @@ export default function CreateAndUpload() {
 	// onDrop function to trigger createUploadExtract action dispatch
 	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
 		// this callback function is triggered when a file is dropped into the dropzone
-		
+
 		// Reset all Redux states for a fresh upload
 		dispatch(resetFileToDefault());
 		dispatch(resetDatasetToDefault());
 		dispatch(resetPdfPreviewToDefault());
-		
+
 		// Reset all local states for a fresh upload
 		setLoading(true);
 		setPreview(true); // disable preview button
 		setRCTMetadata({});
 		setPDFMetadata({});
-		
+
 		// Clear any pending timeouts
 		timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
 		timeoutsRef.current = [];
-		
+
 		try {
 			acceptedFiles.map(file => {
 				onDropFile(file)
@@ -143,18 +143,18 @@ export default function CreateAndUpload() {
 		if (filename === '') {
 			return;
 		}
-		
+
 		if (extractionStatus !== null && datasetStatus !== "completed") {
 			setLoadingText(extractionStatus);
 			const clientInfo = await getClientInfo();
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
-			
+
 			// Make sure datasets exist before proceeding
 			if (!datasets || datasets.length === 0) {
 				console.log("No datasets available");
 				return;
 			}
-			
+
 			const dataset_id = datasets[0].id;
 			let highlights_filename;
 			// check extraction status and highlights file generation in loop
@@ -165,7 +165,7 @@ export default function CreateAndUpload() {
 				else{
 					highlights_filename = file_name + '_highlights' + '.json'
 				}
-				
+
 				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename, clientInfo);
 				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
@@ -208,7 +208,7 @@ export default function CreateAndUpload() {
 				// Set a timeout to stop the loop after 20 minutes (1200000 ms)
 				const startTime = Date.now();
 				const timeoutDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
-				
+
 				// Create a modified loop function that checks timeout
 				const timeoutCheckedLoop = async () => {
 					// Check if 20 minutes have passed
@@ -220,10 +220,10 @@ export default function CreateAndUpload() {
 							return; // Stop the loop
 						}
 					}
-					
+
 					await highlights_file_loop();
 				};
-				
+
 				await timeoutCheckedLoop(); // Start the loop with timeout checking
 			} else {
 				console.error("Dataset does not exist");
@@ -272,7 +272,7 @@ export default function CreateAndUpload() {
 			navigate(path);
 		}
 	}
-	
+
 	// Add timeout cleanup to prevent memory leaks when component unmounts
 	useEffect(() => {
 		return () => {
@@ -285,8 +285,65 @@ export default function CreateAndUpload() {
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="createupload" sx={{ padding: { xs: 2, sm: 3 }, width: '100%' }}>
-			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
-				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
+		<div className="radio-buttons-group-div" style={{ 
+			display: 'grid', 
+			gridTemplateColumns: 'auto auto auto',
+			gap: '1rem 2rem',
+			alignItems: 'center',
+			marginBottom: '2rem' 
+		}}>
+			<Typography variant="h6" style={{
+				fontFamily: theme.typography.fontFamily,
+				color: theme.palette.primary.main
+			}}>
+				Select Guideline
+			</Typography>
+			<FormControlLabel
+				value="spirit"
+				control={<Radio checked={statementType === 'spirit'} onChange={handleStatementChange} />}
+				label="SPIRIT"
+				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+				disabled={loading}
+			/>
+			<FormControlLabel
+				value="consort"
+				control={<Radio checked={statementType === 'consort'} onChange={handleStatementChange} />}
+				label="CONSORT"
+				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+				disabled={loading}
+			/>
+			{isAuthenticated && (
+				<>
+					<Typography variant="h6" style={{
+						fontFamily: theme.typography.fontFamily,
+						color: theme.palette.primary.main
+					}}>
+						Select Output
+					</Typography>
+					<FormControlLabel
+						value="author"
+						control={<Radio checked={userCategory === 'author'} onChange={handleUserCategoryChange} />}
+						label="Download report"
+						style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+						disabled={loading}
+					/>
+					<FormControlLabel
+						value="researcher"
+						control={<Radio checked={userCategory === 'researcher'} onChange={handleUserCategoryChange} />}
+						label="View highlighted manuscript"
+						style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+						disabled={loading}
+					/>
+				</>
+			)}
+		</div>
+			<LoadingOverlay active={loading} text={loading_text} spinner={spinner} styles={{
+				overlay: (base) => ({
+					...base,
+					background: 'rgba(163, 90, 244, 1)'
+				})
+			}}>
+				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)} style={{ marginTop: '1rem' }}>
 					<Dropfile
 						onDrop={onDrop}
 						accept={{
@@ -295,110 +352,27 @@ export default function CreateAndUpload() {
 							"application/pdf": [".pdf"]
 						}}
 						message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
-						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}
+						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}
 					/>
 				</div>
 			</LoadingOverlay>
-
-		<div className="radio-buttons-group-div" style={{ display: 'grid', gap: '1.5rem' }}>
-			<div style={{ 
-				display: 'grid', 
-				gridTemplateColumns: 'minmax(150px, auto) 1fr',
-				alignItems: 'start',
-				gap: '1rem'
-			}}>
-				<Typography variant="h6" style={{ 
-					fontFamily: theme.typography.fontFamily, 
-					color: theme.palette.primary.main,
-					paddingTop: '8px'
-				}}>
-					Select Guideline
-				</Typography>
-				<RadioGroup
-					value={statementType}
-					name="radio-buttons-group"
-					onChange={handleStatementChange}
-				>
-					<div style={{ display: 'grid', gridTemplateColumns: 'auto auto', gap: '1rem', alignItems: 'center' }}>
-						<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-							<FormControlLabel 
-								value="spirit" 
-								control={<Radio />} 
-								label="" 
-								style={{ fontFamily: theme.typography.fontFamily, margin: 0, alignItems: 'center' }} 
-								disabled={loading}
-							/>
-							<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ height: '40px', width: 'auto', display: 'block' }}/>
-						</div>
-						<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-							<FormControlLabel 
-								value="consort" 
-								control={<Radio />} 
-								label="" 
-								style={{ fontFamily: theme.typography.fontFamily, margin: 0, alignItems: 'center' }} 
-								disabled={loading}
-							/>
-							<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ height: '40px', width: 'auto', display: 'block' }}/>
-						</div>
-					</div>
-				</RadioGroup>
-			</div>
-			{isAuthenticated && (
-				<div style={{ 
-					display: 'grid', 
-					gridTemplateColumns: 'minmax(150px, auto) 1fr',
-					alignItems: 'start',
-					gap: '1rem'
-				}}>
-					<Typography variant="h6" style={{ 
-						fontFamily: theme.typography.fontFamily, 
-						color: theme.palette.primary.main,
-						paddingTop: '8px'
-					}}>
-						Select Output
-					</Typography>
-					<RadioGroup
-						defaultValue={userCategory}
-						name="radio-buttons-group"
-						onChange={handleUserCategoryChange}
-					>
-						<div style={{ display: 'grid', gridTemplateColumns: 'auto auto', gap: '1rem', alignItems: 'center' }}>
-							<FormControlLabel 
-								value="author" 
-								control={<Radio />} 
-								label="Download report" 
-								style={{ fontFamily: theme.typography.fontFamily, margin: 0 }} 
-								disabled={loading}
-							/>
-							<FormControlLabel 
-								value="researcher" 
-								control={<Radio />} 
-								label="View highlighted manuscript" 
-								style={{ fontFamily: theme.typography.fontFamily, margin: 0 }} 
-								disabled={loading}
-							/>
-						</div>
-					</RadioGroup>
-				</div>
-			)}
+		<div id="preview-button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', width: '100%' }}>
+			<Button
+				variant="contained"
+				style={{
+					color: theme.palette.info.contrastText,
+					...(preview ?
+						{ backgroundColor: 'lightgray', color: 'darkgray' } :
+						{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
+					),
+					fontFamily: theme.typography.fontFamily
+				}}
+				disabled={preview}
+				onClick={downloadOrPreview}
+			>
+				View Results
+			</Button>
 		</div>
-			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
-				<Button
-					variant="contained"
-					style={{
-						color: theme.palette.info.contrastText,
-						...(preview ? 
-							{ backgroundColor: 'gray' } : 
-							{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
-						),
-						fontFamily: theme.typography.fontFamily
-					}}
-					disabled={preview}
-					onClick={downloadOrPreview}
-				>
-					View Results
-				</Button>
-			</div>
 
 		</Box>
 

@@ -21,11 +21,14 @@ const Dropfile = ({ onDrop, accept, message }) => {
 				{!isDragActive && (<p className="dropzone-content">{message || "Drag and drop some files here"}</p>)}
 				{isDragAccept && (<p className="dropzone-content">Release to drop the files here</p>)}
 				{isDragReject && (<p className="dropzone-content">
-					{!message || message.includes("Please select a statement type") 
-						? "Please select a statement type first" 
+					{!message || message.includes("Please select a statement type")
+						? "Please select a statement type first"
 						: "Unaccepted file format"}
 				</p>)}
 			</div>
+			<button type="button" onClick={onDrop} style={{ marginTop: '1rem' }}>
+				Browse Files
+			</button>
 		</div>
 	);
 };
