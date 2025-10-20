@@ -300,44 +300,88 @@ export default function CreateAndUpload() {
 				</div>
 			</LoadingOverlay>
 
-			<div className="radio-buttons-group-div" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>
-						Select Guideline
+		<div className="radio-buttons-group-div" style={{ display: 'grid', gap: '1.5rem' }}>
+			<div style={{ 
+				display: 'grid', 
+				gridTemplateColumns: 'minmax(150px, auto) 1fr',
+				alignItems: 'start',
+				gap: '1rem'
+			}}>
+				<Typography variant="h6" style={{ 
+					fontFamily: theme.typography.fontFamily, 
+					color: theme.palette.primary.main,
+					paddingTop: '8px'
+				}}>
+					Select Guideline
+				</Typography>
+				<RadioGroup
+					value={statementType}
+					name="radio-buttons-group"
+					onChange={handleStatementChange}
+				>
+					<div style={{ display: 'grid', gridTemplateColumns: 'auto auto', gap: '1rem', alignItems: 'center' }}>
+						<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+							<FormControlLabel 
+								value="spirit" 
+								control={<Radio />} 
+								label="" 
+								style={{ fontFamily: theme.typography.fontFamily, margin: 0, alignItems: 'center' }} 
+								disabled={loading}
+							/>
+							<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ height: '40px', width: 'auto', display: 'block' }}/>
+						</div>
+						<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+							<FormControlLabel 
+								value="consort" 
+								control={<Radio />} 
+								label="" 
+								style={{ fontFamily: theme.typography.fontFamily, margin: 0, alignItems: 'center' }} 
+								disabled={loading}
+							/>
+							<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ height: '40px', width: 'auto', display: 'block' }}/>
+						</div>
+					</div>
+				</RadioGroup>
+			</div>
+			{isAuthenticated && (
+				<div style={{ 
+					display: 'grid', 
+					gridTemplateColumns: 'minmax(150px, auto) 1fr',
+					alignItems: 'start',
+					gap: '1rem'
+				}}>
+					<Typography variant="h6" style={{ 
+						fontFamily: theme.typography.fontFamily, 
+						color: theme.palette.primary.main,
+						paddingTop: '8px'
+					}}>
+						Select Output
 					</Typography>
 					<RadioGroup
-						value={statementType}
+						defaultValue={userCategory}
 						name="radio-buttons-group"
-						row
-						onChange={handleStatementChange}
-						style={{ marginLeft: { xs: '0', sm: '10px' } }}
+						onChange={handleUserCategoryChange}
 					>
-						<div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-							<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
-							<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }, marginRight: '10px' }}/>
-						</div>
-						<div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-							<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
-							<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }}}/>
+						<div style={{ display: 'grid', gridTemplateColumns: 'auto auto', gap: '1rem', alignItems: 'center' }}>
+							<FormControlLabel 
+								value="author" 
+								control={<Radio />} 
+								label="Download report" 
+								style={{ fontFamily: theme.typography.fontFamily, margin: 0 }} 
+								disabled={loading}
+							/>
+							<FormControlLabel 
+								value="researcher" 
+								control={<Radio />} 
+								label="View highlighted manuscript" 
+								style={{ fontFamily: theme.typography.fontFamily, margin: 0 }} 
+								disabled={loading}
+							/>
 						</div>
 					</RadioGroup>
 				</div>
-				{isAuthenticated && (
-					<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-						<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>Select Use-case</Typography>
-						<RadioGroup
-							defaultValue={userCategory}
-							name="radio-buttons-group"
-							row
-							onChange={handleUserCategoryChange}
-							style={{ marginLeft: { xs: '0', sm: '10px' } }}
-						>
-							<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
-							<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
-						</RadioGroup>
-					</div>
-				)}
-			</div>
+			)}
+		</div>
 			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
 				<Button
 					variant="contained"
