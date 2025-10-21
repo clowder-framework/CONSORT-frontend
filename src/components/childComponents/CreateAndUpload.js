@@ -268,8 +268,18 @@ export default function CreateAndUpload() {
 			});
 		}
 		else{
-			let path = '/preview';
-			navigate(path);
+			// Get the dataset_id and file_id from state
+			const dataset_id = datasets && datasets.length > 0 ? datasets[0].id : null;
+			const file_id = PDFmetadata && PDFmetadata.extracted_files 
+				? PDFmetadata.extracted_files[0].file_id 
+				: null;
+			
+			// Navigate with URL parameters if available
+			if (dataset_id && file_id) {
+				navigate(`/preview/${dataset_id}/${file_id}`);
+			} else {
+				navigate('/preview');
+			}
 		}
 	}
 

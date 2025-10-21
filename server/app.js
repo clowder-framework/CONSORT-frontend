@@ -57,17 +57,9 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/', authRouter);
 
-// redirect any other route back to home route /
-// app.use((req,res,next)=>{
-// 	res.redirect('/');
-// });
-
-// Serve static files from the public folder with the base URL
-//app.use(baseUrl, express.static('public'));
-app.use('/home',express.static('../dist'));
-app.use('/public',express.static('../dist/public'));
-app.use('/public', express.static('public'));
-
+// Serve static files from dist folder (JS, CSS, etc.)
+app.use(express.static(path.join(__dirname, '../dist')));
+app.use('/public', express.static(path.join(__dirname, '../dist/public')));
 
 app.get('/client',ensureLoggedIn, function (req, res, next){
 	// get env variables for header
@@ -84,8 +76,17 @@ app.get('/client',ensureLoggedIn, function (req, res, next){
 	res.json(options); // Use this in src/utils/common in getHeader() method.
 });
 
-
-app.get('/home', ensureLoggedIn, function (req, res, next){
+// Catch-all route for SPA - serve index.html for all React Router routes
+app.get('*', ensureLoggedIn, function (req, res, next){
+	// Skip if it's an API route, auth route, or already handled
+	if (req.path.startsWith('/login') || 
+	    req.path.startsWith('/logout') || 
+	    req.path.startsWith('/oauth2') ||
+	    req.path.startsWith('/client') ||
+	    req.path.startsWith('/isAuthenticated') ||
+	    req.path.startsWith('/getUser')) {
+		return next();
+	}
 	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 

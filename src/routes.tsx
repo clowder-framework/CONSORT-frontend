@@ -11,10 +11,11 @@ export const AppRoutes = (): JSX.Element => {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/home/" element={<Dashboard/>}/>
-				{/* <Route path="/create/" element={<CreateAndUpload/>}/> */}
-				<Route path="/preview" element={<Preview/>} />
-				<Route path="/faq" element={<Faq/>} />
+		<Route path="/home/" element={<Dashboard/>}/>
+		{/* <Route path="/create/" element={<CreateAndUpload/>}/> */}
+		<Route path="/preview" element={<Preview/>} />
+		<Route path="/preview/:dataset_id/:file_id" element={<Preview/>} />
+		<Route path="/faq" element={<Faq/>} />
 				<Route path="*"
 					   element={
 						   <main style={{padding: "1rem"}}>
