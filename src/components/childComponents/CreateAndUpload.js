@@ -337,7 +337,7 @@ export default function CreateAndUpload() {
 				</>
 			)}
 		</div>
-			<LoadingOverlay active={loading} text={loading_text} spinner={spinner} styles={{
+			<LoadingOverlay active={loading} text={loading_text} spinner styles={{
 				overlay: (base) => ({
 					...base,
 					background: 'rgba(163, 90, 244, 1)'
