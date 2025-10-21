@@ -1,10 +1,13 @@
-import {getHeader} from "./common";
+import {getClientInfo, getHeader} from "./common";
 import config from "../app.config";
 
 
-export async function downloadThumbnail(thumbnailId, title = null) {
+export async function downloadThumbnail(thumbnailId, title = null, clientInfo) {
+	if (!clientInfo) {
+		clientInfo = await getClientInfo();
+	}
 	let url = `${config.hostname}/clowder/api/thumbnails/${thumbnailId}/blob?superAdmin=true`;
-	let authHeader = getHeader();
+	let authHeader = getHeader(clientInfo);
 	let response = await fetch(url, {
 		method: "GET",
 		mode: "cors",

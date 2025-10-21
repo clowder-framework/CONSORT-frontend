@@ -19,13 +19,11 @@ import {resetStatementToDefault} from "./dashboard";
 import {resetUserCategoryToDefault} from "./dashboard";
 
 
-const clientInfo = await getClientInfo();
-
-
 // createUploadExtract thunk function
 export function createUploadExtract(file, config) {
 	return async function createUploadExtractThunk(dispatch) {
 		// this function creates an empty dataset. uploads the file to the dataset and submits for extraction
+		const clientInfo = await getClientInfo();
 		console.log("StatementType", config.statementType)
 		console.log("UserCategory", config.userCategory)
 		// Clowder API call to create empty dataset

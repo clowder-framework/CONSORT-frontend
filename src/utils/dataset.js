@@ -3,13 +3,15 @@ import config from "../app.config";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const clientInfo = await getClientInfo();
-
-export async function getDatasetsRequest(title, limit) {
+export async function getDatasetsRequest(title, limit, clientInfo) {
 	// Clowder API to get dataset list
+	if (!clientInfo) {
+		console.error("clientInfo is required");
+		return null;
+	}
 	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets&limit=${limit}`;
 	if (title) url = `${url}&title=${title}`;
-	const response = await fetch(url, {mode: "cors", headers: getHeader()});
+	const response = await fetch(url, {mode: "cors", headers: getHeader(clientInfo)});
 	if (response.status === 200) {
 		console.log("Fetch dataset successful");
 		return await response.json(); // list of datasets
@@ -132,8 +134,11 @@ export async function getFileInDataset(dataset_id, file_type, file_name, clientI
 }
 
 
-export async function downloadDataset(datasetId, filename = null) {
-
+export async function downloadDataset(datasetId, filename = null, clientInfo) {
+	if (!clientInfo) {
+		console.error("clientInfo is required");
+		return null;
+	}
 	if (filename) {
 		filename = filename.replace(/\s+/g, "_");
 		filename = `${filename}.zip`;
@@ -141,7 +146,7 @@ export async function downloadDataset(datasetId, filename = null) {
 		filename = `${datasetId}.zip`;
 	}
 	let endpoint = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${datasetId}/download`;
-	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: await getHeader()});
+	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: getHeader(clientInfo)});
 
 	if (response.status === 200) {
 		let blob = await response.blob();
@@ -185,10 +190,14 @@ export async function getDatasetExtractorMetadata(dataset_id, extractor_name, cl
 }
 
 
-export async function setDatasetMetadata(dataset_id, content) {
+export async function setDatasetMetadata(dataset_id, content, clientInfo) {
 	// function to set the user defined metadata for dataset
+	if (!clientInfo) {
+		console.error("clientInfo is required");
+		return null;
+	}
 	const metadata_url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${dataset_id}/usermetadatajson`;
-	let authHeader = getHeader();
+	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
 	const body = JSON.stringify(content);

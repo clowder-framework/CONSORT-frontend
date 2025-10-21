@@ -22,6 +22,7 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import CloudDownloadOutlinedIcon from "@material-ui/icons/CloudDownloadOutlined";
 import {downloadDataset} from "../utils/dataset";
 import {downloadFile, fetchFileMetadata} from "../utils/file";
+import {getClientInfo} from "../utils/common";
 import {useDispatch, useSelector} from "react-redux";
 import {deleteFile as deleteFileAction} from "../actions/file";
 import {deleteDataset as deleteDatasetAction, fetchDatasetAbout, fetchFilesInDataset} from "../actions/dataset";
@@ -209,13 +210,14 @@ export default function Dataset() {
 												  }}>
 											Add Files
 										</MenuItem>
-										<MenuItem className={classes.optionMenuItem}
-												  onClick={() => {
-													  downloadDataset(datasetId, datasetAbout["name"]).then();
-													  handleOptionClose();
-												  }}>
-											Download All
-										</MenuItem>
+									<MenuItem className={classes.optionMenuItem}
+											  onClick={async () => {
+												  const clientInfo = await getClientInfo();
+												  downloadDataset(datasetId, datasetAbout["name"], clientInfo).then();
+												  handleOptionClose();
+											  }}>
+										Download All
+									</MenuItem>
 										<MenuItem onClick={() => {
 											deleteDataset(datasetId);
 											handleOptionClose();

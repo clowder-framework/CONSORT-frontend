@@ -1,7 +1,7 @@
 // file actions
 
 import config from "../app.config";
-import {getHeader} from "../utils/common";
+import {getClientInfo, getHeader} from "../utils/common";
 import {getPreviewsRequest} from "../utils/file";
 
 
@@ -17,9 +17,10 @@ export function receiveFileMetadata(type, json){
 }
 
 export function fetchFileMetadata(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
+		return fetch(url, {mode: "cors", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -45,9 +46,10 @@ export function receiveFileExtractedMetadata(type, json) {
 }
 
 export function fetchFileExtractedMetadata(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/extracted_metadata?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${config.hostname}/clowder/api/files/${id}/extracted_metadata?superAdmin=true`;
+		return fetch(url, {mode: "cors", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -73,9 +75,10 @@ export function receiveFileMetadataJsonld(type, json) {
 }
 
 export function fetchFileMetadataJsonld(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/metadata.jsonld?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${config.hostname}/clowder/api/files/${id}/metadata.jsonld?superAdmin=true`;
+		return fetch(url, {mode: "cors", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -127,9 +130,10 @@ export function fetchFilePreviews(id, clientInfo) {
 export const DELETE_FILE = "DELETE_FILE";
 
 export function deleteFile(fileId) {
-	let url = `${config.hostname}/clowder/api/files/${fileId}?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${config.hostname}/clowder/api/files/${fileId}?superAdmin=true`;
+		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {

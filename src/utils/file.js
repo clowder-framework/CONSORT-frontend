@@ -72,9 +72,12 @@ async function extractionRequest(file_id, body_data, clientInfo) {
 }
 
 
-export async function fetchFileMetadata(id) {
+export async function fetchFileMetadata(id, clientInfo) {
+	if (!clientInfo) {
+		clientInfo = await getClientInfo();
+	}
 	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
-	let response = await fetch(url, {mode: "cors", headers: getHeader()});
+	let response = await fetch(url, {mode: "cors", headers: getHeader(clientInfo)});
 	if (response.status === 200) {
 		return await response.json();
 	} else if (response.status === 401) {
@@ -172,9 +175,12 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval, cl
 }
 
 
-export async function uploadFile(formData, selectedDatasetId) {
+export async function uploadFile(formData, selectedDatasetId, clientInfo) {
+	if (!clientInfo) {
+		clientInfo = await getClientInfo();
+	}
 	let endpoint = `${config.hostname}/clowder/api/datasets/${selectedDatasetId}/files?superAdmin=true`;
-	let authHeader = getHeader();
+	let authHeader = getHeader(clientInfo);
 	let body = new FormData();
 	formData.map((item) => {
 		if (item["file"] !== undefined) {

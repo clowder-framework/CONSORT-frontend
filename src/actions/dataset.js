@@ -3,8 +3,6 @@
 import {getClientInfo, getHeader} from "../utils/common";
 import {createEmptyDatasetRequest, getDatasetsRequest} from "../utils/dataset";
 
-const clientInfo = await getClientInfo();
-
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
 export const receiveDatasets = (type, json) => ({type: type, datasets: json});
@@ -38,16 +36,18 @@ export const updateDatasetStatus = (datasetId, status) => ({
 
 // fetchDatasets thunk function
 export const fetchDatasets = (title = null, limit="5") => async dispatch => {
-	const dataset_json = await getDatasetsRequest(title, limit); // list of datasets
+	const clientInfo = await getClientInfo();
+	const dataset_json = await getDatasetsRequest(title, limit, clientInfo); // list of datasets
 	if (dataset_json !== undefined) {
 		dispatch(receiveDatasets(RECEIVE_DATASETS, dataset_json));
 	}
 };
 
 export function fetchFilesInDataset(id) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/files?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/files?superAdmin=true`;
+		return fetch(url, {mode: "cors", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -61,9 +61,10 @@ export function fetchFilesInDataset(id) {
 }
 
 export function fetchDatasetAbout(id) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}?superAdmin=true`;
+		return fetch(url, {mode: "cors", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -88,12 +89,13 @@ export function setDatasetMetadata(type, json) {
 }
 
 export function postDatasetMetadata(id, metadata) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/metadata.jsonld`;
-	let authHeader = getHeader();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
-	const body = JSON.stringify(metadata);
-	return (dispatch) => {
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/metadata.jsonld`;
+		let authHeader = getHeader(clientInfo);
+		authHeader.append('Accept', 'application/json');
+		authHeader.append('Content-Type', 'application/json');
+		const body = JSON.stringify(metadata);
 		return fetch(url, {method:"POST", mode: "cors", headers: authHeader, body:body})
 			.then((response) => {
 				if (response.status === 200) {
@@ -106,9 +108,10 @@ export function postDatasetMetadata(id, metadata) {
 }
 
 export function deleteDataset(datasetId) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${datasetId}?superAdmin=true`;
-	return (dispatch) => {
-		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
+	return async (dispatch) => {
+		const clientInfo = await getClientInfo();
+		let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${datasetId}?superAdmin=true`;
+		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader(clientInfo)})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {

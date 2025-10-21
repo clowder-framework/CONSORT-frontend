@@ -4,13 +4,16 @@ import React, {useEffect, useState} from 'react';
 import {Box, Button} from "@material-ui/core";
 
 import config from "../../app.config";
-import {getHeader} from "../../utils/common";
+import {getClientInfo, getHeader} from "../../utils/common";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchDatasets as fetchDatasetsAction} from "../../actions/dataset";
 
 // not used in react-redux
-async function getDatasetFromUrl(url) {
-	const dataset_data_response = await fetch(url, {method:"GET", headers:getHeader()});
+async function getDatasetFromUrl(url, clientInfo) {
+	if (!clientInfo) {
+		clientInfo = await getClientInfo();
+	}
+	const dataset_data_response = await fetch(url, {method:"GET", headers:getHeader(clientInfo)});
 
 	if (dataset_data_response.status === 200) {
 		return dataset_data_response.json();
