@@ -27,8 +27,8 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 
 
 async function extractionRequest(file_id, body_data, clientInfo) {
-	// Clowder API call to submit a file for extraction
-	const extractions_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/extractions`;
+	// Clowder API call to submit a file for extraction - proxied through Express server
+	const extractions_url = `/api/files/${file_id}/extractions`;
 	const body = JSON.stringify(body_data);
 	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
@@ -73,7 +73,7 @@ async function extractionRequest(file_id, body_data, clientInfo) {
 
 
 export async function fetchFileMetadata(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
+	let url = `/api/files/${id}/metadata?superAdmin=true`;
 	let response = await fetch(url, {mode: "cors", headers: getHeader()});
 	if (response.status === 200) {
 		return await response.json();
@@ -88,11 +88,11 @@ export async function fetchFileMetadata(id) {
 
 
 export async function checkExtractionStatus(file_id, clientInfo){
-	// Clowder API call to check extraction status of a file
-	const extractions_status_url = `${clientInfo.hostname}${clientInfo.prefix}/api/extractions/${file_id}/statuses`;
+	// Clowder API call to check extraction status of a file - proxied through Express server
+	const extractions_status_url = `/api/extractions/${file_id}/statuses`;
 	let authHeader = getHeader(clientInfo);
 	authHeader.append("Accept", "*/*");
-	const response = await fetch(extractions_status_url, {method:"GET", mode: "no-cors", headers:authHeader});
+	const response = await fetch(extractions_status_url, {method:"GET", mode: "cors", headers:authHeader});
 	if (response.status === 200){
 		console.log("Extraction status response %s", response);
 		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
@@ -173,7 +173,7 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval, cl
 
 
 export async function uploadFile(formData, selectedDatasetId) {
-	let endpoint = `${config.hostname}/clowder/api/datasets/${selectedDatasetId}/files?superAdmin=true`;
+	let endpoint = `/api/datasets/${selectedDatasetId}/files?superAdmin=true`;
 	let authHeader = getHeader();
 	let body = new FormData();
 	formData.map((item) => {
@@ -209,7 +209,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 		filename = `${fileId}.zip`;
 	}
 	const clientInfo = await getClientInfo();
-	let endpoint = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${fileId}/blob?superAdmin=true`;
+	let endpoint = `/api/files/${fileId}/blob?superAdmin=true`;
 	let authHeader = getHeader(clientInfo);
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
 
@@ -238,7 +238,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 
 
 export async function getPreviewsRequest(file_id, clientInfo) {
-	const previews_url = `${clientInfo.hostname}${clientInfo.prefix}/api/files/${file_id}/getPreviews?superAdmin=true`;
+	const previews_url = `/api/files/${file_id}/getPreviews?superAdmin=true`;
 	let authHeader = getHeader(clientInfo)
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:authHeader});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
@@ -269,23 +269,35 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 	if (preview_config.previewType === 'thumbnail') {
 		// TODO this is a hacky way to fix file previewer extractor output for soffice converted pdf docs
 		// in some cases, the file previewer extractor puts pdf file as thumbnail type. See https://github.com/clowder-framework/CONSORT-frontend/pull/91
-		preview_config.url = `${clientInfo.hostname}${preview["pv_route"]}?superAdmin=true`;
+		// Convert preview route to use proxy
+		let pv_route = preview["pv_route"];
+		// Convert /clowder/api/... or /clowder/files/... to /api/...
+		pv_route = pv_route.replace(/^\/clowder\//, '/').replace(/^\/files\//, '/api/files/');
+		if (!pv_route.startsWith('/api/')) {
+			pv_route = '/api' + pv_route;
+		}
+		preview_config.url = `${pv_route}?superAdmin=true`;
 		preview_config.fileid = preview["pv_id"];
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
 
-		let pv_routes = `/clowder/api/files/${fileId}/blob`; 
-		const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
+		const resourceURL = `/api/files/${fileId}/blob?superAdmin=true`;
 		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
 	else {
-		preview_config.url = `${clientInfo.hostname}${clientInfo.prefix}${preview["pv_route"]}?superAdmin=true`;
+		// Convert preview route to use proxy
+		let pv_route = preview["pv_route"];
+		// Convert /clowder/api/... or /clowder/files/... to /api/...
+		pv_route = pv_route.replace(/^\/clowder\//, '/').replace(/^\/files\//, '/api/files/');
+		if (!pv_route.startsWith('/api/')) {
+			pv_route = '/api' + pv_route;
+		}
+		preview_config.url = `${pv_route}?superAdmin=true`;
 		preview_config.fileid = preview["pv_id"];
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
-		// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-		// clowder/files vs clowder/api/files
-		// Temp fix insert /api/
+		
+		// Handle preview resource URL
 		let pv_routes = preview["pv_route"];   // pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"
 		if (!pv_routes.includes("/api/")) {
 			try{
@@ -296,9 +308,13 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 				console.error("Incorrect Preview url %s", pv_routes);
 			}
 		}
-		preview_config.pv_route = pv_routes;  // pv_route:"clowder/api/files/64ac2c9ae4b024bdd77bbfb1/blob"
-		// no need to add clowder prefix as preview route has the clowder prefix
-		const resourceURL = `${clientInfo.hostname}${pv_routes}?superAdmin=true`;
+		// Convert to proxy route
+		pv_routes = pv_routes.replace(/^\/clowder\//, '/');
+		if (!pv_routes.startsWith('/api/')) {
+			pv_routes = '/api' + pv_routes;
+		}
+		preview_config.pv_route = pv_routes;
+		const resourceURL = `${pv_routes}?superAdmin=true`;
 		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
 

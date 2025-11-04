@@ -45,7 +45,7 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 };
 
 export function fetchFilesInDataset(id) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/files?superAdmin=true`;
+	let url = `/api/datasets/${id}/files?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -61,7 +61,7 @@ export function fetchFilesInDataset(id) {
 }
 
 export function fetchDatasetAbout(id) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}?superAdmin=true`;
+	let url = `/api/datasets/${id}?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -88,7 +88,7 @@ export function setDatasetMetadata(type, json) {
 }
 
 export function postDatasetMetadata(id, metadata) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${id}/metadata.jsonld`;
+	let url = `/api/datasets/${id}/metadata.jsonld`;
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
@@ -106,7 +106,7 @@ export function postDatasetMetadata(id, metadata) {
 }
 
 export function deleteDataset(datasetId) {
-	let url = `${clientInfo.hostname}${clientInfo.prefix}/api/datasets/${datasetId}?superAdmin=true`;
+	let url = `/api/datasets/${datasetId}?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
 		.then((response) => {

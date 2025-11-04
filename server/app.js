@@ -19,6 +19,7 @@ var SQLiteStore = require('connect-sqlite3')(session);
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var clowderRouter = require('./routes/clowder');
 
 var app = express();
 
@@ -56,6 +57,7 @@ app.use(function(req, res, next) {
 //const baseUrl = process.env.BASE_URL;
 app.use('/', indexRouter);
 app.use('/', authRouter);
+app.use('/', clowderRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{
@@ -70,18 +72,16 @@ app.use('/public', express.static('public'));
 
 
 app.get('/client',ensureLoggedIn, function (req, res, next){
-	// get env variables for header
-	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
-	var APIKEY = process.env.APIKEY;
-	var PREFIX = process.env.CLOWDER_PREFIX;
+	// All API calls are now proxied through Express server
+	// This endpoint is kept for backward compatibility but no longer exposes sensitive data
+	var PREFIX = process.env.CLOWDER_PREFIX || '';
 	var options = {
 		headers:{
-			'hostname': CLOWDER_REMOTE_HOSTNAME,
-			'prefix': PREFIX,
-			'apikey': APIKEY
+			'prefix': PREFIX
+			// hostname and apikey removed - all API calls are proxied through /api/* routes
 		}
 	}
-	res.json(options); // Use this in src/utils/common in getHeader() method.
+	res.json(options);
 });
 
 

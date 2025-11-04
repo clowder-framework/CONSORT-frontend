@@ -5,8 +5,6 @@ import path from "path";
 import ESLintPlugin from "eslint-webpack-plugin";
 
 
-// eslint-disable-next-line no-console
-console.log(`the current CLOWDER_REMOTE_HOSTNAME environment variable is ${process.env.CLOWDER_REMOTE_HOSTNAME}`);
 const PUBLIC_PATH = '';
 
 export default {
@@ -35,9 +33,7 @@ export default {
 		new webpack.DefinePlugin({
 			"process.env": {
 				"NODE_ENV": JSON.stringify("development"),
-				// if left not set, it will default to same host/port as frontend
-				"CLOWDER_REMOTE_HOSTNAME": JSON.stringify(process.env.CLOWDER_REMOTE_HOSTNAME),
-				"APIKEY": JSON.stringify(process.env.APIKEY),
+				// CLOWDER_REMOTE_HOSTNAME and APIKEY removed - all API calls are proxied through Express server
 				"KeycloakBaseURL": JSON.stringify(process.env.KeycloakBaseURL),
 				"PUBLIC_PATH": JSON.stringify(PUBLIC_PATH)
 			},

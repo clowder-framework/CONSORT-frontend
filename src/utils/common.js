@@ -15,14 +15,18 @@ export function getClientInfo(){
 }
 
 // construct header
+// Note: API key is no longer needed on the client - the Express server proxy adds it
 export function getHeader(clientInfo) {
-	const headers = new Headers({
-		"X-API-Key": clientInfo.apikey
-	});
+	const headers = new Headers();
+	// API key is now handled by the server proxy, so we don't need to send it from the client
+	// if (clientInfo && clientInfo.apikey) {
+	// 	headers.append("X-API-Key", clientInfo.apikey);
+	// }
 	return headers;
 }
 
 export async function downloadResource(url, clientInfo) {
+	// URL should already be proxied (starts with /api/)
 	let authHeader = getHeader(clientInfo);
 	let response = await fetch(url, {
 		method: "GET",
