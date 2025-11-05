@@ -26,8 +26,10 @@ export default {
 	target: "web",
 	output: {
 		path: path.resolve(__dirname, "dist"),
-		publicPath: PUBLIC_PATH,
-		filename: "bundle.js"
+		publicPath: PUBLIC_PATH, // Empty string means root path
+		filename: "bundle.js",
+		// Ensure clean output
+		clean: false // Don't clean in dev mode - webpack-dev-middleware serves from memory
 	},
 	plugins: [
 		new webpack.DefinePlugin({
@@ -44,15 +46,17 @@ export default {
 			exclude: ["node_modules", "dist", "build"]
 		}),
 		new webpack.HotModuleReplacementPlugin(),
-		new webpack.NoEmitOnErrorsPlugin(),
+		// Don't use NoEmitOnErrorsPlugin in development - it can cause blank pages
+		// Errors will still be shown in console, but the app will still be served
+		// new webpack.NoEmitOnErrorsPlugin(),
 		new HtmlWebpackPlugin({
 			template: "src/index.ejs",
 			favicon: "./src/public/assets/favicon.ico",
-			minify: {
-				removeComments: true,
-				collapseWhitespace: true
-			},
-			inject: true
+			// Don't minify in development for easier debugging
+			minify: false,
+			inject: true,
+			// Ensure the HTML is generated with correct paths
+			filename: 'index.html'
 		}),
 		new webpack.LoaderOptionsPlugin({
 			debug: true,

@@ -135,16 +135,17 @@ router.all('/api/*', upload.any(), async function (req, res, next) {
 		});
 
 		// Handle response based on content type
-		if (contentType && contentType.includes('application/json')) {
+		const responseContentType = response.headers.get('content-type');
+		if (responseContentType && responseContentType.includes('application/json')) {
 			const data = await response.json();
 			return res.status(response.status).json(data);
-		} else if (contentType && (
-			contentType.includes('application/octet-stream') ||
-			contentType.includes('image/') ||
-			contentType.includes('video/') ||
-			contentType.includes('audio/') ||
-			contentType.includes('application/zip') ||
-			contentType.includes('application/pdf')
+		} else if (responseContentType && (
+			responseContentType.includes('application/octet-stream') ||
+			responseContentType.includes('image/') ||
+			responseContentType.includes('video/') ||
+			responseContentType.includes('audio/') ||
+			responseContentType.includes('application/zip') ||
+			responseContentType.includes('application/pdf')
 		)) {
 			// For binary data, send as buffer
 			const buffer = await response.buffer();
