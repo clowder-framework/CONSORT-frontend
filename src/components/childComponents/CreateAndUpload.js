@@ -187,6 +187,7 @@ export default function CreateAndUpload() {
 					datasetMetadata(metadata);
 
 					setPreview(false);  // View Results button activated
+					 
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
@@ -230,6 +231,7 @@ export default function CreateAndUpload() {
 	useEffect(() => {
 		if (datasetStatus === "completed") {
 			setPreview(false);
+			setSpinner(false);
 		}
 	}, [datasetStatus]);
 
@@ -304,25 +306,25 @@ export default function CreateAndUpload() {
 				disabled={loading}
 			/>
 		</div>
-			<LoadingOverlay active={loading} text={loading_text} spinner styles={{
-				overlay: (base) => ({
-					...base,
-					background: 'rgba(163, 90, 244, 1)'
-				})
-			}}>
-				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)} style={{ marginTop: '1rem' }}>
-					<Dropfile
-						onDrop={onDrop}
-						accept={{
-							"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-							"application/msword": [".doc"],
-							"application/pdf": [".pdf"]
-						}}
-						message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
-						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}
-					/>
-				</div>
-			</LoadingOverlay>
+		<LoadingOverlay active={loading} text={loading_text} spinner={spinner} styles={{
+			overlay: (base) => ({
+				...base,
+				background: 'rgba(163, 90, 244, 1)'
+			})
+		}}>
+			<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)} style={{ marginTop: '1rem' }}>
+				<Dropfile
+					onDrop={onDrop}
+					accept={{
+						"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+						"application/msword": [".doc"],
+						"application/pdf": [".pdf"]
+					}}
+					message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
+					style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}
+				/>
+			</div>
+		</LoadingOverlay>
 		<div id="preview-button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', width: '100%' }}>
 			<Button
 				variant="contained"
