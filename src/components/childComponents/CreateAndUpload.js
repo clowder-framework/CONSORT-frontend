@@ -17,7 +17,7 @@ import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {downloadAndSaveFile} from "../../utils/file";
 import {fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
-import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault} from '../../actions/dashboard';
+import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault, checkAuthenticationStatus} from '../../actions/dashboard';
 import config from "../../app.config";
 import {resetFileToDefault} from '../../actions/file';
 import {resetDatasetToDefault} from '../../actions/dataset';
@@ -32,9 +32,8 @@ export default function CreateAndUpload() {
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
 	const [filename, setFilename] = useState(''); // uploaded filename
-	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
+	const [spinner, setSpinner] = useState(true); // loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
-	const [isAuthenticated, setIsAuthenticated] = useState(false); // state for authentication
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
@@ -44,6 +43,8 @@ export default function CreateAndUpload() {
 	const statementType = useSelector(state => state.statement.statementType);
 	const userCategory = useSelector(state => state.userCategory.userCategory);
 	const datasetStatus = useSelector(state => state.dataset.status);
+	const isAuthenticated = useSelector(state => state.authentication.isAuthenticated);
+	const authenticationLoading = useSelector(state => state.authentication.authenticationLoading);
 
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
@@ -59,23 +60,17 @@ export default function CreateAndUpload() {
 	// Reference to track any active timeouts
 	const timeoutsRef = useRef([]);
 
-	// Check authentication status on mount
+	// Check authentication status on mount using Redux
 	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const response = await fetch('/isAuthenticated', {
-					method: 'GET',
-					credentials: 'include',
-				});
-				const data = await response.json();
-				setIsAuthenticated(data.isAuthenticated);
-			} catch (error) {
-				console.error('Error checking authentication status:', error);
-				setIsAuthenticated(false);
-			}
-		};
-		checkAuthStatus();
-	}, []);
+		dispatch(checkAuthenticationStatus());
+	}, [dispatch]);
+
+	// Update config when authentication status changes
+	useEffect(() => {
+		console.log("CreateAndUpload isAuthenticated", isAuthenticated);
+		config.userCategory = isAuthenticated ? "researcher" : "author";
+		dispatch(setUserCategory(SET_USER_CATEGORY, isAuthenticated ? "researcher" : "author"));
+	}, [isAuthenticated]);
 
 
 	const handleStatementChange = (event) => {
@@ -83,10 +78,6 @@ export default function CreateAndUpload() {
 		config.statementType = event.target.value;
 	};
 
-	const handleUserCategoryChange = (event) => {
-		dispatch(setUserCategory(SET_USER_CATEGORY, event.target.value));
-		config.userCategory = event.target.value;
-	};
 
 	const onDropFile = (file) => {
 		// Reset previous extraction state and previews
@@ -312,30 +303,6 @@ export default function CreateAndUpload() {
 				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
 				disabled={loading}
 			/>
-			{isAuthenticated && (
-				<>
-					<Typography variant="h6" style={{
-						fontFamily: theme.typography.fontFamily,
-						color: theme.palette.primary.main
-					}}>
-						Select Output
-					</Typography>
-					<FormControlLabel
-						value="author"
-						control={<Radio checked={userCategory === 'author'} onChange={handleUserCategoryChange} />}
-						label="Download report"
-						style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
-						disabled={loading}
-					/>
-					<FormControlLabel
-						value="researcher"
-						control={<Radio checked={userCategory === 'researcher'} onChange={handleUserCategoryChange} />}
-						label="View highlighted manuscript"
-						style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
-						disabled={loading}
-					/>
-				</>
-			)}
 		</div>
 			<LoadingOverlay active={loading} text={loading_text} spinner styles={{
 				overlay: (base) => ({
