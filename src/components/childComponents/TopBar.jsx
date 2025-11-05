@@ -140,15 +140,15 @@ export default function TopBar() {
 					)}
 					<Box sx={{ flexGrow: 1 }} />
 					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', color: theme.palette.secondary.dark}}>
-						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
+						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
+						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							FAQ</RouterLink>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark}}>
+						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Home</RouterLink>
 					</Typography>
 					
