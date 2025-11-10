@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Consort • Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/login.css"> -->
@@ -12,7 +15,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            font-family: 'Lexend Deca', sans-serif;
+            font-family: 'Lexend', sans-serif;
         }
 
         body {
@@ -36,7 +39,7 @@
             background-image: linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5);
             -webkit-background-clip: text;
             background-clip: text;
-            font-family: 'Lexend Deca', sans-serif;
+            font-family: 'Lexend', sans-serif;
         }
 
         .logo {
@@ -82,9 +85,8 @@
             text-decoration: underline;
         }
         .footer-grid {
-            display: grid;
-            grid-template-rows: 1fr 1fr;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
@@ -120,7 +122,7 @@
 </div>
 <footer class="footer">
     <div class="footer-grid">
-        <div style="grid-column: 1 / span 1; grid-row: 1 / span 1;">
+        <div>
             <span class="footer-text">
                 See our scientific data paper for further details.
             </span>
@@ -136,8 +138,9 @@
                 </div>
             </span>
         </div>
-        <div style="grid-column: 2 / span 1; grid-row: 1 / span 1;">
+        <div style="margin-top: 20px;">
             <span class="footer-text">
+                asdfasdf
                 Powered by <a href="https://consort.clowderframework.org/clowder/" target="_blank" rel="noopener noreferrer" class="footer-link" style="color: #0086A1;">Clowder</a>
             </span>
         </div>

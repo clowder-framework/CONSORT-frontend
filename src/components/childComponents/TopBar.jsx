@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, Link, Toolbar, Typography, Button, Box} from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
+import {checkAuthenticationStatus} from '../../actions/dashboard';
 import { theme } from '../../theme';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,23 +57,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TopBar() {
 	const classes = useStyles();
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const dispatch = useDispatch();
+	
+	// Use Redux authentication state
+	const isAuthenticated = useSelector(state => state.authentication.isAuthenticated);
+	const authenticationLoading = useSelector(state => state.authentication.authenticationLoading);
+	
 	const [username, setUsername] = useState("anonymous");
 
 	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const response = await fetch('/isAuthenticated', {
-					method: 'GET',
-					credentials: 'include',
-				});
-				const data = await response.json();
-				setIsAuthenticated(data.isAuthenticated);
-			} catch (error) {
-				console.error('Error checking authentication status:', error);
-			}
-		};
-		checkAuthStatus();
+		// Check authentication status using Redux
+		dispatch(checkAuthenticationStatus());
 		
 		const getUsername = async () => {
 			try {
@@ -86,10 +82,11 @@ export default function TopBar() {
 			} catch (error) {
 				console.error('Error fetching username:', error);
 				setUsername('anonymous');
+				console.log('Username set to: ', username);
 			}
 		}
 		getUsername();
-	}, []);
+	}, [dispatch]);
 
 	// const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -140,15 +137,15 @@ export default function TopBar() {
 					)}
 					<Box sx={{ flexGrow: 1 }} />
 					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', color: theme.palette.secondary.dark}}>
-						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
+						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
+						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							FAQ</RouterLink>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark}}>
+						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Home</RouterLink>
 					</Typography>
 					

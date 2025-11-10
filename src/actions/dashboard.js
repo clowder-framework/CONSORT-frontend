@@ -38,3 +38,52 @@ export function resetUserCategoryToDefault() {
 	};
 }
 
+// Authentication actions
+export const SET_AUTHENTICATION_STATUS = "SET_AUTHENTICATION_STATUS";
+export const SET_AUTHENTICATION_LOADING = "SET_AUTHENTICATION_LOADING";
+
+export function setAuthenticationStatus(isAuthenticated) {
+	return (dispatch) => {
+		dispatch({
+			type: SET_AUTHENTICATION_STATUS,
+			isAuthenticated: isAuthenticated
+		});
+	};
+}
+
+export function setAuthenticationLoading(isLoading) {
+	return (dispatch) => {
+		dispatch({
+			type: SET_AUTHENTICATION_LOADING,
+			isLoading: isLoading
+		});
+	};
+}
+
+export function checkAuthenticationStatus() {
+	return async (dispatch) => {
+		dispatch(setAuthenticationLoading(true));
+		try {
+			const response = await fetch('/isAuthenticated', {
+				method: 'GET',
+				credentials: 'include',
+			});
+			const data = await response.json();
+			dispatch(setAuthenticationStatus(data.isAuthenticated));
+			
+			// Set user category based on authentication status
+			if (data.isAuthenticated) {
+				dispatch(setUserCategory(SET_USER_CATEGORY, "researcher"));
+			} else {
+				dispatch(setUserCategory(SET_USER_CATEGORY, "author"));
+			}
+		} catch (error) {
+			console.error('Error checking authentication status:', error);
+			dispatch(setAuthenticationStatus(false));
+			dispatch(setUserCategory(SET_USER_CATEGORY, "author"));
+		} finally {
+			dispatch(setAuthenticationLoading(false));
+		}
+	};
+}
+

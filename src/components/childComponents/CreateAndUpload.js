@@ -17,7 +17,7 @@ import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {downloadAndSaveFile} from "../../utils/file";
 import {fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
-import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault} from '../../actions/dashboard';
+import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault, checkAuthenticationStatus} from '../../actions/dashboard';
 import config from "../../app.config";
 import {resetFileToDefault} from '../../actions/file';
 import {resetDatasetToDefault} from '../../actions/dataset';
@@ -32,18 +32,19 @@ export default function CreateAndUpload() {
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
 	const [filename, setFilename] = useState(''); // uploaded filename
-	const [spinner, setSpinner] = useState(true); //loading overlay spinner active
+	const [spinner, setSpinner] = useState(true); // loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
-	const [isAuthenticated, setIsAuthenticated] = useState(false); // state for authentication
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
 	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
-	const statementType = useSelector(state => state.statement.statementType); 
+	const statementType = useSelector(state => state.statement.statementType);
 	const userCategory = useSelector(state => state.userCategory.userCategory);
 	const datasetStatus = useSelector(state => state.dataset.status);
+	const isAuthenticated = useSelector(state => state.authentication.isAuthenticated);
+	const authenticationLoading = useSelector(state => state.authentication.authenticationLoading);
 
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
@@ -59,23 +60,17 @@ export default function CreateAndUpload() {
 	// Reference to track any active timeouts
 	const timeoutsRef = useRef([]);
 
-	// Check authentication status on mount
+	// Check authentication status on mount using Redux
 	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const response = await fetch('/isAuthenticated', {
-					method: 'GET',
-					credentials: 'include',
-				});
-				const data = await response.json();
-				setIsAuthenticated(data.isAuthenticated);
-			} catch (error) {
-				console.error('Error checking authentication status:', error);
-				setIsAuthenticated(false);
-			}
-		};
-		checkAuthStatus();
-	}, []);
+		dispatch(checkAuthenticationStatus());
+	}, [dispatch]);
+
+	// Update config when authentication status changes
+	useEffect(() => {
+		console.log("CreateAndUpload isAuthenticated", isAuthenticated);
+		config.userCategory = isAuthenticated ? "researcher" : "author";
+		dispatch(setUserCategory(SET_USER_CATEGORY, isAuthenticated ? "researcher" : "author"));
+	}, [isAuthenticated]);
 
 
 	const handleStatementChange = (event) => {
@@ -83,17 +78,13 @@ export default function CreateAndUpload() {
 		config.statementType = event.target.value;
 	};
 
-	const handleUserCategoryChange = (event) => {
-		dispatch(setUserCategory(SET_USER_CATEGORY, event.target.value));
-		config.userCategory = event.target.value;
-	};
 
 	const onDropFile = (file) => {
 		// Reset previous extraction state and previews
 		dispatch(setExtractionStatus(null));
 		dispatch({type: 'RESET_FILE_PREVIEWS'});
 		dispatch({type: 'RESET_DATASET_METADATA'});
-		
+
 		setLoadingText("Uploading file");
 		setLoading(true);
 		setSpinner(true);
@@ -105,22 +96,22 @@ export default function CreateAndUpload() {
 	// onDrop function to trigger createUploadExtract action dispatch
 	const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
 		// this callback function is triggered when a file is dropped into the dropzone
-		
+
 		// Reset all Redux states for a fresh upload
 		dispatch(resetFileToDefault());
 		dispatch(resetDatasetToDefault());
 		dispatch(resetPdfPreviewToDefault());
-		
+
 		// Reset all local states for a fresh upload
 		setLoading(true);
 		setPreview(true); // disable preview button
 		setRCTMetadata({});
 		setPDFMetadata({});
-		
+
 		// Clear any pending timeouts
 		timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
 		timeoutsRef.current = [];
-		
+
 		try {
 			acceptedFiles.map(file => {
 				onDropFile(file)
@@ -143,18 +134,18 @@ export default function CreateAndUpload() {
 		if (filename === '') {
 			return;
 		}
-		
+
 		if (extractionStatus !== null && datasetStatus !== "completed") {
 			setLoadingText(extractionStatus);
 			const clientInfo = await getClientInfo();
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
-			
+
 			// Make sure datasets exist before proceeding
 			if (!datasets || datasets.length === 0) {
 				console.log("No datasets available");
 				return;
 			}
-			
+
 			const dataset_id = datasets[0].id;
 			let highlights_filename;
 			// check extraction status and highlights file generation in loop
@@ -165,7 +156,7 @@ export default function CreateAndUpload() {
 				else{
 					highlights_filename = file_name + '_highlights' + '.json'
 				}
-				
+
 				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename, clientInfo);
 				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
@@ -196,6 +187,7 @@ export default function CreateAndUpload() {
 					datasetMetadata(metadata);
 
 					setPreview(false);  // View Results button activated
+					 
 					setSpinner(false); // stop display of spinner
 				} else {
 					console.log("check highlights file after 5s");
@@ -208,7 +200,7 @@ export default function CreateAndUpload() {
 				// Set a timeout to stop the loop after 20 minutes (1200000 ms)
 				const startTime = Date.now();
 				const timeoutDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
-				
+
 				// Create a modified loop function that checks timeout
 				const timeoutCheckedLoop = async () => {
 					// Check if 20 minutes have passed
@@ -220,10 +212,10 @@ export default function CreateAndUpload() {
 							return; // Stop the loop
 						}
 					}
-					
+
 					await highlights_file_loop();
 				};
-				
+
 				await timeoutCheckedLoop(); // Start the loop with timeout checking
 			} else {
 				console.error("Dataset does not exist");
@@ -239,6 +231,7 @@ export default function CreateAndUpload() {
 	useEffect(() => {
 		if (datasetStatus === "completed") {
 			setPreview(false);
+			setSpinner(false);
 		}
 	}, [datasetStatus]);
 
@@ -272,7 +265,7 @@ export default function CreateAndUpload() {
 			navigate(path);
 		}
 	}
-	
+
 	// Add timeout cleanup to prevent memory leaks when component unmounts
 	useEffect(() => {
 		return () => {
@@ -285,76 +278,70 @@ export default function CreateAndUpload() {
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
 		<Box className="createupload" sx={{ padding: { xs: 2, sm: 3 }, width: '100%' }}>
-			<LoadingOverlay active={loading} text={loading_text} spinner={spinner}>
-				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)}>
-					<Dropfile
-						onDrop={onDrop}
-						accept={{
-							"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-							"application/msword": [".doc"],
-							"application/pdf": [".pdf"]
-						}}
-						message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
-						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.info.main }}
-					/>
-				</div>
-			</LoadingOverlay>
-
-			<div className="radio-buttons-group-div" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-				<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-					<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>
-						Select Guideline
-					</Typography>
-					<RadioGroup
-						value={statementType}
-						name="radio-buttons-group"
-						row
-						onChange={handleStatementChange}
-						style={{ marginLeft: { xs: '0', sm: '10px' } }}
-					>
-						<div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-							<FormControlLabel value="spirit" control={<Radio />} label="Trial protocol" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
-							<img className="spirit-logo" src="../../public/assets/spirit-logo.png" alt="spirit-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }, marginRight: '10px' }}/>
-						</div>
-						<div style={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap' }}>
-							<FormControlLabel value="consort" control={<Radio />} label="Trial results" style={{ fontFamily: theme.typography.fontFamily}} disabled={loading}/>
-							<img className="consort-logo" src="../../public/assets/consort-logo.png" alt="consort-logo-sm" style={{ width: { xs: '50px', sm: 'auto' }}}/>
-						</div>
-					</RadioGroup>
-				</div>
-				{isAuthenticated && (
-					<div style={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: '0.5rem' }}>
-						<Typography variant="h6" style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}>Select Use-case</Typography>
-						<RadioGroup
-							defaultValue={userCategory}
-							name="radio-buttons-group"
-							row
-							onChange={handleUserCategoryChange}
-							style={{ marginLeft: { xs: '0', sm: '10px' } }}
-						>
-							<FormControlLabel value="author" control={<Radio />} label="Download report" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
-							<FormControlLabel value="researcher" control={<Radio />} label="View highlighted manuscript" style={{ fontFamily: theme.typography.fontFamily }} disabled={loading}/>
-						</RadioGroup>
-					</div>
-				)}
-			</div>
-			<div className="preview-button align-right" style={{ textAlign: { xs: 'center', sm: 'right' }, marginTop: '1rem' }}>
-				<Button
-					variant="contained"
-					style={{
-						color: theme.palette.info.contrastText,
-						...(preview ? 
-							{ backgroundColor: 'gray' } : 
-							{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
-						),
-						fontFamily: theme.typography.fontFamily
+		<div className="radio-buttons-group-div" style={{ 
+			display: 'grid', 
+			gridTemplateColumns: 'auto auto auto',
+			gap: '1rem 2rem',
+			alignItems: 'center',
+			marginBottom: '2rem' 
+		}}>
+			<Typography variant="h6" style={{
+				fontFamily: theme.typography.fontFamily,
+				color: theme.palette.primary.main
+			}}>
+				Select Guideline
+			</Typography>
+			<FormControlLabel
+				value="spirit"
+				control={<Radio checked={statementType === 'spirit'} onChange={handleStatementChange} />}
+				label="SPIRIT"
+				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+				disabled={loading}
+			/>
+			<FormControlLabel
+				value="consort"
+				control={<Radio checked={statementType === 'consort'} onChange={handleStatementChange} />}
+				label="CONSORT"
+				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+				disabled={loading}
+			/>
+		</div>
+		<LoadingOverlay active={loading} text={loading_text} spinner={spinner} styles={{
+			overlay: (base) => ({
+				...base,
+				background: 'rgba(163, 90, 244, 1)'
+			})
+		}}>
+			<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)} style={{ marginTop: '1rem' }}>
+				<Dropfile
+					onDrop={onDrop}
+					accept={{
+						"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+						"application/msword": [".doc"],
+						"application/pdf": [".pdf"]
 					}}
-					disabled={preview}
-					onClick={downloadOrPreview}
-				>
-					View Results
-				</Button>
+					message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
+					style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}
+				/>
 			</div>
+		</LoadingOverlay>
+		<div id="preview-button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', width: '100%' }}>
+			<Button
+				variant="contained"
+				style={{
+					color: theme.palette.info.contrastText,
+					...(preview ?
+						{ backgroundColor: 'lightgray', color: 'darkgray' } :
+						{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
+					),
+					fontFamily: theme.typography.fontFamily
+				}}
+				disabled={preview}
+				onClick={downloadOrPreview}
+			>
+				View Results
+			</Button>
+		</div>
 
 		</Box>
 

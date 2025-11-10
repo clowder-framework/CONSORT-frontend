@@ -1,11 +1,14 @@
 import { 
     SET_STATEMENT_TYPE, SET_USER_CATEGORY, 
-    RESET_STATEMENT_TO_DEFAULT, RESET_USER_CATEGORY_TO_DEFAULT 
+    RESET_STATEMENT_TO_DEFAULT, RESET_USER_CATEGORY_TO_DEFAULT,
+    SET_AUTHENTICATION_STATUS, SET_AUTHENTICATION_LOADING
 } from '../actions/dashboard';
 
 const initialState = {
     statementType: 'spirit',  // default value
-    userCategory: 'author'
+    userCategory: 'author',
+    isAuthenticated: false,
+    authenticationLoading: false
 };
 
 export function statement(state = initialState, action) {
@@ -36,6 +39,23 @@ export function userCategory(state = initialState, action) {
             return {
                 ...initialState,
                 userCategory: initialState.userCategory
+            };
+        default:
+            return state;
+    }
+}
+
+export function authentication(state = initialState, action) {
+    switch (action.type) {
+        case SET_AUTHENTICATION_STATUS:
+            return {
+                ...state,
+                isAuthenticated: action.isAuthenticated
+            };
+        case SET_AUTHENTICATION_LOADING:
+            return {
+                ...state,
+                authenticationLoading: action.isLoading
             };
         default:
             return state;

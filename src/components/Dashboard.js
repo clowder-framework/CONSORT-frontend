@@ -27,9 +27,9 @@ function Dashboard() {
 	}, [dispatch]);
 	
 	return (
-		<>
+		<div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 			<TopBar/>
-			<div className="outer-container">
+			<div className="outer-container" style={{ flex: 1 }}>
 				<div className="inner-container">
 					<Grid container spacing={2} direction="row" style={{ display: "flex", gap: "2rem", justifyContent:"flex-start" }}>
 						<Grid item xs={12} sm={5}>
@@ -46,7 +46,7 @@ function Dashboard() {
 				</div>
 			</div>
 			<Footer />
-		</>
+		</div>
 	)
 }
 
