@@ -1,9 +1,7 @@
 // dataset actions
 
-import {getClientInfo, getHeader} from "../utils/common";
+import {getHeader} from "../utils/common";
 import {createEmptyDatasetRequest, getDatasetsRequest} from "../utils/dataset";
-
-const clientInfo = await getClientInfo();
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";

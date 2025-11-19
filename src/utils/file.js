@@ -1,4 +1,4 @@
-import {dataURItoFile, downloadResource, getClientInfo, getHeader} from "./common";
+import {dataURItoFile, downloadResource, getHeader} from "./common";
 import {getServerUrl} from "./dataset";
 import config from "../app.config";
 
@@ -6,7 +6,7 @@ import config from "../app.config";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-export async function submitForExtraction(file_id, extractor_name, statementType, clientInfo){
+export async function submitForExtraction(file_id, extractor_name, statementType){
 	// submits file for extraction and returns true if extraction is successful, else returns false
 	let body = {}
 	if (extractor_name === config.rct_extractor){
@@ -16,7 +16,7 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 		body = {"extractor": extractor_name};
 	}
 	
-	const extraction_response = await extractionRequest(file_id, body, clientInfo);
+	const extraction_response = await extractionRequest(file_id, body);
 	console.log("Extraction response for extractor ", extractor_name, extraction_response);
 	if (extraction_response !== null && extraction_response.status === "OK") {
 		return true;
@@ -27,11 +27,11 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 }
 
 
-async function extractionRequest(file_id, body_data, clientInfo) {
+async function extractionRequest(file_id, body_data) {
 	// Clowder API call to submit a file for extraction - proxied through Express server
 	const extractions_url = getServerUrl(`/api/files/${file_id}/extractions`);
 	const body = JSON.stringify(body_data);
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
 
@@ -88,10 +88,10 @@ export async function fetchFileMetadata(id) {
 }
 
 
-export async function checkExtractionStatus(file_id, clientInfo){
+export async function checkExtractionStatus(file_id){
 	// Clowder API call to check extraction status of a file - proxied through Express server
 	const extractions_status_url = getServerUrl(`/api/extractions/${file_id}/statuses`);
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "cors", headers:authHeader});
 	if (response.status === 200){
@@ -116,13 +116,13 @@ export async function checkExtractionStatus(file_id, clientInfo){
 }
 
 // Not used
-export async function checkExtractionStatusLoop(file_id, extractor, interval, clientInfo){
+export async function checkExtractionStatusLoop(file_id, extractor, interval){
 	// check extraction status of a file in loop. Check status every interval seconds
 
 	let extraction_status = false;
 
 	const status_check_loop = async () => {
-		const extractions_data = await checkExtractionStatus(file_id, clientInfo);
+		const extractions_data = await checkExtractionStatus(file_id);
 		console.log(extractions_data);
 		const extractions_data_status = extractions_data["Status"];
 		const extractions_data_extractor = extractions_data[extractor];
@@ -209,9 +209,8 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 	if (!filename) {
 		filename = `${fileId}.zip`;
 	}
-	const clientInfo = await getClientInfo();
 	let endpoint = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
 
 	if (response.status === 200) {
@@ -238,9 +237,9 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 }
 
 
-export async function getPreviewsRequest(file_id, clientInfo) {
+export async function getPreviewsRequest(file_id) {
 	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews?superAdmin=true`);
-	let authHeader = getHeader(clientInfo)
+	let authHeader = getHeader()
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:authHeader});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 	let previews_list = [];
@@ -259,7 +258,7 @@ export async function getPreviewsRequest(file_id, clientInfo) {
 }
 
 
-export async function getPreviewResources(fileId, preview, clientInfo) {
+export async function getPreviewResources(fileId, preview) {
 	// get all file preview resources
 	const preview_config = {};
 	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
@@ -283,7 +282,7 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 		preview_config.fileType = preview["pv_contenttype"];
 
 		const resourceURL = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
-		preview_config.resource = await downloadResource(resourceURL, clientInfo);
+		preview_config.resource = await downloadResource(resourceURL);
 	}
 	else {
 		// Convert preview route to use proxy
@@ -316,7 +315,7 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 		}
 		preview_config.pv_route = pv_routes;
 		const resourceURL = getServerUrl(`${pv_routes}?superAdmin=true`);
-		preview_config.resource = await downloadResource(resourceURL, clientInfo);
+		preview_config.resource = await downloadResource(resourceURL);
 	}
 
 	return preview_config;

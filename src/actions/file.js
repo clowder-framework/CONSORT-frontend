@@ -109,9 +109,9 @@ export function receiveFilePreviews(type, json) {
 	};
 }
 
-export function fetchFilePreviews(id, clientInfo) {
+export function fetchFilePreviews(id) {
 	return async function fetchFilePreviewsThunk(dispatch) {
-		const previews_list = await getPreviewsRequest(id, clientInfo) // list of previews
+		const previews_list = await getPreviewsRequest(id) // list of previews
 		console.log("preview", previews_list);
 		// [{"file_id": "63e6a5dfe4b034120ec4f035", "previews": [{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 		// [{p_id: "PDF", p_main: "some-library.js", p_path: "/assets/javascripts/previewers/pdf", pv_contenttype: "application/pdf", pv_id: "67057fb9e4b00da0e4ef9937", pv_length: "2324500", pv_route: "/files/67057fb9e4b00da0e4ef9937/blob"}]

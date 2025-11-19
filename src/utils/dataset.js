@@ -1,9 +1,7 @@
-import {getClientInfo, getHeader, getHostname} from "./common";
+import {getHeader} from "./common";
 import config from "../app.config";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const clientInfo = await getClientInfo();
 
 /**
  * Constructs a full URL from a relative path, using SERVER_URL and SERVER_PORT environment variables
@@ -100,14 +98,14 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 }
 
 
-export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
+export async function uploadFileToDatasetRequest(dataset_id, file) {
 	// Clowder API call to upload file to dataset - proxied through Express server
 	// Note: The server route adds extract=false by default, but we can override if needed
 	const extractParam = config.extract ? `?extract=${config.extract}` : '';
 	const upload_to_dataset_url = getServerUrl(`/api/uploadToDataset/${dataset_id}${extractParam}`);
 	let body = new FormData();
 	body.append("File" ,file);
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	let response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
@@ -129,20 +127,20 @@ export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 }
 
 
-export async function listFilesInDatasetRequest(dataset_id, clientInfo) {
+export async function listFilesInDatasetRequest(dataset_id) {
 	// function to get a list of all files in clowder dataset - proxied through Express server
 	const listFiles_url = getServerUrl(`/api/datasets/${dataset_id}/listFiles`);
 	// get the list of files in dataset
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:authHeader, mode: "cors"});
 	return listFiles_response.json();
 }
 
 
-export async function getFileInDataset(dataset_id, file_type, file_name, clientInfo){
+export async function getFileInDataset(dataset_id, file_type, file_name){
 	// function to check if a specific file is present in dataset and return the file
 	// filter files on file type and filename and select the first item in filtered array.
-	let fileObjects = await listFilesInDatasetRequest(dataset_id, clientInfo);
+	let fileObjects = await listFilesInDatasetRequest(dataset_id);
 	console.log("getFileInDataset", dataset_id, file_type, file_name);
 	console.log("fileObjects", fileObjects);
 	let files = [];
@@ -204,20 +202,20 @@ export async function downloadDataset(datasetId, filename = null) {
 }
 
 
-export async function getDatasetMetadata(dataset_id, clientInfo) {
+export async function getDatasetMetadata(dataset_id) {
 	// returns the metadata for the dataset - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld`);
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
 	return metadata_response_json;
 }
 
 
-export async function getDatasetExtractorMetadata(dataset_id, extractor_name, clientInfo){
+export async function getDatasetExtractorMetadata(dataset_id, extractor_name){
 	// returns the metadata for the dataset for extractors specified in config - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`);
-	let authHeader = getHeader(clientInfo);
+	let authHeader = getHeader();
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
 	return metadata_response_json;
@@ -248,7 +246,7 @@ export async function setDatasetMetadata(dataset_id, content) {
 }
 
 
-export async function getDatasetMetadataLoop(dataset_id, extractor_name, clientInfo) {
+export async function getDatasetMetadataLoop(dataset_id, extractor_name) {
 	if (!dataset_id) {
 		console.error("Dataset does not exist");
 		return [];
@@ -258,7 +256,7 @@ export async function getDatasetMetadataLoop(dataset_id, extractor_name, clientI
 	let relevantMetadata = null;
 
 	do {
-		const metadata = await getDatasetMetadata(dataset_id, clientInfo);
+		const metadata = await getDatasetMetadata(dataset_id);
 		if (metadata && metadata.length > 0) {
 			relevantMetadata = metadata.find(item => item.content && item.content.extractor === extractor_name);
 			if (relevantMetadata) {
