@@ -10,17 +10,18 @@ const clientInfo = await getClientInfo();
  * @param {string} relativePath - The relative path (e.g., "/api/datasets/createempty")
  * @returns {string} - The full URL or relative path if no server URL is configured
  */
-function getServerUrl(relativePath) {
+export function getServerUrl(relativePath) {
 	const serverUrl = process.env.SERVER_URL || "";
 	const serverPort = process.env.SERVER_PORT || "";
 	
-	// If no server URL is configured, return relative path (current behavior)
-	if (!serverUrl) {
+	// If no server URL is configured, return relative path (works when frontend and backend are on same origin)
+	// This is the preferred approach for development when both run on the same port or when using a proxy
+	if (!serverUrl || serverUrl.trim() === "") {
 		return relativePath;
 	}
 	
 	// Construct base URL
-	let baseUrl = serverUrl;
+	let baseUrl = serverUrl.trim();
 	
 	// Add protocol if missing
 	if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
@@ -28,10 +29,10 @@ function getServerUrl(relativePath) {
 	}
 	
 	// Add port if specified and not already in URL
-	if (serverPort && !baseUrl.includes(`:${serverPort}`) && !baseUrl.match(/:\d+$/)) {
+	if (serverPort && serverPort.trim() !== "" && !baseUrl.includes(`:${serverPort.trim()}`) && !baseUrl.match(/:\d+$/)) {
 		// Remove trailing slash from baseUrl before appending port
 		baseUrl = baseUrl.replace(/\/$/, "");
-		baseUrl = `${baseUrl}:${serverPort}`;
+		baseUrl = `${baseUrl}:${serverPort.trim()}`;
 	}
 	
 	// Ensure relativePath starts with /
@@ -101,7 +102,9 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 
 export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 	// Clowder API call to upload file to dataset - proxied through Express server
-	const upload_to_dataset_url = getServerUrl(`/api/uploadToDataset/${dataset_id}?extract=${config.extract}`);
+	// Note: The server route adds extract=false by default, but we can override if needed
+	const extractParam = config.extract ? `?extract=${config.extract}` : '';
+	const upload_to_dataset_url = getServerUrl(`/api/uploadToDataset/${dataset_id}${extractParam}`);
 	let body = new FormData();
 	body.append("File" ,file);
 	let authHeader = getHeader(clientInfo);

@@ -1,4 +1,5 @@
 import {dataURItoFile, downloadResource, getClientInfo, getHeader} from "./common";
+import {getServerUrl} from "./dataset";
 import config from "../app.config";
 
 
@@ -28,7 +29,7 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 
 async function extractionRequest(file_id, body_data, clientInfo) {
 	// Clowder API call to submit a file for extraction - proxied through Express server
-	const extractions_url = `/api/files/${file_id}/extractions`;
+	const extractions_url = getServerUrl(`/api/files/${file_id}/extractions`);
 	const body = JSON.stringify(body_data);
 	let authHeader = getHeader(clientInfo);
 	authHeader.append('Accept', 'application/json');
@@ -73,7 +74,7 @@ async function extractionRequest(file_id, body_data, clientInfo) {
 
 
 export async function fetchFileMetadata(id) {
-	let url = `/api/files/${id}/metadata?superAdmin=true`;
+	let url = getServerUrl(`/api/files/${id}/metadata?superAdmin=true`);
 	let response = await fetch(url, {mode: "cors", headers: getHeader()});
 	if (response.status === 200) {
 		return await response.json();
@@ -89,7 +90,7 @@ export async function fetchFileMetadata(id) {
 
 export async function checkExtractionStatus(file_id, clientInfo){
 	// Clowder API call to check extraction status of a file - proxied through Express server
-	const extractions_status_url = `/api/extractions/${file_id}/statuses`;
+	const extractions_status_url = getServerUrl(`/api/extractions/${file_id}/statuses`);
 	let authHeader = getHeader(clientInfo);
 	authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "cors", headers:authHeader});
@@ -173,7 +174,7 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval, cl
 
 
 export async function uploadFile(formData, selectedDatasetId) {
-	let endpoint = `/api/datasets/${selectedDatasetId}/files?superAdmin=true`;
+	let endpoint = getServerUrl(`/api/datasets/${selectedDatasetId}/files?superAdmin=true`);
 	let authHeader = getHeader();
 	let body = new FormData();
 	formData.map((item) => {
@@ -209,7 +210,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 		filename = `${fileId}.zip`;
 	}
 	const clientInfo = await getClientInfo();
-	let endpoint = `/api/files/${fileId}/blob?superAdmin=true`;
+	let endpoint = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
 	let authHeader = getHeader(clientInfo);
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
 
@@ -238,7 +239,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 
 
 export async function getPreviewsRequest(file_id, clientInfo) {
-	const previews_url = `/api/files/${file_id}/getPreviews?superAdmin=true`;
+	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews?superAdmin=true`);
 	let authHeader = getHeader(clientInfo)
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:authHeader});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
@@ -276,12 +277,12 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 		if (!pv_route.startsWith('/api/')) {
 			pv_route = '/api' + pv_route;
 		}
-		preview_config.url = `${pv_route}?superAdmin=true`;
+		preview_config.url = getServerUrl(`${pv_route}?superAdmin=true`);
 		preview_config.fileid = preview["pv_id"];
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
 
-		const resourceURL = `/api/files/${fileId}/blob?superAdmin=true`;
+		const resourceURL = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
 		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
 	else {
@@ -292,7 +293,7 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 		if (!pv_route.startsWith('/api/')) {
 			pv_route = '/api' + pv_route;
 		}
-		preview_config.url = `${pv_route}?superAdmin=true`;
+		preview_config.url = getServerUrl(`${pv_route}?superAdmin=true`);
 		preview_config.fileid = preview["pv_id"];
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
@@ -314,7 +315,7 @@ export async function getPreviewResources(fileId, preview, clientInfo) {
 			pv_routes = '/api' + pv_routes;
 		}
 		preview_config.pv_route = pv_routes;
-		const resourceURL = `${pv_routes}?superAdmin=true`;
+		const resourceURL = getServerUrl(`${pv_routes}?superAdmin=true`);
 		preview_config.resource = await downloadResource(resourceURL, clientInfo);
 	}
 

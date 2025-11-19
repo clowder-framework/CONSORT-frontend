@@ -42,6 +42,28 @@ app.use(session({
   store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
 }));
 
+// CORS middleware for all /api/* routes - must be before authentication
+app.use(function(req, res, next) {
+  if (req.path.startsWith('/api/')) {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key, Authorization');
+    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+  }
+  next();
+});
+
 // CSRF protection - exclude API routes
 app.use(function(req, res, next) {
   // Skip CSRF for API proxy routes
@@ -51,13 +73,9 @@ app.use(function(req, res, next) {
   return csrf()(req, res, next);
 });
 
-// Passport authentication - exclude API routes (they don't need auth, proxy handles it)
-app.use(function(req, res, next) {
-  if (req.path.startsWith('/api/')) {
-    return next();
-  }
-  return passport.authenticate('session')(req, res, next);
-});
+// Passport authentication - run for all routes including API routes
+// CORS headers are already set above, so authentication failures will have CORS headers
+app.use(passport.authenticate('session'));
 
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
@@ -118,11 +136,32 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  // Set CORS headers for API routes even on errors
+  if (req.path.startsWith('/api/')) {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key, Authorization');
+  }
+  
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // For API routes, return JSON error instead of rendering error page
+  if (req.path.startsWith('/api/')) {
+    return res.status(err.status || 500).json({ 
+      error: err.message || 'Internal Server Error',
+      status: err.status || 500
+    });
+  }
+
+  // render the error page for non-API routes
   res.status(err.status || 500);
   res.render('error');
 });
