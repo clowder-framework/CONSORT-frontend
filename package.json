@@ -12,7 +12,7 @@
 		"start-message": "babel-node tools/startMessage.js",
 		"prestart": "npm-run-all --parallel start-message",
 		"start": "npm run build && (cp -r src/public  dist/public ) && (cd server && npm start)",
-		"start-client": "open:src",
+		"start-client": "npm-run-all --parallel open:src",
 		"dev:client": "babel-node tools/srcServer.js",
 		"dev:server": "cd server && npm start",
 		"dev": "npm-run-all --parallel dev:client dev:server",

@@ -9,12 +9,40 @@ const ensureLoggedIn = ensureLogIn();
 // Configure multer for memory storage to handle file uploads
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Helper function to set CORS headers
+function setCorsHeaders(req, res) {
+	const origin = req.headers.origin;
+	if (origin) {
+		res.setHeader('Access-Control-Allow-Origin', origin);
+		res.setHeader('Access-Control-Allow-Credentials', 'true');
+	} else {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+	}
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key, Authorization');
+	res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+}
+
 /**
  * Proxy route for all Clowder API calls
- * This route forwards requests to CLOWDER_REMOTE_HOSTNAME with the API key
- * to prevent exposing the API key to the client
+ * REQUIRES AUTHENTICATION - only logged-in users can access
  */
-router.all('/api/*', upload.any(), async function (req, res, next) {
+router.all('/api/*', ensureLoggedIn, function (req, res, next) {
+	// Handle CORS preflight requests - skip multer for OPTIONS
+	if (req.method === 'OPTIONS') {
+		const corsSet = setCorsHeaders(req, res);
+		if (!corsSet) {
+			return res.status(403).json({ error: 'CORS policy violation' });
+		}
+		return res.status(200).end();
+	}
+	
+	// Apply multer only for non-OPTIONS requests
+	upload.any()(req, res, next);
+}, async function (req, res, next) {
+	// Set CORS headers for all requests
+	setCorsHeaders(req, res);
+
 	try {
 		const CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
 		const APIKEY = process.env.APIKEY;

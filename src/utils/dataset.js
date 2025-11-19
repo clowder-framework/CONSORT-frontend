@@ -5,10 +5,46 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const clientInfo = await getClientInfo();
 
+/**
+ * Constructs a full URL from a relative path, using SERVER_URL and SERVER_PORT environment variables
+ * @param {string} relativePath - The relative path (e.g., "/api/datasets/createempty")
+ * @returns {string} - The full URL or relative path if no server URL is configured
+ */
+function getServerUrl(relativePath) {
+	const serverUrl = process.env.SERVER_URL || "";
+	const serverPort = process.env.SERVER_PORT || "";
+	
+	// If no server URL is configured, return relative path (current behavior)
+	if (!serverUrl) {
+		return relativePath;
+	}
+	
+	// Construct base URL
+	let baseUrl = serverUrl;
+	
+	// Add protocol if missing
+	if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+		baseUrl = `http://${baseUrl}`;
+	}
+	
+	// Add port if specified and not already in URL
+	if (serverPort && !baseUrl.includes(`:${serverPort}`) && !baseUrl.match(/:\d+$/)) {
+		// Remove trailing slash from baseUrl before appending port
+		baseUrl = baseUrl.replace(/\/$/, "");
+		baseUrl = `${baseUrl}:${serverPort}`;
+	}
+	
+	// Ensure relativePath starts with /
+	const path = relativePath.startsWith("/") ? relativePath : `/${relativePath}`;
+	
+	return `${baseUrl}${path}`;
+}
+
 export async function getDatasetsRequest(title, limit) {
 	// Clowder API to get dataset list - proxied through Express server
 	let url = `/api/datasets?limit=${limit}`;
 	if (title) url = `${url}&title=${title}`;
+	url = getServerUrl(url);
 	const response = await fetch(url, {mode: "cors", headers: getHeader()});
 	if (response.status === 200) {
 		console.log("Fetch dataset successful");
@@ -29,7 +65,7 @@ export async function getDatasetsRequest(title, limit) {
 
 export async function createEmptyDatasetRequest(dataset_name, dataset_description) {
 	// Clowder API call to create empty dataset - proxied through Express server
-	const url = "/api/datasets/createempty";
+	const url = getServerUrl("/api/datasets/createempty");
 	const authHeader = new Headers();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');
@@ -65,7 +101,7 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 
 export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 	// Clowder API call to upload file to dataset - proxied through Express server
-	const upload_to_dataset_url = `/api/uploadToDataset/${dataset_id}?extract=${config.extract}`;
+	const upload_to_dataset_url = getServerUrl(`/api/uploadToDataset/${dataset_id}?extract=${config.extract}`);
 	let body = new FormData();
 	body.append("File" ,file);
 	let authHeader = getHeader(clientInfo);
@@ -92,7 +128,7 @@ export async function uploadFileToDatasetRequest(dataset_id, file, clientInfo) {
 
 export async function listFilesInDatasetRequest(dataset_id, clientInfo) {
 	// function to get a list of all files in clowder dataset - proxied through Express server
-	const listFiles_url = `/api/datasets/${dataset_id}/listFiles`;
+	const listFiles_url = getServerUrl(`/api/datasets/${dataset_id}/listFiles`);
 	// get the list of files in dataset
 	let authHeader = getHeader(clientInfo);
 	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:authHeader, mode: "cors"});
@@ -140,7 +176,7 @@ export async function downloadDataset(datasetId, filename = null) {
 	} else {
 		filename = `${datasetId}.zip`;
 	}
-	let endpoint = `/api/datasets/${datasetId}/download`;
+	let endpoint = getServerUrl(`/api/datasets/${datasetId}/download`);
 	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: await getHeader()});
 
 	if (response.status === 200) {
@@ -167,7 +203,7 @@ export async function downloadDataset(datasetId, filename = null) {
 
 export async function getDatasetMetadata(dataset_id, clientInfo) {
 	// returns the metadata for the dataset - proxied through Express server
-	const metadata_url = `/api/datasets/${dataset_id}/metadata.jsonld`;
+	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld`);
 	let authHeader = getHeader(clientInfo);
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
@@ -177,7 +213,7 @@ export async function getDatasetMetadata(dataset_id, clientInfo) {
 
 export async function getDatasetExtractorMetadata(dataset_id, extractor_name, clientInfo){
 	// returns the metadata for the dataset for extractors specified in config - proxied through Express server
-	const metadata_url = `/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`;
+	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`);
 	let authHeader = getHeader(clientInfo);
 	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
@@ -187,7 +223,7 @@ export async function getDatasetExtractorMetadata(dataset_id, extractor_name, cl
 
 export async function setDatasetMetadata(dataset_id, content) {
 	// function to set the user defined metadata for dataset - proxied through Express server
-	const metadata_url = `/api/datasets/${dataset_id}/usermetadatajson`;
+	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/usermetadatajson`);
 	let authHeader = getHeader();
 	authHeader.append('Accept', 'application/json');
 	authHeader.append('Content-Type', 'application/json');

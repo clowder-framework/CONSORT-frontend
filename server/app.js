@@ -23,6 +23,7 @@ var clowderRouter = require('./routes/clowder');
 
 var app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -40,8 +41,24 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
 }));
-app.use(csrf());
-app.use(passport.authenticate('session'));
+
+// CSRF protection - exclude API routes
+app.use(function(req, res, next) {
+  // Skip CSRF for API proxy routes
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  return csrf()(req, res, next);
+});
+
+// Passport authentication - exclude API routes (they don't need auth, proxy handles it)
+app.use(function(req, res, next) {
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  return passport.authenticate('session')(req, res, next);
+});
+
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
   res.locals.messages = msgs;
@@ -49,7 +66,12 @@ app.use(function(req, res, next) {
   req.session.messages = [];
   next();
 });
+
 app.use(function(req, res, next) {
+  // Skip CSRF token for API proxy routes
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
   res.locals.csrfToken = req.csrfToken();
   next();
 });
