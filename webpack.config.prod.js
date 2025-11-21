@@ -41,7 +41,6 @@ export default {
 			"process.env": {
 				"NODE_ENV": JSON.stringify("production"),
 				// CLOWDER_REMOTE_HOSTNAME and APIKEY removed - all API calls are proxied through Express server
-				"KeycloakBaseURL": JSON.stringify(process.env.KeycloakBaseURL),
 				"SERVER_URL": JSON.stringify(process.env.SERVER_URL || ""),
 				"SERVER_PORT": JSON.stringify(process.env.SERVER_PORT || ""),
 				"PUBLIC_PATH": JSON.stringify(PUBLIC_PATH)
