@@ -295,11 +295,11 @@ router.post('/api/files/:fileId/extractions', handleCorsHeaders, async function 
  * Adds superAdmin=true query parameter by default
  */
 router.get('/api/files/:fileId/blob', handleCorsHeaders, async function (req, res) {
-	// Build query string with superAdmin=true, but allow client to override
+	// Remove superAdmin=true if set to make sure client can't send superAdmin requests
 	const existingQuery = req.url.includes('?') ? req.url.substring(req.url.indexOf('?') + 1) : '';
 	const queryParams = new URLSearchParams(existingQuery);
 	if (!queryParams.has('superAdmin')) {
-		queryParams.set('superAdmin', 'true');
+		queryParams.delete('superAdmin');
 	}
 	const queryString = queryParams.toString();
 
@@ -325,11 +325,11 @@ router.get('/api/datasets/:datasetId/metadata.jsonld', handleCorsHeaders, async 
  * Adds superAdmin=true query parameter by default
  */
 router.get('/api/files/:fileId/getPreviews', handleCorsHeaders, async function (req, res) {
-	// Build query string with superAdmin=true, but allow client to override
+	// Remove superAdmin=true if set to make sure client can't send superAdmin requests
 	const existingQuery = req.url.includes('?') ? req.url.substring(req.url.indexOf('?') + 1) : '';
 	const queryParams = new URLSearchParams(existingQuery);
 	if (!queryParams.has('superAdmin')) {
-		queryParams.set('superAdmin', 'true');
+		queryParams.delete('superAdmin');
 	}
 	const queryString = queryParams.toString();
 

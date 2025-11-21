@@ -17,7 +17,7 @@ export function receiveFileMetadata(type, json){
 }
 
 export function fetchFileMetadata(id) {
-	let url = `/api/files/${id}/metadata?superAdmin=true`;
+	let url = `/api/files/${id}/metadata`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -45,7 +45,7 @@ export function receiveFileExtractedMetadata(type, json) {
 }
 
 export function fetchFileExtractedMetadata(id) {
-	let url = `/api/files/${id}/extracted_metadata?superAdmin=true`;
+	let url = `/api/files/${id}/extracted_metadata`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -73,7 +73,7 @@ export function receiveFileMetadataJsonld(type, json) {
 }
 
 export function fetchFileMetadataJsonld(id) {
-	let url = `/api/files/${id}/metadata.jsonld?superAdmin=true`;
+	let url = `/api/files/${id}/metadata.jsonld`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -127,7 +127,7 @@ export function fetchFilePreviews(id) {
 export const DELETE_FILE = "DELETE_FILE";
 
 export function deleteFile(fileId) {
-	let url = `/api/files/${fileId}?superAdmin=true`;
+	let url = `/api/files/${fileId}`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
 		.then((response) => {
