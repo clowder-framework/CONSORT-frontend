@@ -25,7 +25,7 @@ declare module '@mui/material/styles' {
 export const theme = createTheme({
 	typography: {
 		fontFamily: [
-			'Lexend Deca',
+			'Lexend',
 			'sans-serif',
 		].join(','),
 	},

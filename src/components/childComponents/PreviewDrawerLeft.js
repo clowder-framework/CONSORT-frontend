@@ -144,35 +144,56 @@ export default function PreviewDrawerLeft(props) {
 				variant="permanent"
 				anchor="left"
 			>
-				<Toolbar sx={{ justifyContent: "space-between" }}>
-					<Box variant="contained" color="primary">
-						<Typography variant="h6" style={{color: theme.palette.primary.dark, fontWeight: "bold"}}>Items Missed</Typography>
-						<Typography align="center" style={{color: theme.palette.primary.main}}>{itemsMissed}</Typography>
-					</Box>
+				{/* Export Button Section */}
+				<Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
 					<Button onClick={onDownload} variant="contained"
+						size="large"
+						fullWidth
 						style={{ 
 							color: theme.palette.info.contrastText, 
 							backgroundColor: theme.palette.primary.dark,
-							fontFamily: theme.typography.fontFamily
+							fontFamily: theme.typography.fontFamily,
+							fontSize: "1.1rem",
+							fontWeight: "bold",
+							padding: "12px 24px"
 						}} 
 						startIcon={<DownloadIcon />}>
 						Export
 					</Button>
-				</Toolbar>
-				<Divider />
+				</Box>
 
-				<List
-					sx={{ width: drawerWidth, color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}
-					component="nav"
-					aria-labelledby="item-checklist"
-					subheader={
-						<ListSubheader component="div" id="item-checklist-subheader">
-							{statementString} Checklist Items
-						</ListSubheader>
-					}
-					variant="permanent"
-					anchor="left"
-				>
+				{/* Items Missed Section */}
+				<Box sx={{ p: 2, textAlign: "center", borderBottom: 1, borderColor: 'divider', backgroundColor: theme.palette.grey[50] }}>
+					<Typography variant="h6" style={{color: theme.palette.primary.dark, fontWeight: "bold", marginBottom: "8px"}}>Items Missed</Typography>
+					<Typography align="center" style={{color: theme.palette.primary.main, fontSize: "1.5rem", fontWeight: "bold"}}>{itemsMissed}</Typography>
+				</Box>
+
+				{/* Checklist Items Section */}
+				<Box sx={{ mt: 2 }}>
+					<List
+						sx={{ 
+							width: drawerWidth, 
+							color: theme.palette.primary.dark, 
+							fontFamily: theme.typography.fontFamily,
+							pt: 0
+						}}
+						component="nav"
+						aria-labelledby="item-checklist"
+						subheader={
+							<ListSubheader 
+								component="div" 
+								id="item-checklist-subheader"
+								sx={{ 
+									backgroundColor: 'transparent',
+									fontWeight: 'bold',
+									fontSize: '1rem',
+									color: theme.palette.primary.dark
+								}}
+							>
+								{statementString} Checklist Items
+							</ListSubheader>
+						}
+					>
 					{
 						(checklist.length > 0 && item_found_pages !== null) ?
 							checklist.map((check_item, index) => {
@@ -241,6 +262,7 @@ export default function PreviewDrawerLeft(props) {
 					}
 
 				</List>
+				</Box>
 
 			</Drawer>
 
