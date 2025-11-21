@@ -6,7 +6,7 @@ import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
 
 // pdf_pipeline function
-export async function pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
+export async function pdfPipeline(file_json, dataset_json, config, dispatch) {
     
     const fileid = file_json.id;
 	const filename = file_json.filename;
@@ -20,9 +20,9 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo, d
     dispatch(setExtractionStatus("Extracting sentences and metadata from file"));
     dispatch(updateDatasetStatus(datasetid, "in progress"));
     
-    const pdf_extraction_submission = await submitForExtraction(fileid, pdf_extractor, statementType, clientInfo);
+    const pdf_extraction_submission = await submitForExtraction(fileid, pdf_extractor, statementType);
     if (pdf_extraction_submission) {
-        const pdf_extraction_metadata = await getDatasetMetadataLoop(datasetid, pdf_extractor, clientInfo);
+        const pdf_extraction_metadata = await getDatasetMetadataLoop(datasetid, pdf_extractor);
         if (pdf_extraction_metadata !== null && pdf_extraction_metadata !== undefined){
             console.log("Pdf extraction done");
             console.log("Pdf extraction metadata", pdf_extraction_metadata);
@@ -36,11 +36,11 @@ export async function pdfPipeline(file_json, dataset_json, config, clientInfo, d
                 const fileNameWithoutExtension = filename.split('.').slice(0, -1).join('.');
                 csv_file_name = fileNameWithoutExtension + '.csv';
             }
-            extracted_csv_file = await getFileInDataset(datasetid, "text/csv", csv_file_name, clientInfo);
+            extracted_csv_file = await getFileInDataset(datasetid, "text/csv", csv_file_name);
             
             if (extracted_csv_file !== null && typeof extracted_csv_file.id === "string") {
                 console.log("Extracted csv file found after pdf extraction", extracted_csv_file);
-                const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, clientInfo, dispatch)
+                const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, config, dispatch)
                 if (csv_pipeline_status) {
                     dispatch(updateDatasetStatus(datasetid, "csv-completed"));
                 } else {

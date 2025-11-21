@@ -5,7 +5,7 @@ import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
 
 // csv_pipeline function
-export async function csvPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
+export async function csvPipeline(file_json, dataset_json, config, dispatch) {
 
     const fileid = file_json.id;
 	const filename = file_json.filename;
@@ -13,9 +13,9 @@ export async function csvPipeline(file_json, dataset_json, config, clientInfo, d
     dispatch(setExtractionStatus("Making predictions"));
     dispatch(updateDatasetStatus(datasetid, "in progress"));
     
-    const rct_extraction_submission = await submitForExtraction(fileid, config.rct_extractor, config.statementType, clientInfo);
+    const rct_extraction_submission = await submitForExtraction(fileid, config.rct_extractor, config.statementType);
     if (rct_extraction_submission) {
-        const rct_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.rct_extractor, clientInfo);
+        const rct_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.rct_extractor);
         if (rct_extraction_metadata !== null){
             console.log("RCT extraction metadata", rct_extraction_metadata);
             console.log("RCT extraction complete");

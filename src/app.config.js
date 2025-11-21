@@ -1,11 +1,7 @@
 let config = {};
-let hostname = process.env.CLOWDER_REMOTE_HOSTNAME || "";
+// CLOWDER_REMOTE_HOSTNAME and APIKEY are no longer needed on the client
+// All API calls are proxied through the Express server
 
-// TODO when add auth piece remove this env
-let apikey = process.env.APIKEY;
-
-config["hostname"] = hostname;
-config["apikey"] = apikey;
 // space id for Consort Client
 config["space"] = "645177dfe4b03d8d787951ea";
 // setting extract to true will trigger extractions on files automatically

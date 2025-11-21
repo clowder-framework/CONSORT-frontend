@@ -6,7 +6,7 @@ import {SET_EXTRACTION_STATUS, setExtractionStatus} from "../actions/file";
 import {updateDatasetStatus} from "../actions/dataset";
 
 // word_pipeline function
-export async function wordPipeline(file_json, dataset_json, config, clientInfo, dispatch) {
+export async function wordPipeline(file_json, dataset_json, config, dispatch) {
 
 	const fileid = file_json.id;
 	const filename = file_json.filename;
@@ -15,17 +15,17 @@ export async function wordPipeline(file_json, dataset_json, config, clientInfo, 
     dispatch(setExtractionStatus("Extracting text from file"));
     dispatch(updateDatasetStatus(datasetid, "in progress"));
     
-	const soffice_extraction_submission = await submitForExtraction(fileid, config.soffice_extractor, config.statementType, clientInfo);
+	const soffice_extraction_submission = await submitForExtraction(fileid, config.soffice_extractor, config.statementType);
     if (soffice_extraction_submission) {
 		// check for dataset metadata updation after extraction
-        const soffice_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.soffice_extractor, clientInfo);
+        const soffice_extraction_metadata = await getDatasetMetadataLoop(datasetid, config.soffice_extractor);
         if (soffice_extraction_metadata !== null){
             console.log("SOffice extraction complete. Proceeding to Pdf extraction");
 			// Remove the file extension from the filename
 			const fileNameWithoutExtension = filename.split('.').slice(0, -1).join('.');
 			const pdf_file_name = fileNameWithoutExtension + '.pdf';  
-            const extracted_pdf_file = await getFileInDataset(datasetid, "application/pdf", pdf_file_name, clientInfo);
-            const pdf_pipeline_status = await pdfPipeline(extracted_pdf_file, dataset_json, config, clientInfo, dispatch);
+            const extracted_pdf_file = await getFileInDataset(datasetid, "application/pdf", pdf_file_name);
+            const pdf_pipeline_status = await pdfPipeline(extracted_pdf_file, dataset_json, config, dispatch);
             if (pdf_pipeline_status) {
                 dispatch(updateDatasetStatus(datasetid, "pdf-completed"));
             } else {

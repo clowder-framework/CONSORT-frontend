@@ -17,7 +17,7 @@ export function receiveFileMetadata(type, json){
 }
 
 export function fetchFileMetadata(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/metadata?superAdmin=true`;
+	let url = `/api/files/${id}/metadata`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -45,7 +45,7 @@ export function receiveFileExtractedMetadata(type, json) {
 }
 
 export function fetchFileExtractedMetadata(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/extracted_metadata?superAdmin=true`;
+	let url = `/api/files/${id}/extracted_metadata`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -73,7 +73,7 @@ export function receiveFileMetadataJsonld(type, json) {
 }
 
 export function fetchFileMetadataJsonld(id) {
-	let url = `${config.hostname}/clowder/api/files/${id}/metadata.jsonld?superAdmin=true`;
+	let url = `/api/files/${id}/metadata.jsonld`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", headers: getHeader()})
 		.then((response) => {
@@ -109,9 +109,9 @@ export function receiveFilePreviews(type, json) {
 	};
 }
 
-export function fetchFilePreviews(id, clientInfo) {
+export function fetchFilePreviews(id) {
 	return async function fetchFilePreviewsThunk(dispatch) {
-		const previews_list = await getPreviewsRequest(id, clientInfo) // list of previews
+		const previews_list = await getPreviewsRequest(id) // list of previews
 		console.log("preview", previews_list);
 		// [{"file_id": "63e6a5dfe4b034120ec4f035", "previews": [{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 		// [{p_id: "PDF", p_main: "some-library.js", p_path: "/assets/javascripts/previewers/pdf", pv_contenttype: "application/pdf", pv_id: "67057fb9e4b00da0e4ef9937", pv_length: "2324500", pv_route: "/files/67057fb9e4b00da0e4ef9937/blob"}]
@@ -127,7 +127,7 @@ export function fetchFilePreviews(id, clientInfo) {
 export const DELETE_FILE = "DELETE_FILE";
 
 export function deleteFile(fileId) {
-	let url = `${config.hostname}/clowder/api/files/${fileId}?superAdmin=true`;
+	let url = `/api/files/${fileId}`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
 		.then((response) => {

@@ -26,7 +26,7 @@ async function getDatasetFromUrl(url) {
 function GetThumbnailFromUrl(props) {
 	const thumbnail=props.thumbnail;
 	if (thumbnail !== null && thumbnail !== undefined) {
-		const thumbnail_url = `${config.hostname}/clowder/api/thumbnails/${thumbnail}/blob?superAdmin=true`;
+		const thumbnail_url = `/api/thumbnails/${thumbnail}/blob?superAdmin=true`;
 		return (
 			<div className="thumbnail">
 				<img className="thumbnail-image" src={thumbnail_url} alt="thumbnail"/>
