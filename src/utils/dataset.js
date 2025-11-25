@@ -80,14 +80,12 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 		else if (response.status === 401) {
 			// handle error
 			const responseJson = await response.json();
-			console.log(responseJson);
-			console.error("Creation of dataset failed");
+			console.error("Creation of dataset failed", response.status, responseJson);
 			return null;
 		} else {
 			// handle error
 			const responseJson = await response.json();
-			console.log(responseJson);
-			console.error("Creation of dataset failed");
+			console.error("Creation of dataset failed", response.status, responseJson);
 			return null;
 		}
 	}
