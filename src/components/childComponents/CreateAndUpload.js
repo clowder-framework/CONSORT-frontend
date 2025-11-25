@@ -10,7 +10,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { theme } from "../../theme";
-import {getClientInfo} from "../../utils/common";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
@@ -38,7 +37,7 @@ export default function CreateAndUpload() {
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
-	const listFilePreviews = (fileId, clientInfo) => dispatch(fetchFilePreviews(fileId, clientInfo));
+	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
 	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 	const statementType = useSelector(state => state.statement.statementType);
 	const userCategory = useSelector(state => state.userCategory.userCategory);
@@ -137,7 +136,6 @@ export default function CreateAndUpload() {
 
 		if (extractionStatus !== null && datasetStatus !== "completed") {
 			setLoadingText(extractionStatus);
-			const clientInfo = await getClientInfo();
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 
 			// Make sure datasets exist before proceeding
@@ -156,11 +154,11 @@ export default function CreateAndUpload() {
 				else{
 					highlights_filename = file_name + '_highlights' + '.json'
 				}
-
-				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename, clientInfo);
+				
+				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename);
 				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
-					const metadata = await getDatasetMetadata(dataset_id, clientInfo);
+					const metadata = await getDatasetMetadata(dataset_id);
 					console.log("metadata", metadata);
 					// get the metadata content list
 					const contentList = metadata.map(item => item.content);
@@ -179,10 +177,10 @@ export default function CreateAndUpload() {
 						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"]
 						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"]
 						console.log("listFilePreviews", pdf_input_file)
-						listFilePreviews(pdf_input_file, clientInfo);
+						listFilePreviews(pdf_input_file);
 					}
 					else{
-						listFilePreviews(highlightsFile.id, clientInfo);
+						listFilePreviews(highlightsFile.id);
 					}
 					datasetMetadata(metadata);
 

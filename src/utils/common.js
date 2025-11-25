@@ -1,33 +1,16 @@
-import axios from "axios"
-
-
-// get client endpoint
-const getClient = {method:'GET', url:"/client"};
-
-export function getClientInfo(){
-	return axios.request(getClient).then(function (response) {
-		return response.data.headers
-	});
-	// // For testing, change to
-	// return {hostname:"http://localhost:8000",
-	// 	prefix:'',
-	// 	apikey:"<apikey>"}
-}
-
 // construct header
-export function getHeader(clientInfo) {
-	const headers = new Headers({
-		"X-API-Key": clientInfo.apikey
-	});
+// Note: API key is no longer needed on the client - the Express server proxy adds it
+export function getHeader() {
+	const headers = new Headers();
+	// API key is now handled by the server proxy, so we don't need to send it from the client
 	return headers;
 }
 
-export async function downloadResource(url, clientInfo) {
-	let authHeader = getHeader(clientInfo);
+export async function downloadResource(url) {
+	// URL should already be proxied (starts with /api/)
 	let response = await fetch(url, {
 		method: "GET",
 		mode: "cors",
-		headers: authHeader,
 	});
 
 	if (response.status === 200) {

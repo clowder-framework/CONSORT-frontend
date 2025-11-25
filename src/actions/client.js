@@ -7,7 +7,6 @@ import {
 	uploadFileToDatasetRequest
 } from "../utils/dataset";
 import config from "../app.config";
-import {getClientInfo} from "../utils/common";
 import {wordPipeline} from "../utils/word_pipeline";
 import {pdfPipeline} from "../utils/pdf_pipeline";
 import {SET_EXTRACTION_STATUS, setExtractionStatus} from "./file";
@@ -17,9 +16,6 @@ import {resetDatasetToDefault} from "./dataset";
 import {resetPdfPreviewToDefault} from "./pdfpreview";
 import {resetStatementToDefault} from "./dashboard";
 import {resetUserCategoryToDefault} from "./dashboard";
-
-
-const clientInfo = await getClientInfo();
 
 
 // createUploadExtract thunk function
@@ -32,17 +28,17 @@ export function createUploadExtract(file, config) {
 		const file_name = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension as dataset name
 		const file_description = file.type;
 		console.log("Uploading file", file_name);
-		const dataset_json = await createEmptyDatasetRequest(file_name, file_description, clientInfo); // returns the dataset ID {id:xxx}
+		const dataset_json = await createEmptyDatasetRequest(file_name, file_description); // returns the dataset ID {id:xxx}
 		if (dataset_json !== undefined && dataset_json !== null) {
 			dispatch(createDataset(CREATE_DATASETS, dataset_json));
 			// upload input file to dataset
-			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file, clientInfo); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
+			let file_json = await uploadFileToDatasetRequest(dataset_json.id, file); // return file ID. {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
 			if (file_json !== undefined){
 				file_json["filename"] = file.name;
 				// submit uploaded file for extraction
 				dispatch(setExtractionStatus("Analyzing file"));
 				if (file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type =="application/msword"){
-					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, clientInfo, dispatch);
+					const word_pipeline_status = await wordPipeline(file_json, dataset_json, config, dispatch);
 					if (word_pipeline_status) {
 						console.log("Analysis complete");
 						dispatch(setExtractionStatus("Analysis complete"));
@@ -55,7 +51,7 @@ export function createUploadExtract(file, config) {
 
 				}
 				else if (file.type == "application/pdf") {
-					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, clientInfo, dispatch);
+					const pdf_pipeline_status = await pdfPipeline(file_json, dataset_json, config, dispatch);
 					if (pdf_pipeline_status) {
 						console.log("Analysis complete.");
 						dispatch(setExtractionStatus("Analysis complete"));

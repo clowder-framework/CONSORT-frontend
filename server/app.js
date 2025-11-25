@@ -19,8 +19,10 @@ var SQLiteStore = require('connect-sqlite3')(session);
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var clowderRouter = require('./routes/clowder');
 
 var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,8 +41,42 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
 }));
-app.use(csrf());
+
+// CORS middleware for all /api/* routes - must be before authentication
+app.use(function(req, res, next) {
+  if (req.path.startsWith('/api/')) {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key, Authorization');
+    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+  }
+  next();
+});
+
+// CSRF protection - exclude API routes
+app.use(function(req, res, next) {
+  // Skip CSRF for API proxy routes
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  return csrf()(req, res, next);
+});
+
+// Passport authentication - run for all routes including API routes
+// CORS headers are already set above, so authentication failures will have CORS headers
 app.use(passport.authenticate('session'));
+
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
   res.locals.messages = msgs;
@@ -48,7 +84,12 @@ app.use(function(req, res, next) {
   req.session.messages = [];
   next();
 });
+
 app.use(function(req, res, next) {
+  // Skip CSRF token for API proxy routes
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
   res.locals.csrfToken = req.csrfToken();
   next();
 });
@@ -56,6 +97,7 @@ app.use(function(req, res, next) {
 //const baseUrl = process.env.BASE_URL;
 app.use('/', indexRouter);
 app.use('/', authRouter);
+app.use('/', clowderRouter);
 
 // redirect any other route back to home route /
 // app.use((req,res,next)=>{
@@ -70,18 +112,16 @@ app.use('/public', express.static('public'));
 
 
 app.get('/client',ensureLoggedIn, function (req, res, next){
-	// get env variables for header
-	var CLOWDER_REMOTE_HOSTNAME = process.env.CLOWDER_REMOTE_HOSTNAME;
-	var APIKEY = process.env.APIKEY;
-	var PREFIX = process.env.CLOWDER_PREFIX;
+	// All API calls are now proxied through Express server
+	// This endpoint is kept for backward compatibility but no longer exposes sensitive data
+	var PREFIX = process.env.CLOWDER_PREFIX || '';
 	var options = {
 		headers:{
-			'hostname': CLOWDER_REMOTE_HOSTNAME,
-			'prefix': PREFIX,
-			'apikey': APIKEY
+			'prefix': PREFIX
+			// hostname and apikey removed - all API calls are proxied through /api/* routes
 		}
 	}
-	res.json(options); // Use this in src/utils/common in getHeader() method.
+	res.json(options);
 });
 
 
@@ -96,11 +136,32 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  // Set CORS headers for API routes even on errors
+  if (req.path.startsWith('/api/')) {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key, Authorization');
+  }
+  
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // For API routes, return JSON error instead of rendering error page
+  if (req.path.startsWith('/api/')) {
+    return res.status(err.status || 500).json({ 
+      error: err.message || 'Internal Server Error',
+      status: err.status || 500
+    });
+  }
+
+  // render the error page for non-API routes
   res.status(err.status || 500);
   res.render('error');
 });
