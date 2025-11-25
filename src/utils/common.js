@@ -8,11 +8,9 @@ export function getHeader() {
 
 export async function downloadResource(url) {
 	// URL should already be proxied (starts with /api/)
-	let authHeader = getHeader();
 	let response = await fetch(url, {
 		method: "GET",
 		mode: "cors",
-		headers: authHeader,
 	});
 
 	if (response.status === 200) {

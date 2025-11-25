@@ -45,7 +45,7 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 export function fetchFilesInDataset(id) {
 	let url = `/api/datasets/${id}/files?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+		return fetch(url, {mode: "cors"})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -61,7 +61,7 @@ export function fetchFilesInDataset(id) {
 export function fetchDatasetAbout(id) {
 	let url = `/api/datasets/${id}?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode: "cors", headers: getHeader()})
+		return fetch(url, {mode: "cors"})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {
@@ -106,7 +106,7 @@ export function postDatasetMetadata(id, metadata) {
 export function deleteDataset(datasetId) {
 	let url = `/api/datasets/${datasetId}?superAdmin=true`;
 	return (dispatch) => {
-		return fetch(url, {mode: "cors", method: "DELETE", headers: getHeader()})
+		return fetch(url, {mode: "cors", method: "DELETE"})
 		.then((response) => {
 			if (response.status === 200) {
 				response.json().then(json => {

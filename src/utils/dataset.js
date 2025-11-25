@@ -44,7 +44,7 @@ export async function getDatasetsRequest(title, limit) {
 	let url = `/api/datasets?limit=${limit}`;
 	if (title) url = `${url}&title=${title}`;
 	url = getServerUrl(url);
-	const response = await fetch(url, {mode: "cors", headers: getHeader()});
+	const response = await fetch(url, {mode: "cors"});
 	if (response.status === 200) {
 		console.log("Fetch dataset successful");
 		return await response.json(); // list of datasets
@@ -103,11 +103,9 @@ export async function uploadFileToDatasetRequest(dataset_id, file) {
 	const upload_to_dataset_url = getServerUrl(`/api/uploadToDataset/${dataset_id}${extractParam}`);
 	let body = new FormData();
 	body.append("File" ,file);
-	let authHeader = getHeader();
 	let response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
-		headers: authHeader,
 		body: body,
 	});
 	if (response.status === 200) {
@@ -129,8 +127,7 @@ export async function listFilesInDatasetRequest(dataset_id) {
 	// function to get a list of all files in clowder dataset - proxied through Express server
 	const listFiles_url = getServerUrl(`/api/datasets/${dataset_id}/listFiles`);
 	// get the list of files in dataset
-	let authHeader = getHeader();
-	const listFiles_response = await fetch(listFiles_url, {method:"GET", headers:authHeader, mode: "cors"});
+	const listFiles_response = await fetch(listFiles_url, {method:"GET", mode: "cors"});
 	return listFiles_response.json();
 }
 
@@ -176,7 +173,7 @@ export async function downloadDataset(datasetId, filename = null) {
 		filename = `${datasetId}.zip`;
 	}
 	let endpoint = getServerUrl(`/api/datasets/${datasetId}/download`);
-	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: await getHeader()});
+	let response = await fetch(endpoint, {method: "GET", mode: "cors"});
 
 	if (response.status === 200) {
 		let blob = await response.blob();
@@ -203,8 +200,7 @@ export async function downloadDataset(datasetId, filename = null) {
 export async function getDatasetMetadata(dataset_id) {
 	// returns the metadata for the dataset - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld`);
-	let authHeader = getHeader();
-	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
+	const metadata_response = await fetch(metadata_url, {method:"GET", mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
 	return metadata_response_json;
 }
@@ -213,8 +209,7 @@ export async function getDatasetMetadata(dataset_id) {
 export async function getDatasetExtractorMetadata(dataset_id, extractor_name){
 	// returns the metadata for the dataset for extractors specified in config - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`);
-	let authHeader = getHeader();
-	const metadata_response = await fetch(metadata_url, {method:"GET", headers:authHeader, mode: "cors"});
+	const metadata_response = await fetch(metadata_url, {method:"GET", mode: "cors"});
 	let metadata_response_json = await metadata_response.json();
 	return metadata_response_json;
 }

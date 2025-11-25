@@ -1,14 +1,11 @@
-import {getHeader} from "./common";
 import config from "../app.config";
 
 
 export async function downloadThumbnail(thumbnailId, title = null) {
 	let url = `/api/thumbnails/${thumbnailId}/blob?superAdmin=true`;
-	let authHeader = getHeader();
 	let response = await fetch(url, {
 		method: "GET",
 		mode: "cors",
-		headers: authHeader,
 	});
 
 	if (response.status === 200) {

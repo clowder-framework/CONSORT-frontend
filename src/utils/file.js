@@ -75,7 +75,7 @@ async function extractionRequest(file_id, body_data) {
 
 export async function fetchFileMetadata(id) {
 	let url = getServerUrl(`/api/files/${id}/metadata?superAdmin=true`);
-	let response = await fetch(url, {mode: "cors", headers: getHeader()});
+	let response = await fetch(url, {mode: "cors"});
 	if (response.status === 200) {
 		return await response.json();
 	} else if (response.status === 401) {
@@ -92,7 +92,7 @@ export async function checkExtractionStatus(file_id){
 	// Clowder API call to check extraction status of a file - proxied through Express server
 	const extractions_status_url = getServerUrl(`/api/extractions/${file_id}/statuses`);
 	let authHeader = getHeader();
-	authHeader.append("Accept", "*/*");
+	// authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "cors", headers:authHeader});
 	if (response.status === 200){
 		console.log("Extraction status response %s", response);
@@ -175,7 +175,6 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 
 export async function uploadFile(formData, selectedDatasetId) {
 	let endpoint = getServerUrl(`/api/datasets/${selectedDatasetId}/files?superAdmin=true`);
-	let authHeader = getHeader();
 	let body = new FormData();
 	formData.map((item) => {
 		if (item["file"] !== undefined) {
@@ -186,7 +185,6 @@ export async function uploadFile(formData, selectedDatasetId) {
 	let response = await fetch(endpoint, {
 		method: "POST",
 		mode: "cors",
-		headers: authHeader,
 		body: body,
 	});
 
@@ -210,8 +208,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 		filename = `${fileId}.zip`;
 	}
 	let endpoint = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
-	let authHeader = getHeader();
-	let response = await fetch(endpoint, {method: "GET", mode: "cors", headers: authHeader});
+	let response = await fetch(endpoint, {method: "GET", mode: "cors"});
 
 	if (response.status === 200) {
 		let blob = await response.blob();
@@ -239,8 +236,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 
 export async function getPreviewsRequest(file_id) {
 	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews?superAdmin=true`);
-	let authHeader = getHeader()
-	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors", headers:authHeader});
+	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors"});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 	let previews_list = [];
 	if (previews_response.status === 200) {
