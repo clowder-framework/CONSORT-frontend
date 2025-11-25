@@ -43,7 +43,7 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 };
 
 export function fetchFilesInDataset(id) {
-	let url = `/api/datasets/${id}/files?superAdmin=true`;
+	let url = `/api/datasets/${id}/files`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
 		.then((response) => {
@@ -59,7 +59,7 @@ export function fetchFilesInDataset(id) {
 }
 
 export function fetchDatasetAbout(id) {
-	let url = `/api/datasets/${id}?superAdmin=true`;
+	let url = `/api/datasets/${id}`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
 		.then((response) => {
