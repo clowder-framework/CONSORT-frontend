@@ -68,11 +68,28 @@ async function proxyToClowder(req, res, apiPath = null, queryString = null) {
 		// Use provided query string or preserve from request
 		let finalQueryString = '';
 		if (queryString !== null) {
-			// If queryString is provided, add ? prefix if it has content
-			finalQueryString = queryString ? `?${queryString}` : '';
+			// If queryString is provided, parse and remove superAdmin if present
+			if (queryString) {
+				const queryParams = new URLSearchParams(queryString);
+				if (queryParams.has('superAdmin')) {
+					queryParams.delete('superAdmin');
+				}
+				finalQueryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+			} else {
+				finalQueryString = '';
+			}
 		} else {
-			// Otherwise, preserve query string from request (already includes ?)
-			finalQueryString = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+			// Otherwise, preserve query string from request and remove superAdmin if present
+			if (req.url.includes('?')) {
+				const existingQuery = req.url.substring(req.url.indexOf('?') + 1);
+				const queryParams = new URLSearchParams(existingQuery);
+				if (queryParams.has('superAdmin')) {
+					queryParams.delete('superAdmin');
+				}
+				finalQueryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+			} else {
+				finalQueryString = '';
+			}
 		}
 		const fullUrl = targetUrl + finalQueryString;
 
@@ -292,18 +309,9 @@ router.post('/api/files/:fileId/extractions', handleCorsHeaders, async function 
 
 /**
  * Specific route: GET /api/files/:fileId/blob
- * Adds superAdmin=true query parameter by default
  */
 router.get('/api/files/:fileId/blob', handleCorsHeaders, async function (req, res) {
-	// Remove superAdmin=true if set to make sure client can't send superAdmin requests
-	const existingQuery = req.url.includes('?') ? req.url.substring(req.url.indexOf('?') + 1) : '';
-	const queryParams = new URLSearchParams(existingQuery);
-	if (!queryParams.has('superAdmin')) {
-		queryParams.delete('superAdmin');
-	}
-	const queryString = queryParams.toString();
-
-	await proxyToClowder(req, res, `/files/${req.params.fileId}/blob`, queryString);
+	await proxyToClowder(req, res, `/files/${req.params.fileId}/blob`);
 });
 
 /**
@@ -322,18 +330,9 @@ router.get('/api/datasets/:datasetId/metadata.jsonld', handleCorsHeaders, async 
 
 /**
  * Specific route: GET /api/files/:fileId/getPreviews
- * Adds superAdmin=true query parameter by default
  */
 router.get('/api/files/:fileId/getPreviews', handleCorsHeaders, async function (req, res) {
-	// Remove superAdmin=true if set to make sure client can't send superAdmin requests
-	const existingQuery = req.url.includes('?') ? req.url.substring(req.url.indexOf('?') + 1) : '';
-	const queryParams = new URLSearchParams(existingQuery);
-	if (!queryParams.has('superAdmin')) {
-		queryParams.delete('superAdmin');
-	}
-	const queryString = queryParams.toString();
-
-	await proxyToClowder(req, res, `/files/${req.params.fileId}/getPreviews`, queryString);
+	await proxyToClowder(req, res, `/files/${req.params.fileId}/getPreviews`);
 });
 
 module.exports = router;
