@@ -1,6 +1,5 @@
 // file actions
 
-import config from "../app.config";
 import {getPreviewsRequest} from "../utils/file";
 
 
@@ -16,18 +15,18 @@ export function receiveFileMetadata(type, json){
 }
 
 export function fetchFileMetadata(id) {
-	let url = `/api/files/${id}/metadata`;
+	const url = `/api/files/${id}/metadata`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch(receiveFileMetadata(RECEIVE_FILE_METADATA, json));
-				});
-			} else {
-				dispatch(receiveFileMetadata(RECEIVE_FILE_METADATA, []));
-			}
-		});
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(json => {
+						dispatch(receiveFileMetadata(RECEIVE_FILE_METADATA, json));
+					});
+				} else {
+					dispatch(receiveFileMetadata(RECEIVE_FILE_METADATA, []));
+				}
+			});
 	};
 }
 
@@ -44,18 +43,18 @@ export function receiveFileExtractedMetadata(type, json) {
 }
 
 export function fetchFileExtractedMetadata(id) {
-	let url = `/api/files/${id}/extracted_metadata`;
+	const url = `/api/files/${id}/extracted_metadata`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch(receiveFileExtractedMetadata(RECEIVE_FILE_EXTRACTED_METADATA, json));
-				});
-			} else {
-				dispatch(receiveFileExtractedMetadata(RECEIVE_FILE_EXTRACTED_METADATA, []));
-			}
-		});
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(json => {
+						dispatch(receiveFileExtractedMetadata(RECEIVE_FILE_EXTRACTED_METADATA, json));
+					});
+				} else {
+					dispatch(receiveFileExtractedMetadata(RECEIVE_FILE_EXTRACTED_METADATA, []));
+				}
+			});
 	};
 }
 
@@ -72,18 +71,18 @@ export function receiveFileMetadataJsonld(type, json) {
 }
 
 export function fetchFileMetadataJsonld(id) {
-	let url = `/api/files/${id}/metadata.jsonld`;
+	const url = `/api/files/${id}/metadata.jsonld`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch(receiveFileMetadataJsonld(RECEIVE_FILE_METADATA_JSONLD, json));
-				});
-			} else {
-				dispatch(receiveFileMetadataJsonld(RECEIVE_FILE_METADATA_JSONLD, []));
-			}
-		});
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(json => {
+						dispatch(receiveFileMetadataJsonld(RECEIVE_FILE_METADATA_JSONLD, json));
+					});
+				} else {
+					dispatch(receiveFileMetadataJsonld(RECEIVE_FILE_METADATA_JSONLD, []));
+				}
+			});
 	};
 }
 
@@ -111,7 +110,7 @@ export function receiveFilePreviews(type, json) {
 export function fetchFilePreviews(id) {
 	return async function fetchFilePreviewsThunk(dispatch) {
 		const previews_list = await getPreviewsRequest(id) // list of previews
-		console.log("preview", previews_list);
+		// console.log("preview", previews_list);
 		// [{"file_id": "63e6a5dfe4b034120ec4f035", "previews": [{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 		// [{p_id: "PDF", p_main: "some-library.js", p_path: "/assets/javascripts/previewers/pdf", pv_contenttype: "application/pdf", pv_id: "67057fb9e4b00da0e4ef9937", pv_length: "2324500", pv_route: "/files/67057fb9e4b00da0e4ef9937/blob"}]
 		if (previews_list !== undefined && previews_list !== null) {
@@ -119,35 +118,35 @@ export function fetchFilePreviews(id) {
 		} else {
 			dispatch(receiveFilePreviews(RECEIVE_PREVIEWS, []));
 		}
-	}
+	};
 }
 
 
 export const DELETE_FILE = "DELETE_FILE";
 
 export function deleteFile(fileId) {
-	let url = `/api/files/${fileId}`;
+	const url = `/api/files/${fileId}`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", method: "DELETE"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch({
-						type: DELETE_FILE,
-						file: {"id": fileId, "status": json["status"] === undefined ? json["status"] : "success"},
-						receivedAt: Date.now(),
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(json => {
+						dispatch({
+							type: DELETE_FILE,
+							file: {"id": fileId, "status": json["status"] === undefined ? json["status"] : "success"},
+							receivedAt: Date.now(),
+						});
 					});
-				});
-			} else {
-				response.json().then(json => {
-					dispatch({
-						type: DELETE_FILE,
-						file: {"id": null, "status": json["status"] === undefined ? json["status"] : "fail"},
-						receivedAt: Date.now(),
+				} else {
+					response.json().then(json => {
+						dispatch({
+							type: DELETE_FILE,
+							file: {"id": null, "status": json["status"] === undefined ? json["status"] : "fail"},
+							receivedAt: Date.now(),
+						});
 					});
-				});
-			}
-		});
+				}
+			});
 	};
 }
 

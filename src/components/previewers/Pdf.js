@@ -1,7 +1,7 @@
 // Preview Pdf file using react-pdf package
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {useDispatch, useSelector} from "react-redux";
-import { pdfjs , Document, Page } from 'react-pdf';
+import { pdfjs , Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
 import { 
@@ -17,16 +17,15 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 export default function Pdf(props) {
 	const dispatch = useDispatch();
 
-	const {fileId, pdfSrc, metadata, ...other} = props;
+	const {pdfSrc, metadata} = props;
 
 	const [content, setContent] = useState({});
 	// all sentences from metadata
 	const [allSentences, setAllSentences] = useState([]); // [{label: "label", sentences: [{coords: "coords", text: "text"}]}]
 
 	const highlightCanvasRef = useRef();
-	const [isRendered, setIsRendered] = useState();
 	const [numPages, setNumPages] = useState(null);
-	let pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
+	const pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
 	const dispatchPageNumber = (number) => dispatch(setPageNumber(SET_PAGE_NUMBER, number));
 
 	const statementType = useSelector(state => state.statement.statementType);
@@ -34,10 +33,10 @@ export default function Pdf(props) {
 	const marginWidth = 75; // adjust margin width
 	const [pageWidth, setPageWidth] = useState(500);
 	const [pageHeight, setPageHeight]= useState(799);
-	let [scale_x, setScaleX] = useState(1); // recalculated dynamically in renderHighlights
-	let [scale_y, setScaleY] = useState(1); // recalculated dynamically in renderHighlights
-	let pdf_render_scale = 1.5;
-	let canvas_render_scale = 1.5; // keep same as pdf_render_scale for coordinate highlighting
+	const [isRendered, setIsRendered] = useState(false);
+	const [scale_x, setScaleX] = useState(1);
+	const [scale_y, setScaleY] = useState(1);
+	const pdf_render_scale = 1.5;
 
 	// Cleanup effect when component unmounts
 	useEffect(() => {
@@ -75,7 +74,7 @@ export default function Pdf(props) {
 			setAllSentences(sentences_list);
 		}
 		if (metadata === undefined){
-			console.error("Error metadata undefined");
+			// console.error("Error metadata undefined");
 			const sentences_list = []
 			setAllSentences(sentences_list);
 		}
@@ -250,12 +249,12 @@ export default function Pdf(props) {
 		// Use the dedicated highlight canvas
 		const canvas = highlightCanvasRef.current;
 		if (!canvas) {
-			console.error("canvas.current is empty");
+			// console.error("canvas.current is empty");
 			return;
 		}
 		// Ensure we have page dimensions
 		if (!pageWidth || !pageHeight) {
-			console.error("Page dimensions not set.");
+			// console.error("Page dimensions not set.");
 			return;
 		}
 
@@ -281,13 +280,12 @@ export default function Pdf(props) {
 		// // Scale the canvas to 2x while keeping PDF at 1.5x
 		// let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
 		// let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
-		const scale_factor = pdf_render_scale; // Use the same scale as the PDF render
-		let scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
-		let scale_y = (scaledPdfHeight / pageHeight);
+		const scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
+		const scale_y = (scaledPdfHeight / pageHeight);
 		const offset_x = marginWidth;
 
 		const pageHighlights = getPageHighlights();
-		console.log("pageHighlights:", pageHighlights); // Add logging
+		// console.log("pageHighlights:", pageHighlights); // Add logging
 
 		// --- Collision Detection Setup ---
 		const drawnLabelRects = []; // Stores { x, y, width, height } of drawn labels
@@ -318,22 +316,22 @@ export default function Pdf(props) {
 			
 			// Skip if there are no labels for this coordGroup (shouldn't happen with new logic, but safe check)
 			if (labels.length === 0) {
-				console.warn("Skipping coordGroup with empty labels array:", coordGroups);
+				// console.warn("Skipping coordGroup with empty labels array:", coordGroups);
 				return; 
 			}
 
 			// put the label only for the first coordGroup for the sentence
 			const firstCoordGroup = coordGroups[0];
-			const parts = firstCoordGroup.split(',');
+			const parts = firstCoordGroup.split(",");
 			if (parts.length < 5) {
-				console.warn("Skipping invalid coordGroup:", firstCoordGroup);
+				// console.warn("Skipping invalid coordGroup:", firstCoordGroup);
 				return; // Skip this item if coordGroup is malformed
 			}
 			const [label_page, label_x, label_y, label_width, label_height] = parts.map(Number);
 
 			// Check if parsing resulted in valid numbers
 			if ([label_page, label_x, label_y, label_width, label_height].some(isNaN)) {
-				console.warn("Skipping coordGroup with NaN values:", firstCoordGroup);
+				// console.warn("Skipping coordGroup with NaN values:", firstCoordGroup);
 				return; // Skip if any part is not a number
 			}
 
@@ -344,7 +342,7 @@ export default function Pdf(props) {
 			let drawHeight = label_height * scale_y;
 
 			// --- Label Positioning and Collision Avoidance ---
-			const combinedLabelText = labels.join(', '); // Join all labels for display
+			const combinedLabelText = labels.join(", "); // Join all labels for display
 			const stylingLabel = labels[0]; // Use the first label for color styling (consistent)
 			
 			// Estimate label width dynamically based on combined text
@@ -393,7 +391,7 @@ export default function Pdf(props) {
 
 					// Check if moving right pushed it off-canvas
 					if (finalLabelX + labelRectWidth > canvas_width) {
-						console.warn("Label pushed off-canvas to the right, attempting to place below initial Y instead:", combinedLabelText);
+						// console.warn("Label pushed off-canvas to the right, attempting to place below initial Y instead:", combinedLabelText);
 						// Fallback strategy: Reset X to its original proposed position
 						// and try moving Y down from the *initial* Y position
 						finalLabelX = proposedLabelX; // Reset X
@@ -420,7 +418,7 @@ export default function Pdf(props) {
 				*/
 			}
 			if (attempts === maxAttempts) {
-				console.warn("Could not find non-colliding position for label after max attempts:", combinedLabelText);
+				// console.warn("Could not find non-colliding position for label after max attempts:", combinedLabelText);
 				// Draw at the last attempted position, even if it overlaps
 			}
 			// --- End Label Positioning and Collision Avoidance ---
@@ -439,16 +437,16 @@ export default function Pdf(props) {
 
 			// Draw the highlight boxes for the text
 			for (const coordGroup of coordGroups) {
-				const parts = coordGroup.split(',');
+				const parts = coordGroup.split(",");
 				if (parts.length < 5) {
-					console.warn("Skipping invalid coordGroup:", coordGroup);
+					// console.warn("Skipping invalid coordGroup:", coordGroup);
 					continue;
 				}
 				const [p, x, y, w, h] = parts.map(Number);
-				let highlightDrawX = x * scale_x + offset_x; // Use separate vars for clarity
-				let highlightDrawY = y * scale_y;
-				let highlightDrawWidth = w * scale_x;
-				let highlightDrawHeight = h * scale_y;
+				const highlightDrawX = x * scale_x + offset_x; // Use separate vars for clarity
+				const highlightDrawY = y * scale_y;
+				const highlightDrawWidth = w * scale_x;
+				const highlightDrawHeight = h * scale_y;
 				highlightText(context, stylingLabel, highlightDrawX, highlightDrawY, highlightDrawWidth, highlightDrawHeight, text);
 			}
 		});

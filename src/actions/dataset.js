@@ -1,7 +1,7 @@
 // dataset actions
 
 import {getHeader} from "../utils/common";
-import {createEmptyDatasetRequest, getDatasetsRequest} from "../utils/dataset";
+import {getDatasetsRequest} from "../utils/dataset";
 
 // receive datasets action
 export const RECEIVE_DATASETS = "RECEIVE_DATASETS";
@@ -29,9 +29,9 @@ export const DELETE_DATASET = "DELETE_DATASET";
 // update dataset status action
 export const UPDATE_DATASET_STATUS = "UPDATE_DATASET_STATUS";
 export const updateDatasetStatus = (datasetId, status) => ({
-    type: UPDATE_DATASET_STATUS,
-    datasetId,
-    status
+	type: UPDATE_DATASET_STATUS,
+	datasetId,
+	status
 });
 
 // fetchDatasets thunk function
@@ -43,34 +43,34 @@ export const fetchDatasets = (title = null, limit="5") => async dispatch => {
 };
 
 export function fetchFilesInDataset(id) {
-	let url = `/api/datasets/${id}/files`;
+	const url = `/api/datasets/${id}/files`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch(receiveFilesInDataset(RECEIVE_FILES_IN_DATASET, json));
-				});
-			} else {
-				dispatch(receiveFilesInDataset(RECEIVE_FILES_IN_DATASET, []));
-			}
-		});
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(json => {
+						dispatch(receiveFilesInDataset(RECEIVE_FILES_IN_DATASET, json));
+					});
+				} else {
+					dispatch(receiveFilesInDataset(RECEIVE_FILES_IN_DATASET, []));
+				}
+			});
 	};
 }
 
 export function fetchDatasetAbout(id) {
-	let url = `/api/datasets/${id}`;
+	const url = `/api/datasets/${id}`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch(receiveDatasetAbout(RECEIVE_DATASET_ABOUT, json));
-				});
-			} else {
-				dispatch(receiveDatasetAbout(RECEIVE_DATASET_ABOUT, []));
-			}
-		});
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(json => {
+						dispatch(receiveDatasetAbout(RECEIVE_DATASET_ABOUT, json));
+					});
+				} else {
+					dispatch(receiveDatasetAbout(RECEIVE_DATASET_ABOUT, []));
+				}
+			});
 	};
 }
 
@@ -86,10 +86,10 @@ export function setDatasetMetadata(type, json) {
 }
 
 export function postDatasetMetadata(id, metadata) {
-	let url = `/api/datasets/${id}/metadata.jsonld`;
-	let authHeader = getHeader();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
+	const url = `/api/datasets/${id}/metadata.jsonld`;
+	const authHeader = getHeader();
+	authHeader.append("Accept", "application/json");
+	authHeader.append("Content-Type", "application/json");
 	const body = JSON.stringify(metadata);
 	return (dispatch) => {
 		return fetch(url, {method:"POST", mode: "cors", headers: authHeader, body:body})
@@ -104,24 +104,20 @@ export function postDatasetMetadata(id, metadata) {
 }
 
 export function deleteDataset(datasetId) {
-	let url = `/api/datasets/${datasetId}?superAdmin=true`;
+	const url = `/api/datasets/${datasetId}?superAdmin=true`;
 	return (dispatch) => {
 		return fetch(url, {mode: "cors", method: "DELETE"})
-		.then((response) => {
-			if (response.status === 200) {
-				response.json().then(json => {
-					dispatch({
-						type: DELETE_DATASET,
-						dataset: {"id": datasetId},
-						receivedAt: Date.now(),
+			.then((response) => {
+				if (response.status === 200) {
+					response.json().then(() => {
+						dispatch({
+							type: DELETE_DATASET,
+							dataset: {"id": datasetId},
+							receivedAt: Date.now(),
+						});
 					});
-				});
-			} else {
-				response.json().then(json => {
-					console.error("Failed to delete dataset:", json);
-				});
-			}
-		});
+				}
+			});
 	};
 }
 

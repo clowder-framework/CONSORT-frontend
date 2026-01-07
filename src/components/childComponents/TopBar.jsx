@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {AppBar, Link, Toolbar, Typography, Button, Box} from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import {useEffect, useState} from "react";
+import {makeStyles} from "@material-ui/core/styles";
+import {AppBar, Link, Toolbar, Typography, Button, Box} from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {checkAuthenticationStatus} from '../../actions/dashboard';
 import { theme } from '../../theme';
@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	toolBarItem: {
 		margin: "auto 12px auto 12px",
-		display: 'flex',
-		alignItems: 'center',
-		visibility: 'visible',
+		display: "flex",
+		alignItems: "center",
+		visibility: "visible",
 		opacity: 1
 	},
 	toolBarlink: {
@@ -97,8 +97,6 @@ export default function TopBar() {
 	
 	// Use Redux authentication state
 	const isAuthenticated = useSelector(state => state.authentication.isAuthenticated);
-	const authenticationLoading = useSelector(state => state.authentication.authenticationLoading);
-	
 	const [username, setUsername] = useState("anonymous");
 
 	useEffect(() => {
@@ -107,18 +105,18 @@ export default function TopBar() {
 		
 		const getUsername = async () => {
 			try {
-				console.log('Fetching username...');
-				const response = await fetch('/getUser', {
-					method: 'GET',
-					credentials: 'include',
+				// console.log("Fetching username...");
+				const response = await fetch("/getUser", {
+					method: "GET",
+					credentials: "include",
 				});
 				const data = await response.json();
 				setUsername(data.username);
-				console.log('Username set to:', data.username);
+				// console.log("Username set to:", data.username);
 			} catch (error) {
-				console.error('Error fetching username:', error);
-				setUsername('anonymous');
-				console.log('Username set to: ', username);
+				// console.error("Error fetching username:", error);
+				setUsername("anonymous");
+				// console.log("Username set to: ", username);
 			}
 		}
 		getUsername();
@@ -152,19 +150,19 @@ export default function TopBar() {
 					<RouterLink to="/home" className={classes.logo}>
 						<img src="../../public/assets/logo.png" alt="logo" width="150" height="50"/>
 					</RouterLink>
-					{username !== 'anonymous' && (
+					{username !== "anonymous" && (
 						<div style={{ 
-							marginLeft: '16px',
-							display: 'flex', 
-							alignItems: 'center',
+							marginLeft: "16px",
+							display: "flex", 
+							alignItems: "center",
 							backgroundImage: `linear-gradient(to right, ${theme.palette.gradient.start}, ${theme.palette.gradient.middle1}, ${theme.palette.gradient.middle2}, ${theme.palette.gradient.end})`,
-							padding: '6px 16px',
-							borderRadius: '4px',
-							color: 'transparent',
+							padding: "6px 16px",
+							borderRadius: "4px",
+							color: "transparent",
 							fontFamily: theme.typography.fontFamily,
-							WebkitBackgroundClip: 'text',
-							fontSize: '16px',
-							fontWeight: 'bold',
+							WebkitBackgroundClip: "text",
+							fontSize: "16px",
+							fontWeight: "bold",
 						}}>
 							<span>
 								Welcome, {username}!
@@ -172,7 +170,7 @@ export default function TopBar() {
 						</div>
 					)}
 					<Box sx={{ flexGrow: 1 }} />
-					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', color: theme.palette.secondary.dark}}>
+					<Typography className={classes.toolBarItem} sx={{horizontalAlign: "right", color: theme.palette.secondary.dark}}>
 						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Contact Us</Link>
 					</Typography>

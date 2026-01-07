@@ -24,7 +24,7 @@ const file = (state = defaultState, action) => {
 			};
 		case SET_EXTRACTION_STATUS:
 			return Object.assign({}, state, {extractionStatus: action.extractionStatus});
-		case 'RESET_FILE_PREVIEWS':
+		case "RESET_FILE_PREVIEWS":
 			return { ...state, previews: [] };
 		case RESET_FILE_TO_DEFAULT:
 			return defaultState;
