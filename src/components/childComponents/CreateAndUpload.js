@@ -127,13 +127,17 @@ export default function CreateAndUpload() {
 			return;
 		}
 
+		// Always update loading text when extractionStatus changes (before ref check)
+		if (extractionStatus !== null) {
+			setLoadingText(extractionStatus);
+		}
+
 		// Skip if extraction already completed for this file
 		if (extractionCompletedRef.current) {
 			return;
 		}
 
 		if (extractionStatus !== null && datasetStatus !== "completed") {
-			setLoadingText(extractionStatus);
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 
 			// Make sure datasets exist before proceeding
