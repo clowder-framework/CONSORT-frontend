@@ -184,6 +184,7 @@ export default function PreviewDrawerLeft(props) {
 								component="div" 
 								id="item-checklist-subheader"
 								sx={{ 
+									position: 'static',
 									backgroundColor: 'transparent',
 									fontWeight: 'bold',
 									fontSize: '1rem',
