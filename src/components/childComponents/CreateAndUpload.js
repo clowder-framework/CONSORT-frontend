@@ -35,8 +35,6 @@ export default function CreateAndUpload() {
 
 	const datasets = useSelector((state) => state.dataset.datasets);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
-	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
-	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 	const statementType = useSelector(state => state.statement.statementType);
 	const userCategory = useSelector(state => state.userCategory.userCategory);
 	const datasetStatus = useSelector(state => state.dataset.status);
@@ -49,6 +47,8 @@ export default function CreateAndUpload() {
 
 	// Reference to track any active timeouts
 	const timeoutsRef = useRef([]);
+	// Reference to track if extraction has already completed for current file
+	const extractionCompletedRef = useRef(false);
 
 	// Check authentication status on mount using Redux
 	useEffect(() => {
@@ -97,6 +97,9 @@ export default function CreateAndUpload() {
 		setRCTMetadata({});
 		setPDFMetadata({});
 
+		// Reset extraction completed flag for new upload
+		extractionCompletedRef.current = false;
+
 		// Clear any pending timeouts
 		timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
 		timeoutsRef.current = [];
@@ -124,6 +127,11 @@ export default function CreateAndUpload() {
 			return;
 		}
 
+		// Skip if extraction already completed for this file
+		if (extractionCompletedRef.current) {
+			return;
+		}
+
 		if (extractionStatus !== null && datasetStatus !== "completed") {
 			setLoadingText(extractionStatus);
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
@@ -137,8 +145,16 @@ export default function CreateAndUpload() {
 			const highlights_filename = `${file_name}_highlights.json`;
 			// check extraction status and highlights file generation in loop
 			const highlights_file_loop = async () => {
+				// Check again if already completed to prevent race conditions
+				if (extractionCompletedRef.current) {
+					return;
+				}
+				
 				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename);
 				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
+					// Mark extraction as completed to prevent duplicate processing
+					extractionCompletedRef.current = true;
+					
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					const metadata = await getDatasetMetadata(dataset_id);
 					// get the metadata content list
@@ -155,12 +171,12 @@ export default function CreateAndUpload() {
 						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"];
 						console.log("pdfExtractorContent", pdfExtractorContent);
 						console.log("pdf_extractor_extracted_files", pdf_extractor_extracted_files);
-						listFilePreviews(pdf_input_file);
+						dispatch(fetchFilePreviews(pdf_input_file));
 					}
 					else{
-						listFilePreviews(highlightsFile.id);
+						dispatch(fetchFilePreviews(highlightsFile.id));
 					}
-					datasetMetadata(metadata);
+					dispatch(setDatasetMetadata(SET_DATASET_METADATA, metadata));
 
 					setPreview(false);  // View Results button activated
 					 
@@ -198,7 +214,7 @@ export default function CreateAndUpload() {
 			dispatch(setExtractionStatus("Error in extraction"));
 			setSpinner(false); // stop display of spinner
 		}
-	}, [extractionStatus, datasetStatus, filename, datasets, listFilePreviews, datasetMetadata, dispatch]);
+	}, [extractionStatus, datasetStatus, filename, datasets, dispatch, pdfExtractor, rctExtractor]);
 
 	// Watch for dataset status changes
 	useEffect(() => {

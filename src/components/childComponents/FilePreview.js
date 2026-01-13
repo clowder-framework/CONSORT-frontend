@@ -1,6 +1,6 @@
 // Display file previews
 
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import {useSelector} from "react-redux";
 import {Box} from "@material-ui/core";
 
@@ -22,35 +22,67 @@ export default function FilePreview() {
 	const datasetMetadata = useSelector((state) => state.dataset.metadata);
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	
+	// Track the last processed file ID to prevent duplicate processing
+	const lastProcessedFileId = useRef(null);
+	
 	// We don't want to clear states here as they're needed for preview
 
 	// useEffect on filePreviews to download preview resources
-	useEffect( async ()=> {
-		// Reset the local previews state when filePreviews changes
-		setPreviews([]);
+	useEffect(() => {
+		// Flag to track if the effect is still active (for cleanup)
+		let isActive = true;
 		
-		if (filePreviews !== undefined && filePreviews.length > 0) {
-			const previewsTemp = [];
-			// get either pdf preview / html preview
-			if (filePreviews.length > 0){
-				// console.log("filePreviews:", filePreviews);
-				const fileId = filePreviews[0][0].file_id;
-				const previewsList = filePreviews[0][0].previews;
-				previewsList.map(async (preview) => {
-					const preview_config = await getPreviewResources(fileId, preview);
-					previewsTemp.push(preview_config);
-					setPreviews(previewsTemp); // set previews
-				});
+		const loadPreviews = async () => {
+			if (filePreviews === undefined || filePreviews.length === 0) {
+				return;
 			}
-			else {
-				// console.log("Multiple file previews found ", filePreviews)
+			
+			// Check if we have valid preview data
+			if (!filePreviews[0] || !filePreviews[0][0]) {
+				return;
 			}
-
-		}
+			
+			const fileId = filePreviews[0][0].file_id;
+			const previewsList = filePreviews[0][0].previews;
+			
+			// Skip if we've already processed this file ID
+			if (lastProcessedFileId.current === fileId) {
+				return;
+			}
+			
+			// Mark this file ID as being processed
+			lastProcessedFileId.current = fileId;
+			
+			// Reset the local previews state for new file
+			setPreviews([]);
+			
+			// Process all previews and collect results
+			const previewPromises = previewsList.map((preview) => 
+				getPreviewResources(fileId, preview)
+			);
+			
+			try {
+				const previewConfigs = await Promise.all(previewPromises);
+				
+				// Only update state if the effect is still active
+				if (isActive) {
+					setPreviews(previewConfigs);
+				}
+			} catch (error) {
+				console.error("Error loading preview resources:", error);
+			}
+		};
+		
+		loadPreviews();
+		
+		// Cleanup function to prevent state updates on unmounted component
+		return () => {
+			isActive = false;
+		};
 	}, [filePreviews]);
 
 	// useEffect on datasetMetadata to load preview leftdrawer metadata
-	useEffect( async ()=> {
+	useEffect(() => {
 		if (datasetMetadata !== undefined && Array.isArray(datasetMetadata)) {
 			const contentList = datasetMetadata.map(item => item.content);
 			const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
@@ -63,7 +95,7 @@ export default function FilePreview() {
 			}
 		}
 		// console.log("datasetMetadata ", datasetMetadata);
-	}, [datasetMetadata])
+	}, [datasetMetadata, pdfExtractor, rctExtractor]);
 
 
 	return (

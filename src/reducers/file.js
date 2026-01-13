@@ -19,8 +19,8 @@ const file = (state = defaultState, action) => {
 			return Object.assign({}, state, {metadataJsonld: action.metadataJsonld});
 		case RECEIVE_PREVIEWS:
 			return { ...state,
-				// new previews list
-				previews: [...state.previews, action.previews]
+				// Replace previews list instead of appending to prevent infinite re-renders
+				previews: [action.previews]
 			};
 		case SET_EXTRACTION_STATUS:
 			return Object.assign({}, state, {extractionStatus: action.extractionStatus});
