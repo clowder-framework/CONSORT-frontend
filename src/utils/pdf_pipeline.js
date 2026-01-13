@@ -40,10 +40,11 @@ export async function pdfPipeline(file_json, dataset_json, config, dispatch) {
 				const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, pdf_file_json, config, dispatch);
 				if (csv_pipeline_status) {
 					dispatch(updateDatasetStatus(datasetid, "csv-completed"));
+					return true;
 				} else {
 					dispatch(updateDatasetStatus(datasetid, "csv-failed")); // Reset status on failure
+					return false;
 				}
-				return csv_pipeline_status;
 			}
 			else {
 				dispatch(updateDatasetStatus(datasetid, "csv-failed")); // Reset status on failure
