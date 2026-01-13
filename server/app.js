@@ -39,7 +39,14 @@ app.use(session({
   secret: 'keyboard cat',
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
-  store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' })
+  store: new SQLiteStore({ db: 'sessions.db', dir: './var/db' }),
+  rolling: true, // Reset session expiration on each request
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    sameSite: 'lax'
+  }
 }));
 
 // CORS middleware for all /api/* routes - must be before authentication
