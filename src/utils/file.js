@@ -220,7 +220,7 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 
 
 export async function getPreviewsRequest(file_id) {
-	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews?superAdmin=true`);
+	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews`);
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors"});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
 	if (previews_response.status === 200) {
