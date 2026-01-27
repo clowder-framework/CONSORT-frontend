@@ -6,11 +6,12 @@ import config from "../app.config";
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-export async function submitForExtraction(file_id, extractor_name, statementType){
+export async function submitForExtraction(file_id, extractor_name, statementType, pdf_file_json){
 	// submits file for extraction and returns true if extraction is successful, else returns false
-	let body = {}
+	console.log("submitForExtraction", file_id, extractor_name, statementType, pdf_file_json);
+	let body = {};
 	if (extractor_name === config.rct_extractor){
-		body = {"extractor": extractor_name, "parameters": {"statement": statementType}};
+		body = {"extractor": extractor_name, "parameters": {"statement": statementType, "pdf_fileid": pdf_file_json.fileid, "pdf_filename": pdf_file_json.filename}};
 	}
 	else{
 		body = {"extractor": extractor_name};
@@ -31,15 +32,15 @@ async function extractionRequest(file_id, body_data) {
 	// Clowder API call to submit a file for extraction - proxied through Express server
 	const extractions_url = getServerUrl(`/api/files/${file_id}/extractions`);
 	const body = JSON.stringify(body_data);
-	let authHeader = getHeader();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
+	const authHeader = getHeader();
+	authHeader.append("Accept", "application/json");
+	authHeader.append("Content-Type", "application/json");
 
 	let extraction_response = null;
 
 	const extractionRequest_loop = async () => {
 
-		let response = await fetch(extractions_url, {
+		const response = await fetch(extractions_url, {
 			method: "POST",
 			mode: "cors",
 			headers: authHeader,
@@ -50,22 +51,18 @@ async function extractionRequest(file_id, body_data) {
 		//console.log(extraction_response_text);
 		if (response.status === 200) {
 			// return {"status":"OK","job_id":"string"}
-			console.log("submit to extraction successful");
 		} else if (response.status === 409){
 			// TODO handle error
-			console.error("submit to extraction error", extraction_response);
-			console.log("submit for extraction after 30s");
 			await sleep(30000);
 			await extractionRequest_loop();
 		}
 		else {
 			// TODO handle error
-			console.error("submit to extraction error", extraction_response);
 			extraction_response.status = "FAIL";
 		}
 		return extraction_response;
 
-	}
+	};
 
 	extraction_response = await extractionRequest_loop();
 	return extraction_response;
@@ -74,8 +71,8 @@ async function extractionRequest(file_id, body_data) {
 
 
 export async function fetchFileMetadata(id) {
-	let url = getServerUrl(`/api/files/${id}/metadata?superAdmin=true`);
-	let response = await fetch(url, {mode: "cors"});
+	const url = getServerUrl(`/api/files/${id}/metadata?superAdmin=true`);
+	const response = await fetch(url, {mode: "cors"});
 	if (response.status === 200) {
 		return await response.json();
 	} else if (response.status === 401) {
@@ -91,25 +88,21 @@ export async function fetchFileMetadata(id) {
 export async function checkExtractionStatus(file_id){
 	// Clowder API call to check extraction status of a file - proxied through Express server
 	const extractions_status_url = getServerUrl(`/api/extractions/${file_id}/statuses`);
-	let authHeader = getHeader();
+	const authHeader = getHeader();
 	// authHeader.append("Accept", "*/*");
 	const response = await fetch(extractions_status_url, {method:"GET", mode: "cors", headers:authHeader});
 	if (response.status === 200){
-		console.log("Extraction status response %s", response);
 		//{"ncsa.file.digest": "DONE", "ncsa.rctTransparencyExtractor": "DONE", "Status": "Done"}
 		return await response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
-		console.error("Extraction status error %s %s", extractions_status_url, response);
 		return {};
 	} else if (response.status === 500){
 		// TODO handle error
-		console.error("Extraction status Error %s %s", extractions_status_url, response);
 		return {};
 	}
 	else {
 		// TODO handle error
-		console.error("Extraction status error %s %s", extractions_status_url, response);
 		return {};
 	}
 
@@ -123,14 +116,12 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 
 	const status_check_loop = async () => {
 		const extractions_data = await checkExtractionStatus(file_id);
-		console.log(extractions_data);
 		const extractions_data_status = extractions_data["Status"];
 		const extractions_data_extractor = extractions_data[extractor];
 
 
 		if (extractions_data_status === "Done"){
 			if (extractions_data_extractor === "DONE"){
-				console.log("Extraction completed for file");
 				extraction_status = true;
 			}
 			else {
@@ -140,28 +131,24 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 						// check the status message from extractor
 						const extractor_message = extractions_data_extractor_message[1].split(":");
 						if (extractor_message[0] === "error") {
-							console.error("Error in extraction %s", extractor);
 							extraction_status = false;
 						}
 						else {
-							console.log("check extraction status after %s ms", interval);
 							await sleep(interval);
 							await status_check_loop();
 						}
 
 					}
 				} catch (e) {
-					console.error("Error in extraction %s %s", extractor, e);
 					extraction_status = false;
 				}
 			}
 		}
 		else if (extractions_data_status === "Processing") {
-			console.log("check extraction status after %s ms", interval);
 			await sleep(interval);
 			await status_check_loop();
 		}
-	} // status_check_loop end
+	}; // status_check_loop end
 
 	if (file_id !== null){
 		await status_check_loop();
@@ -174,15 +161,15 @@ export async function checkExtractionStatusLoop(file_id, extractor, interval){
 
 
 export async function uploadFile(formData, selectedDatasetId) {
-	let endpoint = getServerUrl(`/api/datasets/${selectedDatasetId}/files?superAdmin=true`);
-	let body = new FormData();
+	const endpoint = getServerUrl(`/api/datasets/${selectedDatasetId}/files?superAdmin=true`);
+	const body = new FormData();
 	formData.map((item) => {
 		if (item["file"] !== undefined) {
 			body.append("file", dataURItoFile(item["file"]));
 		}
 	});
 
-	let response = await fetch(endpoint, {
+	const response = await fetch(endpoint, {
 		method: "POST",
 		mode: "cors",
 		body: body,
@@ -207,38 +194,35 @@ export async function downloadAndSaveFile(fileId, filename = null) {
 	if (!filename) {
 		filename = `${fileId}.zip`;
 	}
-	let endpoint = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
-	let response = await fetch(endpoint, {method: "GET", mode: "cors"});
+	const endpoint = getServerUrl(`/api/files/${fileId}/blob?superAdmin=true`);
+	const response = await fetch(endpoint, {method: "GET", mode: "cors"});
 
 	if (response.status === 200) {
-		let blob = await response.blob();
+		const blob = await response.blob();
+		const downloadFilename = `RCTCheck_${filename}`;
 		if (window.navigator.msSaveOrOpenBlob) {
-			window.navigator.msSaveBlob(blob, "RCTCheck_" + filename);
-			console.log("RCTCheck_" + filename + " downloaded");
+			window.navigator.msSaveBlob(blob, downloadFilename);
 		} else {
-			let anchor = window.document.createElement("a");
+			const anchor = window.document.createElement("a");
 			anchor.href = window.URL.createObjectURL(blob);
-			anchor.download = "RCTCheck_" + filename;
+			anchor.download = downloadFilename;
 			document.body.appendChild(anchor);
 			anchor.click();
 			document.body.removeChild(anchor);
-			console.log("RCTCheck_" + filename + " downloaded");
 		}
 	} else if (response.status === 401) {
 		// TODO
-		console.error(response.json());
 	} else {
-		console.error(response.json());
+		// TODO handle error
 	}
-	return "RCTCheck_" + filename;
+	return `RCTCheck_${filename}`;
 }
 
 
 export async function getPreviewsRequest(file_id) {
-	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews?superAdmin=true`);
+	const previews_url = getServerUrl(`/api/files/${file_id}/getPreviews`);
 	const previews_response = await fetch(previews_url, {method:"GET", mode: "cors"});
 	// [{"file_id":"63e6a5dfe4b034120ec4f035","previews":[{"pv_route":"/clowder/files/63e6a5dfe4b034120ec4f035/blob","p_main":"html-iframe.js","pv_id":"63e6a5dfe4b034120ec4f035","p_path":"/clowder/assets/javascripts/previewers/html","p_id":"HTML","pv_length":"21348","pv_contenttype":"text/html"}]}]
-	let previews_list = [];
 	if (previews_response.status === 200) {
 		const file_preview = await previews_response.json();
 		// if (file_preview[0].file_id !== undefined){
@@ -249,7 +233,7 @@ export async function getPreviewsRequest(file_id) {
 		return file_preview;
 	}
 	else{
-		console.log("preview failed");
+		return null;
 	}
 }
 
@@ -262,15 +246,15 @@ export async function getPreviewResources(fileId, preview) {
 	
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 
-	if (preview_config.previewType === 'thumbnail') {
+	if (preview_config.previewType === "thumbnail") {
 		// TODO this is a hacky way to fix file previewer extractor output for soffice converted pdf docs
 		// in some cases, the file previewer extractor puts pdf file as thumbnail type. See https://github.com/clowder-framework/CONSORT-frontend/pull/91
 		// Convert preview route to use proxy
 		let pv_route = preview["pv_route"];
 		// Convert /clowder/api/... or /clowder/files/... to /api/...
-		pv_route = pv_route.replace(/^\/clowder\//, '/').replace(/^\/files\//, '/api/files/');
-		if (!pv_route.startsWith('/api/')) {
-			pv_route = '/api' + pv_route;
+		pv_route = pv_route.replace(/^\/clowder\//, "/").replace(/^\/files\//, "/api/files/");
+		if (!pv_route.startsWith("/api/")) {
+			pv_route = `/api${pv_route}`;
 		}
 		preview_config.url = getServerUrl(`${pv_route}?superAdmin=true`);
 		preview_config.fileid = preview["pv_id"];
@@ -284,9 +268,9 @@ export async function getPreviewResources(fileId, preview) {
 		// Convert preview route to use proxy
 		let pv_route = preview["pv_route"];
 		// Convert /clowder/api/... or /clowder/files/... to /api/...
-		pv_route = pv_route.replace(/^\/clowder\//, '/').replace(/^\/files\//, '/api/files/');
-		if (!pv_route.startsWith('/api/')) {
-			pv_route = '/api' + pv_route;
+		pv_route = pv_route.replace(/^\/clowder\//, "/").replace(/^\/files\//, "/api/files/");
+		if (!pv_route.startsWith("/api/")) {
+			pv_route = `/api${pv_route}`;
 		}
 		preview_config.url = getServerUrl(`${pv_route}?superAdmin=true`);
 		preview_config.fileid = preview["pv_id"];
@@ -297,17 +281,17 @@ export async function getPreviewResources(fileId, preview) {
 		let pv_routes = preview["pv_route"];   // pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"
 		if (!pv_routes.includes("/api/")) {
 			try{
-				let routes = pv_routes.split("files/");
+				const routes = pv_routes.split("files/");
 				// add api endpoint in url
-				pv_routes = routes[0] + 'api/files/' + routes[1];
+				pv_routes = `${routes[0]}api/files/${routes[1]}`;
 			} catch (e) {
-				console.error("Incorrect Preview url %s", pv_routes);
+				// TODO handle error
 			}
 		}
 		// Convert to proxy route
-		pv_routes = pv_routes.replace(/^\/clowder\//, '/');
-		if (!pv_routes.startsWith('/api/')) {
-			pv_routes = '/api' + pv_routes;
+		pv_routes = pv_routes.replace(/^\/clowder\//, "/");
+		if (!pv_routes.startsWith("/api/")) {
+			pv_routes = `/api${pv_routes}`;
 		}
 		preview_config.pv_route = pv_routes;
 		const resourceURL = getServerUrl(`${pv_routes}?superAdmin=true`);

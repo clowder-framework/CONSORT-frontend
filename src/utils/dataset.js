@@ -46,16 +46,13 @@ export async function getDatasetsRequest(title, limit) {
 	url = getServerUrl(url);
 	const response = await fetch(url, {mode: "cors"});
 	if (response.status === 200) {
-		console.log("Fetch dataset successful");
 		return await response.json(); // list of datasets
 	}
 	else if (response.status === 401) {
 		// handle error
-		console.log("Fetch of dataset failed");
 		return null;
 	} else {
 		// handle error
-		console.log("Fetch of dataset failed");
 		return null;
 	}
 
@@ -66,31 +63,26 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 	// Clowder API call to create empty dataset - proxied through Express server
 	const url = getServerUrl("/api/datasets/createempty");
 	const authHeader = new Headers();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
+	authHeader.append("Accept", "application/json");
+	authHeader.append("Content-Type", "application/json");
 	const body_data = {"name": dataset_name, "description": dataset_description, "space": config.space};
 	const body = JSON.stringify(body_data);
 	try {
 		const response = await fetch(url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 		if (response.status === 200) {
 			// return the dataset ID {id:xxx}
-			console.log("Creation of dataset successful");
 			return await response.json();
 		}
 		else if (response.status === 401) {
 			// handle error
-			const responseJson = await response.json();
-			console.error("Creation of dataset failed", response.status, responseJson);
 			return null;
 		} else {
 			// handle error
-			const responseJson = await response.json();
-			console.error("Creation of dataset failed", response.status, responseJson);
 			return null;
 		}
 	}
 	catch (error) {
-		console.error("Creation of dataset failed", error);
+		// TODO handle error
 		return null;
 	}
 }
@@ -99,11 +91,11 @@ export async function createEmptyDatasetRequest(dataset_name, dataset_descriptio
 export async function uploadFileToDatasetRequest(dataset_id, file) {
 	// Clowder API call to upload file to dataset - proxied through Express server
 	// Note: The server route adds extract=false by default, but we can override if needed
-	const extractParam = config.extract ? `?extract=${config.extract}` : '';
+	const extractParam = config.extract ? `?extract=${config.extract}` : "";
 	const upload_to_dataset_url = getServerUrl(`/api/uploadToDataset/${dataset_id}${extractParam}`);
-	let body = new FormData();
+	const body = new FormData();
 	body.append("File" ,file);
-	let response = await fetch(upload_to_dataset_url, {
+	const response = await fetch(upload_to_dataset_url, {
 		method: "POST",
 		mode: "cors",
 		body: body,
@@ -111,7 +103,6 @@ export async function uploadFileToDatasetRequest(dataset_id, file) {
 	if (response.status === 200) {
 		// return file ID
 		// {id:xxx} OR {ids:[{id:xxx}, {id:xxx}]}
-		console.log("upload to dataset successful");
 		return response.json();
 	} else if (response.status === 401) {
 		// TODO handle error
@@ -135,14 +126,12 @@ export async function listFilesInDatasetRequest(dataset_id) {
 export async function getFileInDataset(dataset_id, file_type, file_name){
 	// function to check if a specific file is present in dataset and return the file
 	// filter files on file type and filename and select the first item in filtered array.
-	let fileObjects = await listFilesInDatasetRequest(dataset_id);
-	console.log("getFileInDataset", dataset_id, file_type, file_name);
-	console.log("fileObjects", fileObjects);
+	const fileObjects = await listFilesInDatasetRequest(dataset_id);
 	let files = [];
 	if (file_name) {
 		files = Object.values(fileObjects).filter(file => {
 			if (file.contentType === file_type && file.filename === file_name){
-				return file
+				return file;
 			}
 		});
 	}
@@ -154,11 +143,9 @@ export async function getFileInDataset(dataset_id, file_type, file_name){
 	// [ {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string} ]
 	if (file !== undefined && file.contentType === file_type) {
 		// found file in dataset. return the object
-		console.log("File with type ", file_type, " generated");
 		return file;
 	}
 	else {
-		console.log("No File with type ", file_type);
 		return null;
 	}
 }
@@ -172,15 +159,15 @@ export async function downloadDataset(datasetId, filename = null) {
 	} else {
 		filename = `${datasetId}.zip`;
 	}
-	let endpoint = getServerUrl(`/api/datasets/${datasetId}/download`);
-	let response = await fetch(endpoint, {method: "GET", mode: "cors"});
+	const endpoint = getServerUrl(`/api/datasets/${datasetId}/download`);
+	const response = await fetch(endpoint, {method: "GET", mode: "cors"});
 
 	if (response.status === 200) {
-		let blob = await response.blob();
+		const blob = await response.blob();
 		if (window.navigator.msSaveOrOpenBlob) {
 			window.navigator.msSaveBlob(blob, filename);
 		} else {
-			let anchor = window.document.createElement("a");
+			const anchor = window.document.createElement("a");
 			anchor.href = window.URL.createObjectURL(blob);
 			anchor.download = filename;
 			document.body.appendChild(anchor);
@@ -188,10 +175,9 @@ export async function downloadDataset(datasetId, filename = null) {
 			document.body.removeChild(anchor);
 		}
 	} else if (response.status === 401) {
-		// TODO
-		console.log(response.json());
+		// TODO handle error
 	} else {
-		console.log(response.json());
+		// TODO handle error
 	}
 
 }
@@ -201,7 +187,7 @@ export async function getDatasetMetadata(dataset_id) {
 	// returns the metadata for the dataset - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld`);
 	const metadata_response = await fetch(metadata_url, {method:"GET", mode: "cors"});
-	let metadata_response_json = await metadata_response.json();
+	const metadata_response_json = await metadata_response.json();
 	return metadata_response_json;
 }
 
@@ -210,7 +196,7 @@ export async function getDatasetExtractorMetadata(dataset_id, extractor_name){
 	// returns the metadata for the dataset for extractors specified in config - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/metadata.jsonld?extractor=${extractor_name}`);
 	const metadata_response = await fetch(metadata_url, {method:"GET", mode: "cors"});
-	let metadata_response_json = await metadata_response.json();
+	const metadata_response_json = await metadata_response.json();
 	return metadata_response_json;
 }
 
@@ -218,22 +204,19 @@ export async function getDatasetExtractorMetadata(dataset_id, extractor_name){
 export async function setDatasetMetadata(dataset_id, content) {
 	// function to set the user defined metadata for dataset - proxied through Express server
 	const metadata_url = getServerUrl(`/api/datasets/${dataset_id}/usermetadatajson`);
-	let authHeader = getHeader();
-	authHeader.append('Accept', 'application/json');
-	authHeader.append('Content-Type', 'application/json');
+	const authHeader = getHeader();
+	authHeader.append("Accept", "application/json");
+	authHeader.append("Content-Type", "application/json");
 	const body = JSON.stringify(content);
 	const response = await fetch(metadata_url, {method:"POST", mode:"cors", headers:authHeader, body:body});
 	if (response.status === 200) {
-		console.log("Set metadata for dataset");
 		return await response.json();
 	}
 	else if (response.status === 401) {
 		// handle error
-		console.log("Metadata for dataset failed");
 		return null;
 	} else {
 		// handle error
-		console.log("Metadata for dataset failed");
 		return null;
 	}
 }
@@ -241,7 +224,7 @@ export async function setDatasetMetadata(dataset_id, content) {
 
 export async function getDatasetMetadataLoop(dataset_id, extractor_name) {
 	if (!dataset_id) {
-		console.error("Dataset does not exist");
+		console.error("Dataset ID is required");
 		return [];
 	}
 
@@ -258,7 +241,7 @@ export async function getDatasetMetadataLoop(dataset_id, extractor_name) {
 			}
 		}
 		if (!metadataFound) {
-			console.log(`No metadata found for extractor: ${extractor_name}. Retrying in 5 seconds...`);
+			console.log(`No metadata found for extractor: ${extractor_name}. Sleeping for 5 seconds.`);
 			await sleep(5000);
 		}
 	} while (!metadataFound);

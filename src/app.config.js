@@ -1,4 +1,4 @@
-let config = {};
+const config = {};
 // CLOWDER_REMOTE_HOSTNAME and APIKEY are no longer needed on the client
 // All API calls are proxied through the Express server
 

@@ -1,26 +1,25 @@
 // Create a dataset and upload a file. Submit for extraction and get file previews
 
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import {useEffect, useState, useCallback, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import LoadingOverlay from "react-loading-overlay-ts";
 import {Box, Button, Typography} from "@material-ui/core";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { theme } from "../../theme";
 import Dropfile from "./Dropfile";
 import {createUploadExtract} from "../../actions/client";
 import {getDatasetMetadata, getFileInDataset} from "../../utils/dataset";
 import {downloadAndSaveFile} from "../../utils/file";
-import {fetchFilePreviews, SET_EXTRACTION_STATUS, setExtractionStatus } from "../../actions/file";
+import {fetchFilePreviews, setExtractionStatus } from "../../actions/file";
 import {SET_DATASET_METADATA, setDatasetMetadata} from "../../actions/dataset";
-import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault, checkAuthenticationStatus} from '../../actions/dashboard';
+import {SET_STATEMENT_TYPE, setStatement, SET_USER_CATEGORY, setUserCategory, resetStatementToDefault, resetUserCategoryToDefault, checkAuthenticationStatus} from "../../actions/dashboard";
 import config from "../../app.config";
-import {resetFileToDefault} from '../../actions/file';
-import {resetDatasetToDefault} from '../../actions/dataset';
-import {resetPdfPreviewToDefault} from '../../actions/pdfpreview';
+import {resetFileToDefault} from "../../actions/file";
+import {resetDatasetToDefault} from "../../actions/dataset";
+import {resetPdfPreviewToDefault} from "../../actions/pdfpreview";
 
 
 export default function CreateAndUpload() {
@@ -30,34 +29,26 @@ export default function CreateAndUpload() {
 	const [mouseHover, setMouseHover] = useState(false); // mouse hover state for dropzone
 	const [loading, setLoading] = useState(false); // loading overlay state and button disabled state. set to active when dropfile is active
 	const [loading_text, setLoadingText] = useState("Processing"); // loading overlay text.
-	const [filename, setFilename] = useState(''); // uploaded filename
+	const [filename, setFilename] = useState(""); // uploaded filename
 	const [spinner, setSpinner] = useState(true); // loading overlay spinner active
 	const [preview, setPreview] = useState(true); // disabled button state for file preview button
 
 	const datasets = useSelector((state) => state.dataset.datasets);
-	const filesInDataset = useSelector(state => state.dataset.files);
 	const extractionStatus = useSelector(state => state.file.extractionStatus);
-	const listFilePreviews = (fileId) => dispatch(fetchFilePreviews(fileId));
-	const datasetMetadata = (json) => dispatch(setDatasetMetadata(SET_DATASET_METADATA, json));
 	const statementType = useSelector(state => state.statement.statementType);
 	const userCategory = useSelector(state => state.userCategory.userCategory);
 	const datasetStatus = useSelector(state => state.dataset.status);
 	const isAuthenticated = useSelector(state => state.authentication.isAuthenticated);
-	const authenticationLoading = useSelector(state => state.authentication.authenticationLoading);
 
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
 	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
-	let pdfExtractor;
+	const pdfExtractor = config.pdf_extractor;
 	const rctExtractor = config.rct_extractor;
-	if (userCategory === "author"){
-		pdfExtractor = config.pymupdf_extractor;
-	}
-	else{
-		pdfExtractor = config.pdf_extractor;
-	}
 
 	// Reference to track any active timeouts
 	const timeoutsRef = useRef([]);
+	// Reference to track if extraction has already completed for current file
+	const extractionCompletedRef = useRef(false);
 
 	// Check authentication status on mount using Redux
 	useEffect(() => {
@@ -66,7 +57,6 @@ export default function CreateAndUpload() {
 
 	// Update config when authentication status changes
 	useEffect(() => {
-		console.log("CreateAndUpload isAuthenticated", isAuthenticated);
 		config.userCategory = isAuthenticated ? "researcher" : "author";
 		dispatch(setUserCategory(SET_USER_CATEGORY, isAuthenticated ? "researcher" : "author"));
 	}, [isAuthenticated]);
@@ -81,8 +71,8 @@ export default function CreateAndUpload() {
 	const onDropFile = (file) => {
 		// Reset previous extraction state and previews
 		dispatch(setExtractionStatus(null));
-		dispatch({type: 'RESET_FILE_PREVIEWS'});
-		dispatch({type: 'RESET_DATASET_METADATA'});
+		dispatch({type: "RESET_FILE_PREVIEWS"});
+		dispatch({type: "RESET_DATASET_METADATA"});
 
 		setLoadingText("Uploading file");
 		setLoading(true);
@@ -107,18 +97,21 @@ export default function CreateAndUpload() {
 		setRCTMetadata({});
 		setPDFMetadata({});
 
+		// Reset extraction completed flag for new upload
+		extractionCompletedRef.current = false;
+
 		// Clear any pending timeouts
 		timeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
 		timeoutsRef.current = [];
 
 		try {
 			acceptedFiles.map(file => {
-				onDropFile(file)
-			})
-			rejectedFiles.map(file => {
+				onDropFile(file);
+			});
+			rejectedFiles.map(() => {
 				dispatch(setExtractionStatus("File rejected"));
 				setSpinner(false);
-			})
+			});
 		}
 		catch(error) {
 			dispatch(setExtractionStatus("Upload failed"));
@@ -128,67 +121,71 @@ export default function CreateAndUpload() {
 
 
 	// useEffect on extractionStatus for preview generation
-	useEffect(async () => {
+	useEffect(() => {
 		// Skip processing if we're in a state cleanup situation
-		if (filename === '') {
+		if (filename === "") {
+			return;
+		}
+
+		// Always update loading text when extractionStatus changes (before ref check)
+		if (extractionStatus !== null) {
+			setLoadingText(extractionStatus);
+		}
+
+		// Skip if extraction already completed for this file
+		if (extractionCompletedRef.current) {
 			return;
 		}
 
 		if (extractionStatus !== null && datasetStatus !== "completed") {
-			setLoadingText(extractionStatus);
 			const file_name = filename.replace(/\.[^/.]+$/, ""); // get filename without extension;
 
 			// Make sure datasets exist before proceeding
 			if (!datasets || datasets.length === 0) {
-				console.log("No datasets available");
 				return;
 			}
 
 			const dataset_id = datasets[0].id;
-			let highlights_filename;
+			const highlights_filename = `${file_name}_highlights.json`;
 			// check extraction status and highlights file generation in loop
 			const highlights_file_loop = async () => {
-				if (pdfExtractor === config.pymupdf_extractor){
-					highlights_filename = file_name + "-pymupdf" + '_highlights' + '.json'
-				}
-				else{
-					highlights_filename = file_name + '_highlights' + '.json'
+				// Check again if already completed to prevent race conditions
+				if (extractionCompletedRef.current) {
+					return;
 				}
 				
 				const highlightsFile = await getFileInDataset(dataset_id, "application/json", highlights_filename);
 				if (highlightsFile !== null && typeof highlightsFile.id === "string") {
+					// Mark extraction as completed to prevent duplicate processing
+					extractionCompletedRef.current = true;
+					
 					// {"id":string, "size":string, "date-created":string, "contentType":text/html, "filename":string}
 					const metadata = await getDatasetMetadata(dataset_id);
-					console.log("metadata", metadata);
 					// get the metadata content list
 					const contentList = metadata.map(item => item.content);
-					console.log("metadata content list", contentList);
 					const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 					const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
-					if (pdfExtractorContent){
-						setPDFMetadata(pdfExtractorContent);
-					}
 					if (rctExtractorContent){
 						setRCTMetadata(rctExtractorContent);
 					}
 					if (pdfExtractorContent){
+						setPDFMetadata(pdfExtractorContent);
 						// get pdf preview
-						console.log("pdf extractor preview ", pdfExtractorContent)
-						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"]
-						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"]
-						console.log("listFilePreviews", pdf_input_file)
-						listFilePreviews(pdf_input_file);
+						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"];
+						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"];
+						console.log("pdfExtractorContent", pdfExtractorContent);
+						console.log("pdf_extractor_extracted_files", pdf_extractor_extracted_files);
+						dispatch(fetchFilePreviews(pdf_input_file));
 					}
 					else{
-						listFilePreviews(highlightsFile.id);
+						dispatch(fetchFilePreviews(highlightsFile.id));
 					}
-					datasetMetadata(metadata);
+					dispatch(setDatasetMetadata(SET_DATASET_METADATA, metadata));
 
 					setPreview(false);  // View Results button activated
 					 
 					setSpinner(false); // stop display of spinner
 				} else {
-					console.log("check highlights file after 5s");
 					const timeoutId = setTimeout(highlights_file_loop, 5000);
 					timeoutsRef.current.push(timeoutId);
 				}
@@ -214,16 +211,14 @@ export default function CreateAndUpload() {
 					await highlights_file_loop();
 				};
 
-				await timeoutCheckedLoop(); // Start the loop with timeout checking
-			} else {
-				console.error("Dataset does not exist");
+				timeoutCheckedLoop(); // Start the loop with timeout checking
 			}
 		}
 		else if (extractionStatus === false){
 			dispatch(setExtractionStatus("Error in extraction"));
 			setSpinner(false); // stop display of spinner
 		}
-	}, [extractionStatus, datasetStatus]);
+	}, [extractionStatus, datasetStatus, filename, datasets, dispatch, pdfExtractor, rctExtractor]);
 
 	// Watch for dataset status changes
 	useEffect(() => {
@@ -238,15 +233,14 @@ export default function CreateAndUpload() {
 		setLoading(false); // stop display of overlay
 		setSpinner(false);
 		if (userCategory === "author"){
-			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"]
-			const reportFilename = RCTmetadata["extracted_files"][1]["filename"]
-			downloadAndSaveFile(reportFileID, reportFilename).then(r => {
-				console.log(r);
+			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"];
+			const reportFilename = RCTmetadata["extracted_files"][1]["filename"];
+			downloadAndSaveFile(reportFileID, reportFilename).then(() => {
 				// Clear all states
 				setLoading(false);
 				setSpinner(false);
 				setLoadingText("Processing");
-				setFilename('');
+				setFilename("");
 				setPreview(true);
 				setRCTMetadata({});
 				setPDFMetadata({});
@@ -259,10 +253,10 @@ export default function CreateAndUpload() {
 			});
 		}
 		else{
-			let path = '/preview';
+			const path = "/preview";
 			navigate(path);
 		}
-	}
+	};
 
 	// Add timeout cleanup to prevent memory leaks when component unmounts
 	useEffect(() => {
@@ -275,71 +269,71 @@ export default function CreateAndUpload() {
 
 	// We pass onDrop function and accept prop to the component. It will be used as initial params for useDropzone hook
 	return (
-		<Box className="createupload" sx={{ padding: { xs: 2, sm: 3 }, width: '100%' }}>
-		<div className="radio-buttons-group-div" style={{ 
-			display: 'grid', 
-			gridTemplateColumns: 'auto auto auto',
-			gap: '1rem 2rem',
-			alignItems: 'center',
-			marginBottom: '2rem' 
-		}}>
-			<Typography variant="h6" style={{
-				fontFamily: theme.typography.fontFamily,
-				color: theme.palette.primary.main
+		<Box className="createupload" sx={{ padding: { xs: 2, sm: 3 }, width: "100%" }}>
+			<div className="radio-buttons-group-div" style={{ 
+				display: "grid", 
+				gridTemplateColumns: "auto auto auto",
+				gap: "1rem 2rem",
+				alignItems: "center",
+				marginBottom: "2rem" 
 			}}>
-				Select Guideline
-			</Typography>
-			<FormControlLabel
-				value="spirit"
-				control={<Radio checked={statementType === 'spirit'} onChange={handleStatementChange} />}
-				label="SPIRIT"
-				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
-				disabled={loading}
-			/>
-			<FormControlLabel
-				value="consort"
-				control={<Radio checked={statementType === 'consort'} onChange={handleStatementChange} />}
-				label="CONSORT"
-				style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
-				disabled={loading}
-			/>
-		</div>
-		<LoadingOverlay active={loading} text={loading_text} spinner={spinner} styles={{
-			overlay: (base) => ({
-				...base,
-				background: 'rgba(163, 90, 244, 1)'
-			})
-		}}>
-			<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)} style={{ marginTop: '1rem' }}>
-				<Dropfile
-					onDrop={onDrop}
-					accept={{
-						"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-						"application/msword": [".doc"],
-						"application/pdf": [".pdf"]
-					}}
-					message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
-					style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}
+				<Typography variant="h6" style={{
+					fontFamily: theme.typography.fontFamily,
+					color: theme.palette.primary.main
+				}}>
+					Select Guideline
+				</Typography>
+				<FormControlLabel
+					value="spirit"
+					control={<Radio checked={statementType === "spirit"} onChange={handleStatementChange} />}
+					label="SPIRIT"
+					style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+					disabled={loading}
+				/>
+				<FormControlLabel
+					value="consort"
+					control={<Radio checked={statementType === "consort"} onChange={handleStatementChange} />}
+					label="CONSORT"
+					style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
+					disabled={loading}
 				/>
 			</div>
-		</LoadingOverlay>
-		<div id="preview-button" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '1rem', width: '100%' }}>
-			<Button
-				variant="contained"
-				style={{
-					color: theme.palette.info.contrastText,
-					...(preview ?
-						{ backgroundColor: 'lightgray', color: 'darkgray' } :
-						{ backgroundImage: 'linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)' }
-					),
-					fontFamily: theme.typography.fontFamily
-				}}
-				disabled={preview}
-				onClick={downloadOrPreview}
-			>
-				View Results
-			</Button>
-		</div>
+			<LoadingOverlay active={loading} text={loading_text} spinner={spinner} styles={{
+				overlay: (base) => ({
+					...base,
+					background: "rgba(163, 90, 244, 1)"
+				})
+			}}>
+				<div className="mousehoverdrop" onMouseEnter={() => setMouseHover(true)} style={{ marginTop: "1rem" }}>
+					<Dropfile
+						onDrop={onDrop}
+						accept={{
+							"application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+							"application/msword": [".doc"],
+							"application/pdf": [".pdf"]
+						}}
+						message={"Drag and drop your RCT manuscript here (pdf/doc/docx)"}
+						style={{ fontFamily: theme.typography.fontFamily, color: theme.palette.primary.main }}
+					/>
+				</div>
+			</LoadingOverlay>
+			<div id="preview-button" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "1rem", width: "100%" }}>
+				<Button
+					variant="contained"
+					style={{
+						color: theme.palette.info.contrastText,
+						...(preview ?
+							{ backgroundColor: "lightgray", color: "darkgray" } :
+							{ backgroundImage: "linear-gradient(to right, #CD67F9, #AD60F2, #7F46FC, #486EF5)" }
+						),
+						fontFamily: theme.typography.fontFamily
+					}}
+					disabled={preview}
+					onClick={downloadOrPreview}
+				>
+					View Results
+				</Button>
+			</div>
 
 		</Box>
 

@@ -64,9 +64,9 @@ export function checkAuthenticationStatus() {
 	return async (dispatch) => {
 		dispatch(setAuthenticationLoading(true));
 		try {
-			const response = await fetch('/isAuthenticated', {
-				method: 'GET',
-				credentials: 'include',
+			const response = await fetch("/isAuthenticated", {
+				method: "GET",
+				credentials: "include",
 			});
 			const data = await response.json();
 			dispatch(setAuthenticationStatus(data.isAuthenticated));
@@ -78,7 +78,7 @@ export function checkAuthenticationStatus() {
 				dispatch(setUserCategory(SET_USER_CATEGORY, "author"));
 			}
 		} catch (error) {
-			console.error('Error checking authentication status:', error);
+			// console.error("Error in checking authentication status", error);
 			dispatch(setAuthenticationStatus(false));
 			dispatch(setUserCategory(SET_USER_CATEGORY, "author"));
 		} finally {
