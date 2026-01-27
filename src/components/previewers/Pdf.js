@@ -280,8 +280,8 @@ export default function Pdf(props) {
 		// // Scale the canvas to 2x while keeping PDF at 1.5x
 		// let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
 		// let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
-		const scale_x = (scaledPdfWidth / pageWidth); // Match PDF render scale
-		const scale_y = (scaledPdfHeight / pageHeight);
+		const scale_x = pdf_render_scale; // Match PDF render scale
+		const scale_y = pdf_render_scale;
 		const offset_x = marginWidth;
 
 		const pageHighlights = getPageHighlights();
