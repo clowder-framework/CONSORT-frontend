@@ -20,6 +20,7 @@ export default function Pdf(props) {
 	const {pdfSrc, metadata} = props;
 
 	const [content, setContent] = useState({});
+	const [pageDimensions, setPageDimensions] = useState({width: 500, height: 799});
 	// all sentences from metadata
 	const [allSentences, setAllSentences] = useState([]); // [{label: "label", sentences: [{coords: "coords", text: "text"}]}]
 
@@ -60,8 +61,9 @@ export default function Pdf(props) {
 		if (metadata !== undefined){
 			const content = metadata;
 			setContent(content);
-			setPageWidth(parseInt(content['page_dimensions']['width']));
-			setPageHeight(parseInt(content['page_dimensions']['height']));
+			const pageDimensions = content['page_dimensions'];
+			setPageDimensions(pageDimensions);
+			console.log("pageDimensions:", pageDimensions);
 			const checklist = content['checklist'];
 			const sentences_list = []
 			checklist.forEach((section) => {
@@ -83,10 +85,16 @@ export default function Pdf(props) {
 
 	useEffect(() => {
 		dispatchPageNumber(pageNumber);
+		// pageDimensions is keyed by page number: { "1": {width, height}, "2": {...}, ... }
+		const dims = pageDimensions[pageNumber.toString()];
+		if (dims?.width != null && dims?.height != null) {
+			setPageWidth(parseInt(dims.width, 500));
+			setPageHeight(parseInt(dims.height, 799));
+		}
 		// Trigger re-render of highlights when page number changes
 		// Delay slightly to allow PDF page to render first if needed
 		//setTimeout(renderHighlights, 100);
-	}, [pageNumber]);
+	}, [pageNumber, pageDimensions]);
 
 	// // Effect to render highlights when relevant data changes
 	// useEffect(() => {
@@ -265,8 +273,8 @@ export default function Pdf(props) {
 		// let scale_y = canvas_height / pageHeight; // reverse of what is there in prev code in main branch
 
 		// Calculate scaled dimensions for PDF rendering area
-		const scaledPdfWidth = pageWidth * pdf_render_scale;
-		const scaledPdfHeight = pageHeight * pdf_render_scale;
+		const scaledPdfWidth = pageWidth;
+		const scaledPdfHeight = pageHeight;
 
 		// Set the overlay canvas dimensions to be wider for margins
 		const context = canvas.getContext('2d');
@@ -280,8 +288,8 @@ export default function Pdf(props) {
 		// // Scale the canvas to 2x while keeping PDF at 1.5x
 		// let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
 		// let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
-		const scale_x = pdf_render_scale; // Match PDF render scale
-		const scale_y = pdf_render_scale;
+		const scale_x = 1; // Match PDF render scale
+		const scale_y = 1;
 		const offset_x = marginWidth;
 
 		const pageHighlights = getPageHighlights();
@@ -486,7 +494,7 @@ export default function Pdf(props) {
 				{/* Relative positioning container for PDF and overlay canvas with scrollable content */}
 				<div style={{ 
 					position: 'relative', 
-					width: `${(pageWidth * pdf_render_scale) + (3 * marginWidth)}px`, 
+					width: `${(pageWidth * 1) + (3 * marginWidth)}px`, 
 					maxHeight: '80vh', // Limit height to 80% of viewport height
 					overflowY: 'scroll', // Add vertical scrollbar when content exceeds maxHeight
 					border: '1px solid #ccc' // Optional: add border to visualize the scrollable area
@@ -494,7 +502,7 @@ export default function Pdf(props) {
 					{/* Inner container to set the full height for scrolling content */}
 					<div style={{ 
 						position: 'relative', 
-						height: `${pageHeight * pdf_render_scale}px`, 
+						height: `${pageHeight * 1}px`, 
 						width: '100%' 
 					}}>
 						{/* PDF Document Rendering */}
@@ -508,7 +516,7 @@ export default function Pdf(props) {
 									onRenderSuccess={renderHighlights}
 									renderTextLayer={true}
 									renderAnnotationLayer={false}
-									width={pageWidth * pdf_render_scale}
+									width={pageWidth * 1}
 									//height={pageHeight * pdf_render_scale}
 								/>
 							</Document>
@@ -518,9 +526,9 @@ export default function Pdf(props) {
 							ref={highlightCanvasRef} 
 							style={{ position: 'absolute', left: '0', top: '0', pointerEvents: 'none' }} 
 							// Width should match the scrollable container's width, not just the PDF area + margins
-							width={pageWidth * pdf_render_scale + 3 * marginWidth} 
+							width={pageWidth * 1 + 3 * marginWidth} 
 							// Height should match the inner container's height (full PDF scaled height)
-							height={pageHeight * pdf_render_scale} 
+							height={pageHeight * 1} 
 						/>
 					</div>
 				</div>
