@@ -1,8 +1,7 @@
-import React from "react";
 import { Typography } from "@material-ui/core";
 
 export default function Thumbnail(props){
-	const {fileId, imgSrc, fileType, ...other} = props;
+	const {fileId, imgSrc, fileType} = props;
 	return (
 		(() => {
 			if (fileType === "image/jpeg" || fileType === "image/jpg" || fileType === "image/png"
@@ -11,12 +10,12 @@ export default function Thumbnail(props){
 			}
 			else if (fileType === "image/tiff"){
 				return <embed alt="No plugin capable of displaying TIFF images was found."
-							  width={750} height={550} src={imgSrc} type="image/tiff" negative="no" id="embedded" />;
+					width={750} height={550} src={imgSrc} type="image/tiff" id="embedded" />;
 			}
 			else{
 				return <Typography>ERROR: Unrecognised image format.</Typography>;
 			}
 
 		})()
-	)
+	);
 }

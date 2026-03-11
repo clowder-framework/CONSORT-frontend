@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {AppBar, Link, Toolbar, Typography, Button, Box} from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import {useEffect, useState} from "react";
+import {makeStyles} from "@material-ui/core/styles";
+import {AppBar, Link, Toolbar, Typography, Button, Box} from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {checkAuthenticationStatus} from '../../actions/dashboard';
 import { theme } from '../../theme';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../actions/dashboard';
@@ -29,9 +31,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 	toolBarItem: {
 		margin: "auto 12px auto 12px",
-		display: 'flex',
-		alignItems: 'center',
-		visibility: 'visible',
+		display: "flex",
+		alignItems: "center",
+		visibility: "visible",
 		opacity: 1
 	},
 	toolBarlink: {
@@ -57,45 +59,72 @@ const useStyles = makeStyles((theme) => ({
 
 
 
+/**
+ * Constructs a full URL from a relative path, using SERVER_URL and SERVER_PORT environment variables
+ * @param {string} relativePath - The relative path (e.g., "/login")
+ * @returns {string} - The full URL or relative path if no server URL is configured
+ */
+function getServerUrl(relativePath) {
+	const serverUrl = process.env.SERVER_URL || "";
+	const serverPort = process.env.SERVER_PORT || "";
+	
+	// If no server URL is configured, return relative path (works when frontend and backend are on same origin)
+	// This is the preferred approach for development when both run on the same port or when using a proxy
+	if (!serverUrl || serverUrl.trim() === "") {
+		return relativePath;
+	}
+	
+	// Construct base URL
+	let baseUrl = serverUrl.trim();
+	
+	// Add protocol if missing
+	if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+		baseUrl = `http://${baseUrl}`;
+	}
+	
+	// Add port if specified and not already in URL
+	if (serverPort && serverPort.trim() !== "" && !baseUrl.includes(`:${serverPort.trim()}`) && !baseUrl.match(/:\d+$/)) {
+		// Remove trailing slash from baseUrl before appending port
+		baseUrl = baseUrl.replace(/\/$/, "");
+		baseUrl = `${baseUrl}:${serverPort.trim()}`;
+	}
+	
+	// Ensure relativePath starts with /
+	const path = relativePath.startsWith("/") ? relativePath : `/${relativePath}`;
+	
+	return `${baseUrl}${path}`;
+}
+
 export default function TopBar() {
 	const classes = useStyles();
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
-	const [username, setUsername] = useState("Anonymous");
-    const dispatch = useDispatch();
+	const dispatch = useDispatch();
+	
+	// Use Redux authentication state
+	const isAuthenticated = useSelector(state => state.authentication.isAuthenticated);
+	const [username, setUsername] = useState("anonymous");
 
 	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const response = await fetch('/isAuthenticated', {
-					method: 'GET',
-					credentials: 'include',
-				});
-				const data = await response.json();
-				setIsAuthenticated(data.isAuthenticated);
-			} catch (error) {
-				console.error('Error checking authentication status:', error);
-			}
-		};
-		checkAuthStatus();
+		// Check authentication status using Redux
+		dispatch(checkAuthenticationStatus());
 		
 		const getUsername = async () => {
 			try {
-				console.log('Fetching username...');
-				const response = await fetch('/getUser', {
-					method: 'GET',
-					credentials: 'include',
+				// console.log("Fetching username...");
+				const response = await fetch("/getUser", {
+					method: "GET",
+					credentials: "include",
 				});
-                const data = await response.json();
-                setUsername(data.name);
-                dispatch(setUser(data.name));
-				console.log('User name set to:', data.name);
+				const data = await response.json();
+				setUsername(data.username);
+				// console.log("Username set to:", data.username);
 			} catch (error) {
-				console.error('Error fetching username:', error);
-				setUsername('Anonymous');
+				// console.error("Error fetching username:", error);
+				setUsername("anonymous");
+				// console.log("Username set to: ", username);
 			}
 		}
 		getUsername();
-	}, []);
+	}, [dispatch]);
 
 	// const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -125,19 +154,19 @@ export default function TopBar() {
 					<RouterLink to="/home" className={classes.logo}>
 						<img src="../../public/assets/logo.png" alt="logo" width="150" height="50"/>
 					</RouterLink>
-					{username !== 'Anonymous' && (
+					{username !== "anonymous" && (
 						<div style={{ 
-							marginLeft: '16px',
-							display: 'flex', 
-							alignItems: 'center',
+							marginLeft: "16px",
+							display: "flex", 
+							alignItems: "center",
 							backgroundImage: `linear-gradient(to right, ${theme.palette.gradient.start}, ${theme.palette.gradient.middle1}, ${theme.palette.gradient.middle2}, ${theme.palette.gradient.end})`,
-							padding: '6px 16px',
-							borderRadius: '4px',
-							color: 'transparent',
+							padding: "6px 16px",
+							borderRadius: "4px",
+							color: "transparent",
 							fontFamily: theme.typography.fontFamily,
-							WebkitBackgroundClip: 'text',
-							fontSize: '16px',
-							fontWeight: 'bold',
+							WebkitBackgroundClip: "text",
+							fontSize: "16px",
+							fontWeight: "bold",
 						}}>
 							<span>
 								Welcome, {username}!
@@ -145,16 +174,16 @@ export default function TopBar() {
 						</div>
 					)}
 					<Box sx={{ flexGrow: 1 }} />
-					<Typography className={classes.toolBarItem} sx={{horizontalAlign: 'right', color: theme.palette.secondary.dark}}>
-						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
+					<Typography className={classes.toolBarItem} sx={{horizontalAlign: "right", color: theme.palette.secondary.dark}}>
+						<Link href="mailto:halil@illinois.edu" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Contact Us</Link>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark}}>
+						<RouterLink to="/faq" className={classes.toolBarlink} style={{color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							FAQ</RouterLink>
 					</Typography>
 					<Typography className={classes.toolBarItem}>
-						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark}}>
+						<RouterLink to="/home" className={classes.toolBarlink} style={{marginRight: "50px", color: theme.palette.secondary.dark, fontFamily: theme.typography.fontFamily}}>
 							Home</RouterLink>
 					</Typography>
 					
@@ -167,9 +196,9 @@ export default function TopBar() {
 						}} 
 						onClick={async () => {
 							if (!isAuthenticated) {
-								window.location.href = '/login';
+								window.location.href = getServerUrl('/login');
 							} else {
-								window.location.href = '/logout';
+								window.location.href = getServerUrl('/logout');
 							}
 						}}
 					>

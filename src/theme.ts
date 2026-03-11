@@ -1,8 +1,7 @@
-import {createTheme} from '@mui/material/styles';
-import { ThemeOptions } from '@mui/material/styles';
+import {createTheme} from "@mui/material/styles";
 
 // Extend the theme to include custom properties
-declare module '@mui/material/styles' {
+declare module "@mui/material/styles" {
 	interface Palette {
 		gradient: {
 			start: string;
@@ -25,16 +24,16 @@ declare module '@mui/material/styles' {
 export const theme = createTheme({
 	typography: {
 		fontFamily: [
-			'Lexend Deca',
-			'sans-serif',
-		].join(','),
+			"Lexend",
+			"sans-serif",
+		].join(","),
 	},
 	palette: {
 		primary: {
 			light: "#AD8AF8",
 			main: "#8148FC",
 			dark: "#481EC0",
-			contrastText: '#FFFFFF',
+			contrastText: "#FFFFFF",
 		},
 		secondary: {
 			light: "#868E96",

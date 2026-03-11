@@ -21,6 +21,7 @@ run `npm start`
 ## Build and push image to NCSA hub
 
 - Run `docker build . -t hub.ncsa.illinois.edu/clowder/consort-frontend:<version>` to build docker image
+- Image needs to be built in a linux machine. Use NCSA Radiant VMs if using a non-compatible work laptop (Eg: Mac with apple silicon)
 - If you ran into error `[Errno 28] No space left on device:`, try below:
     - Free more spaces by running `docker system prune --all`
     - Increase the Disk image size. You can find the configuration in Docker Desktop

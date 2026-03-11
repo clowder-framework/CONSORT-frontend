@@ -1,19 +1,15 @@
 // Display file previews
 
-import React, {useEffect, useState, useCallback} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {Box, Button, Grid} from "@material-ui/core";
+import {useEffect, useState, useRef} from "react";
+import {useSelector} from "react-redux";
+import {Box} from "@material-ui/core";
 
 import Pdf from "../previewers/Pdf";
 import Html from "../previewers/Html";
 import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
-import Thumbnail from "../previewers/Thumbnail";
 import {getPreviewResources} from "../../utils/file";
 import PreviewDrawerLeft from "./PreviewDrawerLeft";
-import Intro from "./Intro";
-import CreateAndUpload from "./CreateAndUpload";
-import {getClientInfo, getJsonList} from "../../utils/common";
 import config from "../../app.config";
 import {rctdbClient} from "../../utils/rctdb-client";
 
@@ -21,7 +17,6 @@ export default function FilePreview() {
 
 	const pdfExtractor = config.pdf_extractor;
 	const rctExtractor = config.rct_extractor;
-	const dispatch = useDispatch();
 
 	const filePreviews = useSelector((state) => state.file.previews);
 	const [previews, setPreviews] = useState([]); // state for file previews
@@ -30,11 +25,9 @@ export default function FilePreview() {
 
 	const datasetMetadata = useSelector((state) => state.dataset.metadata);
 	const [RCTmetadata, setRCTMetadata] = useState({}); // state for RCT metadata
-	const [PDFmetadata, setPDFMetadata] = useState({}); // state for PDF metadata
-	const [publication, setPublication] = useState({}); // state for publication
-	const [annotations, setAnnotations] = useState([]); // state for annotations
-	const [statementSection, setStatementSection] = useState({}); // state for statement section
-	const [statementTopic, setStatementTopic] = useState({}); // state for statement topic
+	
+	// Track the last processed file ID to prevent duplicate processing
+	const lastProcessedFileId = useRef(null);
 	
 	// We don't want to clear states here as they're needed for preview
 
@@ -57,46 +50,74 @@ export default function FilePreview() {
 	}, [datasetId]);
 
 	// useEffect on filePreviews to download preview resources
-	useEffect( async ()=> {
-		// Reset the local previews state when filePreviews changes
-		setPreviews([]);
+	useEffect(() => {
+		// Flag to track if the effect is still active (for cleanup)
+		let isActive = true;
 		
-		if (filePreviews !== undefined && filePreviews.length > 0) {
-			const previewsTemp = [];
-			// get either pdf preview / html preview
-			if (filePreviews.length > 0){
-				console.log("filePreviews:", filePreviews);
-				const fileId = filePreviews[0][0].file_id;
-				const previewsList = filePreviews[0][0].previews;
-				previewsList.map(async (preview) => {
-					const clientInfo = await getClientInfo()
-					const preview_config = await getPreviewResources(fileId, preview, clientInfo);
-					previewsTemp.push(preview_config);
-					setPreviews(previewsTemp); // set previews
-				});
+		const loadPreviews = async () => {
+			if (filePreviews === undefined || filePreviews.length === 0) {
+				return;
 			}
-			else {
-				console.log("Multiple file previews found ", filePreviews)
+			
+			// Check if we have valid preview data
+			if (!filePreviews[0] || !filePreviews[0][0]) {
+				return;
 			}
-
-		}
+			
+			const fileId = filePreviews[0][0].file_id;
+			const previewsList = filePreviews[0][0].previews;
+			
+			// Skip if we've already processed this file ID
+			if (lastProcessedFileId.current === fileId) {
+				return;
+			}
+			
+			// Mark this file ID as being processed
+			lastProcessedFileId.current = fileId;
+			
+			// Reset the local previews state for new file
+			setPreviews([]);
+			
+			// Process all previews and collect results
+			const previewPromises = previewsList.map((preview) => 
+				getPreviewResources(fileId, preview)
+			);
+			
+			try {
+				const previewConfigs = await Promise.all(previewPromises);
+				
+				// Only update state if the effect is still active
+				if (isActive) {
+					setPreviews(previewConfigs);
+				}
+			} catch (error) {
+				console.error("Error loading preview resources:", error);
+			}
+		};
+		
+		loadPreviews();
+		
+		// Cleanup function to prevent state updates on unmounted component
+		return () => {
+			isActive = false;
+		};
 	}, [filePreviews]);
 
 	// useEffect on datasetMetadata to load preview leftdrawer metadata
-	useEffect( async ()=> {
+	useEffect(() => {
 		if (datasetMetadata !== undefined && Array.isArray(datasetMetadata)) {
 			const contentList = datasetMetadata.map(item => item.content);
 			const pdfExtractorContent = contentList.find(item => item.extractor === pdfExtractor);
 			const rctExtractorContent = contentList.find(item => item.extractor === rctExtractor);
 			if (pdfExtractorContent){
-				setPDFMetadata(pdfExtractorContent);
+				// setPDFMetadata(pdfExtractorContent);
 			}
 			if (rctExtractorContent){
 				setRCTMetadata(rctExtractorContent);
 			}
 		}
-		console.log("datasetMetadata ", datasetMetadata);
-	}, [datasetMetadata])
+		// console.log("datasetMetadata ", datasetMetadata);
+	}, [datasetMetadata, pdfExtractor, rctExtractor]);
 
 
 	return (
@@ -125,9 +146,9 @@ export default function FilePreview() {
 							// 		</div>
 							// 	);
 							} else if (preview["previewType"] === "pdf" || preview["previewType"] === "thumbnail") {
-								console.log("previewType is ", preview["previewType"]);
+								// console.log("previewType is ", preview["previewType"]);
 								return (
-									<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+									<Box key={preview["fileid"]} sx={{ display: "flex", height: "100vh", width: "100vw" }}>
 										{/* Drawer takes its fixed width */}
 										<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}
 											publication={publication}
@@ -136,23 +157,18 @@ export default function FilePreview() {
 											annotations={annotations}
 										/>
 										{/* Main content area for PDF, allows it to grow and centers the PDF viewer */}
-										<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1, display: 'flex', justifyContent: 'center' }}>
-											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}
-												publication={publication}
-												statementSection={statementSection}
-												statementTopic={statementTopic}
-												annotations={annotations}
-											/>
+										<Box sx={{ flexGrow: 1, overflow: "auto", p: 1, display: "flex", justifyContent: "center" }}>
+											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
 										</Box>
 									</Box>
 								);
 							} else if (preview["previewType"] === "html") {
 								return (
-									<Box key={preview["fileid"]} sx={{ display: 'flex', height: '100vh', width: '100vw' }}>
+									<Box key={preview["fileid"]} sx={{ display: "flex", height: "100vh", width: "100vw" }}>
 										{/* Drawer takes its fixed width */}
 										<PreviewDrawerLeft fileId={preview["fileid"]} fileSrc={preview["resource"]} metadata={RCTmetadata}/>
 										{/* Main content area for HTML, allows it to grow */}
-										<Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+										<Box sx={{ flexGrow: 1, overflow: "auto", p: 1 }}>
 											<Html fileId={preview["fileid"]} htmlSrc={preview["resource"]}/>
 										</Box>
 									</Box>

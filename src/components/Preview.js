@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Box, Button, Grid, ListItem, Typography} from "@material-ui/core";
+import {Box, Typography} from "@material-ui/core";
 import FilePreview from "./childComponents/FilePreview";
 import TopBar from "./childComponents/TopBar";
 
@@ -9,14 +9,14 @@ function Preview() {
 	useEffect(() => {
 		const checkAuthStatus = async () => {
 			try {
-				const response = await fetch('/isAuthenticated', {
-					method: 'GET',
-					credentials: 'include',
+				const response = await fetch("/isAuthenticated", {
+					method: "GET",
+					credentials: "include",
 				});
 				const data = await response.json();
 				setIsAuthenticated(data.isAuthenticated);
 			} catch (error) {
-				console.error('Error checking authentication status:', error);
+				// console.error("Error checking authentication status:", error);
 			}
 		};
 		checkAuthStatus();

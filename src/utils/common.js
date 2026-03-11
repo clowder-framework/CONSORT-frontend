@@ -1,37 +1,20 @@
-import axios from "axios"
-
-
-// get client endpoint
-const getClient = {method:'GET', url:"/client"};
-
-export function getClientInfo(){
-	return axios.request(getClient).then(function (response) {
-		return response.data.headers
-	});
-	// // For testing, change to
-	// return {hostname:"http://localhost:8000",
-	// 	prefix:'',
-	// 	apikey:"<apikey>"}
-}
-
 // construct header
-export function getHeader(clientInfo) {
-	const headers = new Headers({
-		"X-API-Key": clientInfo.apikey
-	});
+// Note: API key is no longer needed on the client - the Express server proxy adds it
+export function getHeader() {
+	const headers = new Headers();
+	// API key is now handled by the server proxy, so we don't need to send it from the client
 	return headers;
 }
 
-export async function downloadResource(url, clientInfo) {
-	let authHeader = getHeader(clientInfo);
-	let response = await fetch(url, {
+export async function downloadResource(url) {
+	// URL should already be proxied (starts with /api/)
+	const response = await fetch(url, {
 		method: "GET",
 		mode: "cors",
-		headers: authHeader,
 	});
 
 	if (response.status === 200) {
-		let blob = await response.blob();
+		const blob = await response.blob();
 		return window.URL.createObjectURL(blob);
 	} else if (response.status === 401) {
 		// TODO handle error
@@ -43,12 +26,12 @@ export async function downloadResource(url, clientInfo) {
 }
 
 export function dataURItoFile(dataURI) {
-	let metadata = dataURI.split(",")[0];
-	let mime = metadata.match(/:(.*?);/)[1];
-	let filename = metadata.match(/name=(.*?);/)[1];
+	const metadata = dataURI.split(",")[0];
+	const mime = metadata.match(/:(.*?);/)[1];
+	const filename = metadata.match(/name=(.*?);/)[1];
 
-	let binary = atob(dataURI.split(",")[1]);
-	let array = [];
+	const binary = atob(dataURI.split(",")[1]);
+	const array = [];
 	for (let i = 0; i < binary.length; i++) {
 		array.push(binary.charCodeAt(i));
 	}

@@ -67,19 +67,30 @@ export default function File() {
 					// download resources
 					let Configuration = {};
 					Configuration.previewType = filePreview["p_id"].replace(" ", "-").toLowerCase();
-					Configuration.url = `${config.hostname}${filePreview["pv_route"]}?superAdmin=true`;
+					
+					// Convert preview route to use proxy
+					let pv_route = filePreview["pv_route"];
+					// Convert /clowder/api/... or /clowder/files/... to /api/...
+					pv_route = pv_route.replace(/^\/clowder\//, '/').replace(/^\/files\//, '/api/files/');
+					if (!pv_route.startsWith('/api/')) {
+						pv_route = '/api' + pv_route;
+					}
+					Configuration.url = `${pv_route}?superAdmin=true`;
 					Configuration.fileid = filePreview["pv_id"];
 					Configuration.previewer = `/public${filePreview["p_path"]}/`;
 					Configuration.fileType = filePreview["pv_contenttype"];
 
-					// TODO need to fix on clowder v1: sometimes pv_route return the non-API routes
-					// /clowder/file vs clowder/api/file
-					// TODO Temp fix insert /api/
+					// Convert preview resource URL to use proxy
 					let pv_routes = filePreview["pv_route"];
 					if (!pv_routes.includes("/api/")) {
 						pv_routes = `${pv_routes.slice(0, 9)}api/${pv_routes.slice(9, pv_routes.length)}`
 					}
-					let resourceURL = `${config.hostname}${pv_routes}?superAdmin=true`;
+					// Convert to proxy route
+					pv_routes = pv_routes.replace(/^\/clowder\//, '/');
+					if (!pv_routes.startsWith('/api/')) {
+						pv_routes = '/api' + pv_routes;
+					}
+					let resourceURL = `${pv_routes}?superAdmin=true`;
 					Configuration.resource = await downloadResource(resourceURL);
 
 					previewsTemp.push(Configuration);

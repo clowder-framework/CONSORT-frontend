@@ -1,23 +1,21 @@
 // Preview LeftDrawer Component
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Box, Button, Typography} from "@material-ui/core";
-import Drawer from '@mui/material/Drawer';
-import Toolbar from '@mui/material/Toolbar';
-import Divider from '@mui/material/Divider';
+import Drawer from "@mui/material/Drawer";
 import {Badge, List, ListItemIcon} from "@mui/material";
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListSubheader from '@mui/material/ListSubheader';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
-import DownloadIcon from '@mui/icons-material/Download';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckIcon from '@mui/icons-material/Check';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItemText from "@mui/material/ListItemText";
+import Collapse from "@mui/material/Collapse";
+import DownloadIcon from "@mui/icons-material/Download";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import { theme } from '../../theme';
 import {downloadAndSaveFile} from "../../utils/file";
@@ -31,8 +29,8 @@ export default function PreviewDrawerLeft(props) {
 	const statementType = useSelector((state) => state.statement.statementType);
 	const statementString = statementType.toUpperCase();
 
-	const {fileId, fileSrc, metadata, publication, statementSection, statementTopic, annotations, ...other} = props;
-	const [extractor, setExtractor] = useState('');
+	const {metadata} = props;
+	const [extractor, setExtractor] = useState("");
 	const [content, setContent] = useState({});
 	const [itemsMissed, setItemsMissed] = useState('');
 	const [checklist, setChecklist] = useState([]);
@@ -44,9 +42,9 @@ export default function PreviewDrawerLeft(props) {
 
 
 	function getCoordsPages(sentences){
-		let pageNumbers = new Set();
+		const pageNumbers = new Set();
 		sentences.forEach(item => {
-			const coordsArray = item.coords.split(';');
+			const coordsArray = item.coords.split(";");
 			coordsArray.forEach(coord => {
 				const coordValues = coord.split(',');
 				pageNumbers.add(coordValues[0]);
@@ -57,7 +55,7 @@ export default function PreviewDrawerLeft(props) {
 
 	function get_item_found_pages(checklist){
 		if (checklist.length < 1){
-			console.error("No checklist");
+			// console.error("No checklist");
 			return null
 		}
 		else {
@@ -73,7 +71,7 @@ export default function PreviewDrawerLeft(props) {
 					}
 				});
 			});
-			console.log("Items found pages", result);
+			// console.log("Items found pages", result);
 
 			return result;
 
@@ -92,7 +90,7 @@ export default function PreviewDrawerLeft(props) {
 
 	const handleItemClick = (pagenum) =>{
 		pageNumber(pagenum);
-		console.log("Go to ", pagenum);
+		// console.log("Go to ", pagenum);
 	};
 
 	const isOpen = (name) => {
@@ -106,13 +104,15 @@ export default function PreviewDrawerLeft(props) {
 	}
 
 	const onDownload = () => {
-		downloadAndSaveFile(reportFileID, reportFilename).then(r => console.log(r));
+		downloadAndSaveFile(reportFileID, reportFilename).then(r => {
+			// console.log(r);
+		});
 	}
 
 
 	useEffect(() => {
 		if (metadata !== undefined){
-			let content = metadata;
+			const content = metadata;
 			setContent(content);
 			setExtractor(content["extractor"]);
 			//setItemsMissed(content["items_missed"]);
@@ -124,7 +124,7 @@ export default function PreviewDrawerLeft(props) {
 			setItemFoundPages(get_item_found_pages(content["checklist"]))
 		}
 		if (metadata === undefined){
-			console.log("Error metadata undefined");
+			// console.log("Error metadata undefined");
 		}
 	},[]);
 
@@ -146,35 +146,57 @@ export default function PreviewDrawerLeft(props) {
 				variant="permanent"
 				anchor="left"
 			>
-				<Toolbar sx={{ justifyContent: "space-between" }}>
-					<Box variant="contained" color="primary">
-						<Typography variant="h6" style={{color: theme.palette.primary.dark, fontWeight: "bold"}}>Items Missed</Typography>
-						<Typography align="center" style={{color: theme.palette.primary.main}}>{itemsMissed}</Typography>
-					</Box>
+				{/* Export Button Section */}
+				<Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
 					<Button onClick={onDownload} variant="contained"
+						size="large"
+						fullWidth
 						style={{ 
 							color: theme.palette.info.contrastText, 
 							backgroundColor: theme.palette.primary.dark,
-							fontFamily: theme.typography.fontFamily
+							fontFamily: theme.typography.fontFamily,
+							fontSize: "1.1rem",
+							fontWeight: "bold",
+							padding: "12px 24px"
 						}} 
 						startIcon={<DownloadIcon />}>
 						Export
 					</Button>
-				</Toolbar>
-				<Divider />
+				</Box>
 
-				<List
-					sx={{ width: drawerWidth, color: theme.palette.primary.dark, fontFamily: theme.typography.fontFamily }}
-					component="nav"
-					aria-labelledby="item-checklist"
-					subheader={
-						<ListSubheader component="div" id="item-checklist-subheader">
-							{statementString} Checklist Items
-						</ListSubheader>
-					}
-					variant="permanent"
-					anchor="left"
-				>
+				{/* Items Missed Section */}
+				<Box sx={{ p: 2, textAlign: "center", borderBottom: 1, borderColor: 'divider', backgroundColor: theme.palette.grey[50] }}>
+					<Typography variant="h6" style={{color: theme.palette.primary.dark, fontWeight: "bold", marginBottom: "8px"}}>Items Missed</Typography>
+					<Typography align="center" style={{color: theme.palette.primary.main, fontSize: "1.5rem", fontWeight: "bold"}}>{itemsMissed}</Typography>
+				</Box>
+
+				{/* Checklist Items Section */}
+				<Box sx={{ mt: 2 }}>
+					<List
+						sx={{ 
+							width: drawerWidth, 
+							color: theme.palette.primary.dark, 
+							fontFamily: theme.typography.fontFamily,
+							pt: 0
+						}}
+						component="nav"
+						aria-labelledby="item-checklist"
+						subheader={
+							<ListSubheader 
+								component="div" 
+								id="item-checklist-subheader"
+								sx={{ 
+									position: 'static',
+									backgroundColor: 'transparent',
+									fontWeight: 'bold',
+									fontSize: '1rem',
+									color: theme.palette.primary.dark
+								}}
+							>
+								{statementString} Checklist Items
+							</ListSubheader>
+						}
+					>
 					{
 						(checklist.length > 0 && item_found_pages !== null) ?
 							checklist.map((check_item, index) => {
@@ -243,6 +265,7 @@ export default function PreviewDrawerLeft(props) {
 					}
 
 				</List>
+				</Box>
 
 			</Drawer>
 
