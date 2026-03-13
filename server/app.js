@@ -20,6 +20,7 @@ var SQLiteStore = require('connect-sqlite3')(session);
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
 var rctdbRouter = require('./routes/rctdb');
+var clowderRouter = require('./routes/clowder');
 
 // Import database connection and migration functions
 var { rctdbTestConnection } = require('./rctdb/connection');
