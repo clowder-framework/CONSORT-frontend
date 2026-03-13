@@ -1,6 +1,6 @@
 {
   "name": "consort-server",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "Consort server side app",
   "license": "Unlicense",
@@ -14,7 +14,7 @@
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
     "db:migrate:drizzle": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
     "debug": "node --inspect ./bin/www"
   },
   "dependencies": {
