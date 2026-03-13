@@ -29,7 +29,7 @@ export default function PreviewDrawerLeft(props) {
 	const statementType = useSelector((state) => state.statement.statementType);
 	const statementString = statementType.toUpperCase();
 
-	const {metadata} = props;
+	const {metadata, publication = {}} = props;
 	const [extractor, setExtractor] = useState("");
 	const [content, setContent] = useState({});
 	const [itemsMissed, setItemsMissed] = useState('');
@@ -126,7 +126,7 @@ export default function PreviewDrawerLeft(props) {
 		if (metadata === undefined){
 			// console.log("Error metadata undefined");
 		}
-	},[]);
+	}, [metadata, publication]);
 
 
 

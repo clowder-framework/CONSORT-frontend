@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import {useDispatch, useSelector} from "react-redux";
 import { pdfjs , Document, Page } from "react-pdf";
-import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
 import { 
     consort_highlight_color, 

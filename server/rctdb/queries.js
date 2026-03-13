@@ -19,8 +19,12 @@ const userQueries = {
       .insert(users)
       .values(userData)
       .onConflictDoUpdate({
-        target: users.name,
-        set: { lastlogin: sql`now()` }
+        target: users.email,
+        set: {
+          name: userData.name,
+          role: userData.role,
+          lastlogin: sql`now()`
+        }
       })
       .returning();
   },
@@ -28,6 +32,11 @@ const userQueries = {
   // Get user by name
   async getUserByName(name) {
     return await rctdb.select().from(users).where(eq(users.name, name));
+  },
+
+  // Get user by email
+  async getUserByEmail(email) {
+    return await rctdb.select().from(users).where(eq(users.email, email));
   },
 
   // Get user by UUID

@@ -18,6 +18,7 @@ class RCTDBClient {
     // Create axios instance
     this.client = axios.create({
       baseURL: this.baseURL,
+      withCredentials: true,
       // timeout: this.timeout,
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +78,7 @@ class RCTDBClient {
    * @returns {Promise<Object>} User object
    */
   async getUserByEmail(email) {
-    const response = await this.client.get(`/users/${email}`);
+    const response = await this.client.get(`/users/email/${encodeURIComponent(email)}`);
     return response.data;
   }
 

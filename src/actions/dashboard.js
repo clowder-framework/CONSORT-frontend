@@ -1,5 +1,8 @@
 // actions for the dashboard component
 
+import { rctdbClient } from "../utils/rctdb-client";
+import { ANONYMOUS_USER } from "../reducers/dashboard";
+
 // user choice statement actions
 export const SET_STATEMENT_TYPE = "SET_STATEMENT_TYPE";
 export function setStatement(type, statement) {
@@ -41,6 +44,8 @@ export function resetUserCategoryToDefault() {
 // Authentication actions
 export const SET_AUTHENTICATION_STATUS = "SET_AUTHENTICATION_STATUS";
 export const SET_AUTHENTICATION_LOADING = "SET_AUTHENTICATION_LOADING";
+export const SET_USER = "SET_USER";
+export const RESET_USER_TO_DEFAULT = "RESET_USER_TO_DEFAULT";
 
 export function setAuthenticationStatus(isAuthenticated) {
 	return (dispatch) => {
@@ -60,6 +65,40 @@ export function setAuthenticationLoading(isLoading) {
 	};
 }
 
+export function setUser(type, userData) {
+	return (dispatch) => {
+		dispatch({
+			type,
+			userName: userData?.userName || ANONYMOUS_USER.userName,
+			userUuid: userData?.userUuid ?? null,
+			userEmail: userData?.userEmail ?? ANONYMOUS_USER.userEmail,
+			userRole: userData?.userRole ?? ANONYMOUS_USER.userRole
+		});
+	};
+}
+
+export function resetUserToDefault() {
+	return {
+		type: RESET_USER_TO_DEFAULT
+	};
+}
+
+async function upsertUser(dispatch) {
+	const user = await (await fetch("/getUser", { method: "GET", credentials: "include" })).json();
+	const userName = user?.name || user?.username || ANONYMOUS_USER.userName;
+	const userRole = user?.role || "researcher";
+	const isAnonymous = userName.toLowerCase() === ANONYMOUS_USER.userName;
+	const email = user?.email || (isAnonymous ? ANONYMOUS_USER.userEmail : null);
+
+	const upserted = email ? await rctdbClient.upsertUser({ name: userName, email, role: userRole }) : null;
+	dispatch(setUser(SET_USER, {
+		userName: upserted?.name || userName,
+		userUuid: upserted?.useruuid ?? null,
+		userEmail: upserted?.email || email,
+		userRole: upserted?.role || userRole
+	}));
+}
+
 export function checkAuthenticationStatus() {
 	return async (dispatch) => {
 		dispatch(setAuthenticationLoading(true));
@@ -71,16 +110,17 @@ export function checkAuthenticationStatus() {
 			const data = await response.json();
 			dispatch(setAuthenticationStatus(data.isAuthenticated));
 			
-			// Set user category based on authentication status
-			if (data.isAuthenticated) {
-				dispatch(setUserCategory(SET_USER_CATEGORY, "researcher"));
-			} else {
-				dispatch(setUserCategory(SET_USER_CATEGORY, "author"));
+			dispatch(setUserCategory(SET_USER_CATEGORY, data.isAuthenticated ? "researcher" : "author"));
+			try {
+				await upsertUser(dispatch);
+			} catch (error) {
+				console.error("Error upserting user:", error);
+				if (!data.isAuthenticated) dispatch(setUser(SET_USER, ANONYMOUS_USER));
 			}
 		} catch (error) {
-			// console.error("Error in checking authentication status", error);
 			dispatch(setAuthenticationStatus(false));
 			dispatch(setUserCategory(SET_USER_CATEGORY, "author"));
+			dispatch(setUser(SET_USER, ANONYMOUS_USER));
 		} finally {
 			dispatch(setAuthenticationLoading(false));
 		}

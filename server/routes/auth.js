@@ -102,7 +102,7 @@ passport.use(new OAuth2Strategy({
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
     // TODO: how to get user profile info from CILogon? like institution, email, etc.
-    cb(null, { id: user.id, username: user.username, name: user.name });
+    cb(null, { id: user.id, username: user.username, name: user.name, email: user.email });
   });
 });
 
@@ -184,15 +184,21 @@ router.get('/isAuthenticated', function(req, res) {
     res.json({ isAuthenticated: req.isAuthenticated() });
 });
 
-// Endpoint to get username
+// Endpoint to get user information
 router.get('/getUser', function(req, res) {
     if (req.isAuthenticated() && req.user) {
         res.json({
-            name: req.user.name || null,
+            username: req.user.username || req.user.name || "anonymous",
+            name: req.user.name || req.user.username || "anonymous",
+            email: req.user.email || null,
+            role: "researcher",
         });
     } else {
-        res.json({
-            name: "Anonymous",
+        res.json({  
+            username: "anonymous",
+            name: "anonymous",
+            email: "anonymous@example.com",
+            role: "author",
         });
     }
 });

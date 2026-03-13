@@ -22,22 +22,21 @@ router.get('/users', async (req, res) => {
 
 router.post('/users', async (req, res) => {
   try {
-    const userData = { 
-      name: req.body.name,
-      email: req.body.email,
-      role: req.body.role,
-      lastlogin: new Date()
-    };
-    const user = await userQueries.upsertUser(userData)
-    res.status(201).json(user[0]);
+    const { name, email, role = 'author' } = req.body || {};
+    if (!name || !email) {
+      return res.status(400).json({ error: 'name and email are required' });
+    }
+
+    const [user] = await userQueries.upsertUser({ name, email, role });
+    // Same endpoint supports both create and upsert used by rctdbClient.
+    res.status(200).json(user);
   } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ error: 'Failed to create user', details: error.message });
+    console.error('Error upserting user:', error);
+    res.status(500).json({ error: 'Failed to upsert user', details: error.message });
   }
 });
 
-// TODO: need to be implemented
-router.get('/users/:email', async (req, res) => {
+router.get('/users/email/:email', async (req, res) => {
   try {
     const user = await userQueries.getUserByEmail(req.params.email);
     if (user.length === 0) {
@@ -50,7 +49,7 @@ router.get('/users/:email', async (req, res) => {
   }
 });
 
-router.get('/users/:name', async (req, res) => {
+router.get('/users/name/:name', async (req, res) => {
   try {
     const user = await userQueries.getUserByName(req.params.name);
     res.json(user[0]);

@@ -5,9 +5,6 @@ import { Link as RouterLink } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {checkAuthenticationStatus} from '../../actions/dashboard';
 import { theme } from '../../theme';
-import { useSelector, useDispatch } from 'react-redux';
-import { setUser } from '../../actions/dashboard';
-import { rctdbClient } from '../../utils/rctdb-client';
 
 
 const useStyles = makeStyles((theme) => ({
