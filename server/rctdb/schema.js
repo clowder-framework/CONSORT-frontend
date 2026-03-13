@@ -1,25 +1,27 @@
-const { pgTable, serial, integer, varchar, timestamp, real, boolean } = require('drizzle-orm/pg-core');
+const { pgTable, serial, integer, varchar, timestamp, real, boolean, index, uniqueIndex } = require('drizzle-orm/pg-core');
 const { sql } = require('drizzle-orm');
 
 // Users table
 const users = pgTable('users', {
   useruuid: serial('useruuid').primaryKey(),
-  name: varchar('name').notNull().unique(), // All anonymous users will have a name of "Anonymous" and a role of "author" and one useruuid
-  email: varchar('email').notNull(),
-  role: varchar('role').default('author'),
-  createtime: timestamp('createtime').default(sql`now()`),
-  lastlogin: timestamp('lastlogin').default(sql`now()`)
-});
+  name: varchar('name').notNull(), // Anonymous users have a name of "Anonymous"
+  email: varchar('email').notNull(), // Anonymous users have an email of "anonymous@example.com"
+  role: varchar('role').notNull().default('author'),
+  createtime: timestamp('createtime').notNull().default(sql`now()`),
+  lastlogin: timestamp('lastlogin').notNull().default(sql`now()`)
+}, (table) => ({
+  emailUnique: uniqueIndex('users_email_uidx').on(table.email)
+}));
 
 // Publication table
 const publication = pgTable('publication', {
   publicationuuid: serial('publicationuuid').primaryKey(),
-  source: varchar('source').default('clowder'),
+  source: varchar('source').notNull().default('clowder'),
   sourcefileid: varchar('sourcefileid').notNull(), // uploaded fileID from clowder
   sourcefileformat: varchar('sourcefileformat').notNull(), // uploadedfile format from clowder
   sourcefilename: varchar('sourcefilename').notNull(), // uploaded file name from clowder
   sourcefileuploadtime: timestamp('sourcefileuploadtime').notNull(), // time of file upload to clowder
-  datasetid: varchar('datasetid').notNull().unique(), // datasetID from clowder
+  datasetid: varchar('datasetid').notNull(), // datasetID from clowder
   datasetname: varchar('datasetname').notNull(), // dataset name from clowder. This is the name of the uploaded file without the extension.
   
   statement: varchar('statement').notNull().default('consort'), // statement type from clowder. spirit or consort
@@ -41,7 +43,10 @@ const publication = pgTable('publication', {
   nummissed: integer('nummissed'), // number of missed checklist items from model
   useruuid: integer('useruuid').notNull().references(() => users.useruuid), // useruuid from users table
   othermetadata: varchar('othermetadata') // other metadata from clowder
-});
+}, (table) => ({
+  datasetIdUnique: uniqueIndex('publication_datasetid_uidx').on(table.datasetid),
+  publicationUserIdx: index('publication_useruuid_idx').on(table.useruuid)
+}));
 
 // Section table
 const section = pgTable('section', {
