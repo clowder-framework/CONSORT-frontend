@@ -92,16 +92,68 @@ CREATE TABLE IF NOT EXISTS "annotationfeedback" (
 	"time" timestamp
 );
 --> statement-breakpoint
-ALTER TABLE "publication" ADD CONSTRAINT "publication_useruuid_users_useruuid_fk" FOREIGN KEY ("useruuid") REFERENCES "public"."users"("useruuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "section" ADD CONSTRAINT "section_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "sentence" ADD CONSTRAINT "sentence_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "sentence" ADD CONSTRAINT "sentence_sectionuuid_section_sectionuuid_fk" FOREIGN KEY ("sectionuuid") REFERENCES "public"."section"("sectionuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "statement_section" ADD CONSTRAINT "statement_section_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "statement_topic" ADD CONSTRAINT "statement_topic_statementsectionuuid_statement_section_statementsectionuuid_fk" FOREIGN KEY ("statementsectionuuid") REFERENCES "public"."statement_section"("statementsectionuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "statement_topic" ADD CONSTRAINT "statement_topic_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "annotation" ADD CONSTRAINT "annotation_sentenceuuid_sentence_sentenceuuid_fk" FOREIGN KEY ("sentenceuuid") REFERENCES "public"."sentence"("sentenceuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "annotation" ADD CONSTRAINT "annotation_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "annotation" ADD CONSTRAINT "annotation_statementtopicuuid_statement_topic_statementtopicuuid_fk" FOREIGN KEY ("statementtopicuuid") REFERENCES "public"."statement_topic"("statementtopicuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "annotationfeedback" ADD CONSTRAINT "annotationfeedback_annuuid_annotation_annuuid_fk" FOREIGN KEY ("annuuid") REFERENCES "public"."annotation"("annuuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "annotationfeedback" ADD CONSTRAINT "annotationfeedback_useruuid_users_useruuid_fk" FOREIGN KEY ("useruuid") REFERENCES "public"."users"("useruuid") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "annotationfeedback" ADD CONSTRAINT "annotationfeedback_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'publication_useruuid_users_useruuid_fk') THEN
+    ALTER TABLE "publication" ADD CONSTRAINT "publication_useruuid_users_useruuid_fk" FOREIGN KEY ("useruuid") REFERENCES "public"."users"("useruuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'section_publicationuuid_publication_publicationuuid_fk') THEN
+    ALTER TABLE "section" ADD CONSTRAINT "section_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'sentence_publicationuuid_publication_publicationuuid_fk') THEN
+    ALTER TABLE "sentence" ADD CONSTRAINT "sentence_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'sentence_sectionuuid_section_sectionuuid_fk') THEN
+    ALTER TABLE "sentence" ADD CONSTRAINT "sentence_sectionuuid_section_sectionuuid_fk" FOREIGN KEY ("sectionuuid") REFERENCES "public"."section"("sectionuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'statement_section_publicationuuid_publication_publicationuuid_fk') THEN
+    ALTER TABLE "statement_section" ADD CONSTRAINT "statement_section_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'statement_topic_statementsectionuuid_statement_section_statementsectionuuid_fk') THEN
+    ALTER TABLE "statement_topic" ADD CONSTRAINT "statement_topic_statementsectionuuid_statement_section_statementsectionuuid_fk" FOREIGN KEY ("statementsectionuuid") REFERENCES "public"."statement_section"("statementsectionuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'statement_topic_publicationuuid_publication_publicationuuid_fk') THEN
+    ALTER TABLE "statement_topic" ADD CONSTRAINT "statement_topic_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'annotation_sentenceuuid_sentence_sentenceuuid_fk') THEN
+    ALTER TABLE "annotation" ADD CONSTRAINT "annotation_sentenceuuid_sentence_sentenceuuid_fk" FOREIGN KEY ("sentenceuuid") REFERENCES "public"."sentence"("sentenceuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'annotation_publicationuuid_publication_publicationuuid_fk') THEN
+    ALTER TABLE "annotation" ADD CONSTRAINT "annotation_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'annotation_statementtopicuuid_statement_topic_statementtopicuuid_fk') THEN
+    ALTER TABLE "annotation" ADD CONSTRAINT "annotation_statementtopicuuid_statement_topic_statementtopicuuid_fk" FOREIGN KEY ("statementtopicuuid") REFERENCES "public"."statement_topic"("statementtopicuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'annotationfeedback_annuuid_annotation_annuuid_fk') THEN
+    ALTER TABLE "annotationfeedback" ADD CONSTRAINT "annotationfeedback_annuuid_annotation_annuuid_fk" FOREIGN KEY ("annuuid") REFERENCES "public"."annotation"("annuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'annotationfeedback_useruuid_users_useruuid_fk') THEN
+    ALTER TABLE "annotationfeedback" ADD CONSTRAINT "annotationfeedback_useruuid_users_useruuid_fk" FOREIGN KEY ("useruuid") REFERENCES "public"."users"("useruuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;--> statement-breakpoint
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'annotationfeedback_publicationuuid_publication_publicationuuid_fk') THEN
+    ALTER TABLE "annotationfeedback" ADD CONSTRAINT "annotationfeedback_publicationuuid_publication_publicationuuid_fk" FOREIGN KEY ("publicationuuid") REFERENCES "public"."publication"("publicationuuid") ON DELETE no action ON UPDATE no action;
+  END IF;
+END $$;
