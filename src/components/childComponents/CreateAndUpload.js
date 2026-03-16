@@ -172,7 +172,7 @@ export default function CreateAndUpload() {
 						setPDFMetadata(pdfExtractorContent);
 						// get pdf preview
 						const pdf_extractor_extracted_files = pdfExtractorContent["extracted_files"];
-						const pdf_input_file = pdf_extractor_extracted_files[0]["file_id"];
+						const pdf_input_file = pdf_extractor_extracted_files["input_pdf"]["file_id"];
 						console.log("pdfExtractorContent", pdfExtractorContent);
 						console.log("pdf_extractor_extracted_files", pdf_extractor_extracted_files);
 						dispatch(fetchFilePreviews(pdf_input_file));
@@ -233,8 +233,8 @@ export default function CreateAndUpload() {
 		setLoading(false); // stop display of overlay
 		setSpinner(false);
 		if (userCategory === "author"){
-			const reportFileID = RCTmetadata["extracted_files"][1]["file_id"];
-			const reportFilename = RCTmetadata["extracted_files"][1]["filename"];
+			const reportFileID = RCTmetadata["extracted_files"]["report_file"]["file_id"];
+			const reportFilename = RCTmetadata["extracted_files"]["report_file"]["filename"];
 			downloadAndSaveFile(reportFileID, reportFilename).then(() => {
 				// Clear all states
 				setLoading(false);
