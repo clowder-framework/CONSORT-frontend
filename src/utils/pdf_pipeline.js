@@ -40,6 +40,27 @@ export async function pdfPipeline(file_json, dataset_json, config, dispatch) {
 				};
 				const csv_pipeline_status = await csvPipeline(extracted_csv_file, dataset_json, pdf_file_json, config, dispatch);
 				if (csv_pipeline_status) {
+					const extracted_pdf_fileid = fileid;
+					const extracted_xml_fileid = pdf_extraction_metadata.extracted_files["grobid_tei_xml"].file_id;
+					const extracted_json_fileid = pdf_extraction_metadata.extracted_files["grobid_json"].file_id;
+					const page_dimensions = pdf_extraction_metadata.page_dimensions;
+					const publicationData = {
+						pagewidth: page_dimensions.width, 
+						pageheight: page_dimensions.height,
+						extractedpdffileid: extracted_pdf_fileid,
+						extractedxmlfileid: extracted_xml_fileid,
+						extractedjsonfileid: extracted_json_fileid,
+						extractedcsvfileid: extracted_csv_file.id
+					};
+					try {
+						const publication_record = await rctdbClient.upsertPublication({
+							...publicationData,
+							datasetid: datasetid
+						});
+						console.log("Publication upserted in RCTDB after PDF pipeline", publication_record);
+					} catch (error) {
+						console.error("Error upserting publication after PDF pipeline:", error);
+					}
 					dispatch(updateDatasetStatus(datasetid, "csv-completed"));
 					return true;
 				} else {
