@@ -115,12 +115,10 @@ export default function PreviewDrawerLeft(props) {
 			const content = metadata;
 			setContent(content);
 			setExtractor(content["extractor"]);
-			//setItemsMissed(content["items_missed"]);
 			setItemsMissed(publication["nummissed"]);
 			setChecklist(content["checklist"]);
-			//setReportFileID(content["extracted_files"][1]["file_id"])
 			setReportFileID(publication["reportpdffileid"])
-			setReportFilename(content["extracted_files"][1]["filename"])
+			setReportFilename(publication["reportpdffilename"])
 			setItemFoundPages(get_item_found_pages(content["checklist"]))
 		}
 		if (metadata === undefined){
