@@ -198,26 +198,25 @@ export default function PreviewDrawerRight(props) {
 												}}
 											>
 												<Typography variant="caption" style={{ color: theme.palette.text.secondary, display: "block" }}>
-													Statement Section: {sentenceRow.sectionName}
+													Section: {sentenceRow.sectionName}
 												</Typography>
-												<Typography variant="caption" style={{ color: theme.palette.text.secondary, display: "block", marginBottom: "6px" }}>
-													Statement Topic: {sentenceRow.topicName}
-												</Typography>
+										<Box style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+											<Typography variant="caption" style={{ color: theme.palette.text.secondary }}>
+												Checklist Item: {sentenceRow.topicName}
+											</Typography>
+											{sentenceRow.labels.map((label) => (
+												<Chip
+													key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${label}`}
+													size="small"
+													label={label}
+													style={{ backgroundColor: theme.palette.info.light, color: theme.palette.info.contrastText }}
+												/>
+											))}
+										</Box>
 
-												<Typography variant="body2" style={{ color: theme.palette.text.primary, marginBottom: "8px" }}>
-													{sentenceRow.sentenceText || "No sentence text available."}
-												</Typography>
-
-												<Box style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-													{sentenceRow.labels.map((label) => (
-														<Chip
-															key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${label}`}
-															size="small"
-															label={label}
-															style={{ backgroundColor: theme.palette.info.light, color: theme.palette.info.contrastText }}
-														/>
-													))}
-												</Box>
+											<Typography variant="body2" style={{ color: theme.palette.text.primary, marginBottom: "8px" }}>
+												{sentenceRow.sentenceText || "No sentence text available."}
+											</Typography>
 											</Box>
 										))}
 									</Box>
