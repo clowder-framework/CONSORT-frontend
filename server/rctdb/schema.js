@@ -137,7 +137,8 @@ const annotation = pgTable('annotation', {
     columns: [table.statementtopicuuid, table.publicationuuid],
     foreignColumns: [statementTopic.statementtopicuuid, statementTopic.publicationuuid],
     name: 'fk_annotation_statementtopic_publication'
-  })
+  }),
+  annotationPublicationUnique: unique('uq_annotation_annuuid_publicationuuid').on(table.annuuid, table.publicationuuid)
 }));
 
 
@@ -149,8 +150,18 @@ const annotationFeedback = pgTable('annotationfeedback', {
   publicationuuid: integer('publicationuuid').notNull().references(() => publication.publicationuuid),
   delete: boolean('delete').default(false),
   newlabel: varchar('newlabel'),
+  feedback: varchar('feedback').default(null),
   time: timestamp('time')
-});
+}, (table) => ({
+  feedbackAnnotationPublicationFk: foreignKey({
+    columns: [table.annuuid, table.publicationuuid],
+    foreignColumns: [annotation.annuuid, annotation.publicationuuid],
+    name: 'fk_annotationfeedback_annotation_publication'
+  }),
+  feedbackcheck: //check positive or negative feedback
+    check('annotationfeedback_feedback_check', sql`${table.feedback} IN ('positive', 'negative')`)
+}));
+
 
 
 module.exports = {
