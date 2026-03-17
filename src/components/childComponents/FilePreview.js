@@ -10,6 +10,7 @@ import Audio from "../previewers/Audio";
 import Video from "../previewers/Video";
 import {getPreviewResources} from "../../utils/file";
 import PreviewDrawerLeft from "./PreviewDrawerLeft";
+import PreviewDrawerRight from "./PreviewDrawerRight";
 import config from "../../app.config";
 import {rctdbClient} from "../../utils/rctdb-client";
 
@@ -177,6 +178,10 @@ export default function FilePreview() {
 										<Box sx={{ flexGrow: 1, overflow: "auto", p: 1, display: "flex", justifyContent: "center" }}>
 											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
 										</Box>
+										<PreviewDrawerRight
+											annotations={publicationData.annotations}
+											metadata={RCTmetadata}
+										/>
 									</Box>
 								);
 							} else if (preview["previewType"] === "html") {

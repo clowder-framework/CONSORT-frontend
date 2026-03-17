@@ -1,0 +1,234 @@
+// Preview RightDrawer Component for page-level annotations
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { Box, Typography } from "@material-ui/core";
+import Drawer from "@mui/material/Drawer";
+import { Chip, Divider } from "@mui/material";
+
+import { theme } from "../../theme";
+
+const drawerWidth = 420;
+const DEFAULT_SECTION_NAME = "Unspecified Section";
+const DEFAULT_TOPIC_NAME = "Unspecified Topic";
+const DEFAULT_LABEL_NAME = "Unlabeled";
+
+function parsePagesFromCoordinates(coordinates) {
+	const pages = new Set();
+
+	if (typeof coordinates !== "string" || coordinates.trim().length === 0) {
+		return pages;
+	}
+
+	coordinates.split(";").forEach((coordGroup) => {
+		const parts = coordGroup.split(",");
+		const page = parseInt(parts[0], 10);
+		if (!Number.isNaN(page)) {
+			pages.add(page);
+		}
+	});
+
+	return pages;
+}
+
+function parsePagesFromSentence(sentence = {}) {
+	const pages = parsePagesFromCoordinates(sentence.coordinates);
+
+	if (pages.size > 0) {
+		return pages;
+	}
+
+	const beginPage = parseInt(sentence.beginpage, 10);
+	const endPage = parseInt(sentence.endpage, 10);
+
+	if (!Number.isNaN(beginPage) && !Number.isNaN(endPage)) {
+		const from = Math.min(beginPage, endPage);
+		const to = Math.max(beginPage, endPage);
+		for (let p = from; p <= to; p += 1) {
+			pages.add(p);
+		}
+	} else if (!Number.isNaN(beginPage)) {
+		pages.add(beginPage);
+	}
+
+	return pages;
+}
+
+function buildRowsFromAnnotations(annotations = []) {
+	if (!Array.isArray(annotations) || annotations.length === 0) {
+		return [];
+	}
+
+	const sentenceTopicMap = new Map();
+
+	annotations.forEach((entry = {}) => {
+		const ann = entry.annotation || {};
+		const sent = entry.sentence || {};
+		const pages = parsePagesFromSentence(sent);
+
+		if (pages.size === 0) {
+			return;
+		}
+
+		const sectionName = ann.statementsectionname || DEFAULT_SECTION_NAME;
+		const topicName = ann.statementtopicname || DEFAULT_TOPIC_NAME;
+		const sentenceText = (sent.sentencetext || "").trim();
+		const sentenceId = sent.sentenceuuid || ann.sentenceuuid || sentenceText;
+		const topicId = ann.statementtopicuuid || topicName;
+		const mapKey = `${sectionName}::${topicId}::${sentenceId}`;
+
+		if (!sentenceTopicMap.has(mapKey)) {
+			sentenceTopicMap.set(mapKey, {
+				sectionName,
+				topicName,
+				sentenceText,
+				sentenceno: sent.sentenceno || Number.MAX_SAFE_INTEGER,
+				pages,
+				labels: new Set(),
+			});
+		}
+
+		const current = sentenceTopicMap.get(mapKey);
+		pages.forEach((page) => current.pages.add(page));
+		current.labels.add(ann.label || DEFAULT_LABEL_NAME);
+	});
+
+	return Array.from(sentenceTopicMap.values()).map((row) => ({
+		...row,
+		labels: Array.from(row.labels),
+	}));
+}
+
+function groupRowsBySectionAndTopic(rows = []) {
+	const sectionMap = new Map();
+
+	rows.forEach((row) => {
+		if (!sectionMap.has(row.sectionName)) {
+			sectionMap.set(row.sectionName, new Map());
+		}
+
+		const topicMap = sectionMap.get(row.sectionName);
+		if (!topicMap.has(row.topicName)) {
+			topicMap.set(row.topicName, []);
+		}
+
+		topicMap.get(row.topicName).push(row);
+	});
+
+	return Array.from(sectionMap.entries())
+		.sort(([sectionA], [sectionB]) => sectionA.localeCompare(sectionB))
+		.map(([sectionName, topicMap]) => ({
+			sectionName,
+			topics: Array.from(topicMap.entries())
+				.sort(([topicA], [topicB]) => topicA.localeCompare(topicB))
+				.map(([topicName, sentences]) => ({
+					topicName,
+					sentences: sentences.sort((a, b) => a.sentenceno - b.sentenceno),
+				})),
+		}));
+}
+
+export default function PreviewDrawerRight(props) {
+	const { annotations = [] } = props;
+	const pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
+
+	const baseRows = useMemo(() => buildRowsFromAnnotations(annotations), [annotations]);
+
+	const pageRows = useMemo(() => {
+		const page = parseInt(pageNumber, 10);
+		if (Number.isNaN(page)) {
+			return [];
+		}
+
+		return baseRows.filter((row) => row.pages.has(page));
+	}, [baseRows, pageNumber]);
+
+	const groupedRows = useMemo(() => groupRowsBySectionAndTopic(pageRows), [pageRows]);
+
+	return (
+		<Box sx={{ display: "flex" }}>
+			<Drawer
+				sx={{
+					width: drawerWidth,
+					flexShrink: 0,
+					"& .MuiDrawer-paper": {
+						width: drawerWidth,
+						boxSizing: "border-box",
+						marginTop: "64px",
+					},
+				}}
+				variant="permanent"
+				anchor="right"
+			>
+				<Box style={{ padding: "16px", borderBottom: "1px solid #e0e0e0", backgroundColor: theme.palette.grey[50] }}>
+					<Typography variant="h6" style={{ color: theme.palette.primary.dark, fontWeight: "bold" }}>
+						Page {pageNumber} Annotations
+					</Typography>
+					<Typography variant="body2" style={{ color: theme.palette.primary.main, marginTop: "6px" }}>
+						{pageRows.length} sentence{pageRows.length === 1 ? "" : "s"} on this page
+					</Typography>
+				</Box>
+
+				<Box style={{ overflowY: "auto", padding: "12px 14px 24px" }}>
+					{groupedRows.length === 0 ? (
+						<Typography variant="body2" style={{ color: theme.palette.text.secondary }}>
+							No annotated sentences found for this page.
+						</Typography>
+					) : (
+						groupedRows.map((sectionGroup) => (
+							<Box key={sectionGroup.sectionName} style={{ marginBottom: "14px" }}>
+								<Typography variant="subtitle1" style={{ color: theme.palette.primary.dark, fontWeight: 600 }}>
+									{sectionGroup.sectionName}
+								</Typography>
+
+								{sectionGroup.topics.map((topicGroup) => (
+									<Box key={`${sectionGroup.sectionName}-${topicGroup.topicName}`} style={{ marginTop: "8px", paddingLeft: "8px" }}>
+										<Typography variant="subtitle2" style={{ color: theme.palette.secondary.dark, fontWeight: 600 }}>
+											{topicGroup.topicName}
+										</Typography>
+
+										{topicGroup.sentences.map((sentenceRow, sentenceIndex) => (
+											<Box
+												key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${sentenceIndex}`}
+												style={{
+													marginTop: "8px",
+													padding: "10px",
+													border: "1px solid #e0e0e0",
+													borderRadius: "6px",
+													backgroundColor: "#fff",
+												}}
+											>
+												<Typography variant="caption" style={{ color: theme.palette.text.secondary, display: "block" }}>
+													Statement Section: {sentenceRow.sectionName}
+												</Typography>
+												<Typography variant="caption" style={{ color: theme.palette.text.secondary, display: "block", marginBottom: "6px" }}>
+													Statement Topic: {sentenceRow.topicName}
+												</Typography>
+
+												<Typography variant="body2" style={{ color: theme.palette.text.primary, marginBottom: "8px" }}>
+													{sentenceRow.sentenceText || "No sentence text available."}
+												</Typography>
+
+												<Box style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+													{sentenceRow.labels.map((label) => (
+														<Chip
+															key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${label}`}
+															size="small"
+															label={label}
+															style={{ backgroundColor: theme.palette.info.light, color: theme.palette.info.contrastText }}
+														/>
+													))}
+												</Box>
+											</Box>
+										))}
+									</Box>
+								))}
+
+								<Divider style={{ marginTop: "12px" }} />
+							</Box>
+						))
+					)}
+				</Box>
+			</Drawer>
+		</Box>
+	);
+}
