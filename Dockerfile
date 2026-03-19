@@ -28,11 +28,11 @@ RUN npm run build
 
 FROM --platform=linux/amd64 node:22.0.0
 WORKDIR /app
-COPY package.json ./
-COPY package-lock.json ./
+COPY server/package.json ./
+COPY server/package-lock.json ./
+RUN npm ci
+RUN npm rebuild sqlite3 --build-from-source
 COPY --from=consort-build /usr/src/app/dist/ /dist
 COPY src/public /dist/public
 COPY server/ /app/
-RUN npm install
-RUN npm install --build-from-source sqlite3
 CMD ["npm", "run", "start"]
