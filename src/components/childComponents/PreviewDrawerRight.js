@@ -1,11 +1,12 @@
 // Preview RightDrawer Component for page-level annotations
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Typography } from "@material-ui/core";
 import Drawer from "@mui/material/Drawer";
-import { Chip, Divider } from "@mui/material";
+import { Button, Chip, Divider } from "@mui/material";
 
 import { theme } from "../../theme";
+import { rctdbClient } from "../../utils/rctdb-client";
 
 const drawerWidth = 420;
 const DEFAULT_SECTION_NAME = "Unspecified Section";
@@ -53,6 +54,11 @@ function parsePagesFromSentence(sentence = {}) {
 	return pages;
 }
 
+function parseNumericId(value) {
+	const parsed = parseInt(value, 10);
+	return Number.isNaN(parsed) ? null : parsed;
+}
+
 function buildRowsFromAnnotations(annotations = []) {
 	if (!Array.isArray(annotations) || annotations.length === 0) {
 		return [];
@@ -75,6 +81,8 @@ function buildRowsFromAnnotations(annotations = []) {
 		const sentenceId = sent.sentenceuuid || ann.sentenceuuid || sentenceText;
 		const topicId = ann.statementtopicuuid || topicName;
 		const mapKey = `${sectionName}::${topicId}::${sentenceId}`;
+		const annuuid = parseNumericId(ann.annuuid);
+		const publicationuuid = parseNumericId(ann.publicationuuid);
 
 		if (!sentenceTopicMap.has(mapKey)) {
 			sentenceTopicMap.set(mapKey, {
@@ -84,17 +92,22 @@ function buildRowsFromAnnotations(annotations = []) {
 				sentenceno: sent.sentenceno || Number.MAX_SAFE_INTEGER,
 				pages,
 				labels: new Set(),
+				feedbackTargets: new Map(),
 			});
 		}
 
 		const current = sentenceTopicMap.get(mapKey);
 		pages.forEach((page) => current.pages.add(page));
 		current.labels.add(ann.label || DEFAULT_LABEL_NAME);
+		if (annuuid !== null && publicationuuid !== null) {
+			current.feedbackTargets.set(annuuid, { annuuid, publicationuuid });
+		}
 	});
 
 	return Array.from(sentenceTopicMap.values()).map((row) => ({
 		...row,
 		labels: Array.from(row.labels),
+		feedbackTargets: Array.from(row.feedbackTargets.values()),
 	}));
 }
 
@@ -127,9 +140,76 @@ function groupRowsBySectionAndTopic(rows = []) {
 		}));
 }
 
+function buildSentenceRowKey(sectionName, topicName, sentenceRow, sentenceIndex) {
+	return `${sectionName}-${topicName}-${sentenceRow.sentenceno}-${sentenceIndex}`;
+}
+
 export default function PreviewDrawerRight(props) {
-	const { annotations = [] } = props;
+	const { annotations = [], publication = {} } = props;
 	const pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
+	const userUuidFromStore = useSelector((state) => state.user.userUuid);
+	const [feedbackStateByRow, setFeedbackStateByRow] = useState({});
+
+	const handleFeedbackClick = useCallback(
+		async (sentenceRow, rowKey, feedbackType) => {
+			const userUuid = parseNumericId(userUuidFromStore) ?? parseNumericId(publication.useruuid);
+			const targets = sentenceRow.feedbackTargets || [];
+
+			if (userUuid === null || targets.length === 0) {
+				setFeedbackStateByRow((prev) => ({
+					...prev,
+					[rowKey]: {
+						submitting: false,
+						selected: prev[rowKey]?.selected || null,
+						error: "Unable to save feedback.",
+					},
+				}));
+				return;
+			}
+
+			setFeedbackStateByRow((prev) => ({
+				...prev,
+				[rowKey]: {
+					submitting: true,
+					selected: prev[rowKey]?.selected || null,
+					error: null,
+				},
+			}));
+
+			try {
+				await Promise.all(
+					targets.map((target) =>
+						rctdbClient.createFeedback({
+							annuuid: target.annuuid,
+							publicationuuid: target.publicationuuid,
+							useruuid: userUuid,
+							feedback: feedbackType,
+						}),
+					),
+				);
+
+				setFeedbackStateByRow((prev) => ({
+					...prev,
+					[rowKey]: {
+						submitting: false,
+						selected: feedbackType,
+						error: null,
+					},
+				}));
+			} catch (error) {
+				console.error("Error creating annotation feedback:", error);
+				setFeedbackStateByRow((prev) => ({
+					...prev,
+					[rowKey]: {
+						submitting: false,
+						selected: prev[rowKey]?.selected || null,
+						error: "Unable to save feedback.",
+					},
+				}));
+			}
+		},
+		[publication.useruuid, userUuidFromStore],
+	);
 
 	const baseRows = useMemo(() => buildRowsFromAnnotations(annotations), [annotations]);
 
@@ -186,39 +266,74 @@ export default function PreviewDrawerRight(props) {
 											{topicGroup.topicName}
 										</Typography>
 
-										{topicGroup.sentences.map((sentenceRow, sentenceIndex) => (
-											<Box
-												key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${sentenceIndex}`}
-												style={{
-													marginTop: "8px",
-													padding: "10px",
-													border: "1px solid #e0e0e0",
-													borderRadius: "6px",
-													backgroundColor: "#fff",
-												}}
-											>
-												<Typography variant="caption" style={{ color: theme.palette.text.secondary, display: "block" }}>
-													Section: {sentenceRow.sectionName}
-												</Typography>
-										<Box style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
-											<Typography variant="caption" style={{ color: theme.palette.text.secondary }}>
-												Checklist Item: {sentenceRow.topicName}
-											</Typography>
-											{sentenceRow.labels.map((label) => (
-												<Chip
-													key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${label}`}
-													size="small"
-													label={label}
-													style={{ backgroundColor: theme.palette.info.light, color: theme.palette.info.contrastText }}
-												/>
-											))}
-										</Box>
+										{topicGroup.sentences.map((sentenceRow, sentenceIndex) => {
+											const rowKey = buildSentenceRowKey(sectionGroup.sectionName, topicGroup.topicName, sentenceRow, sentenceIndex);
+											const rowFeedbackState = feedbackStateByRow[rowKey] || {};
 
-											<Typography variant="body2" style={{ color: theme.palette.text.primary, marginBottom: "8px" }}>
-												{sentenceRow.sentenceText || "No sentence text available."}
-											</Typography>
-											</Box>
-										))}
+											return (
+												<Box
+													key={rowKey}
+													style={{
+														marginTop: "8px",
+														padding: "10px",
+														border: "1px solid #e0e0e0",
+														borderRadius: "6px",
+														backgroundColor: "#fff",
+													}}
+												>
+													<Typography variant="caption" style={{ color: theme.palette.text.secondary, display: "block" }}>
+														Section: {sentenceRow.sectionName}
+													</Typography>
+													<Box style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+														<Typography variant="caption" style={{ color: theme.palette.text.secondary }}>
+															Checklist Item: {sentenceRow.topicName}
+														</Typography>
+														{sentenceRow.labels.map((label) => (
+															<Chip
+																key={`${sectionGroup.sectionName}-${topicGroup.topicName}-${label}`}
+																size="small"
+																label={label}
+																style={{ backgroundColor: theme.palette.info.light, color: theme.palette.info.contrastText }}
+															/>
+														))}
+													</Box>
+
+													<Typography variant="body2" style={{ color: theme.palette.text.primary, marginBottom: "8px" }}>
+														{sentenceRow.sentenceText || "No sentence text available."}
+													</Typography>
+													<Box style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+														<Button
+															size="small"
+															variant={rowFeedbackState.selected === "positive" ? "contained" : "outlined"}
+															disabled={rowFeedbackState.submitting}
+															onClick={() => handleFeedbackClick(sentenceRow, rowKey, "positive")}
+															style={{ minWidth: "96px" }}
+														>
+															Thumbs Up
+														</Button>
+														<Button
+															size="small"
+															variant={rowFeedbackState.selected === "negative" ? "contained" : "outlined"}
+															disabled={rowFeedbackState.submitting}
+															onClick={() => handleFeedbackClick(sentenceRow, rowKey, "negative")}
+															style={{ minWidth: "96px" }}
+														>
+															Thumbs Down
+														</Button>
+														{rowFeedbackState.submitting ? (
+															<Typography variant="caption" style={{ color: theme.palette.text.secondary }}>
+																Saving...
+															</Typography>
+														) : null}
+													</Box>
+													{rowFeedbackState.error ? (
+														<Typography variant="caption" style={{ color: theme.palette.error.main, display: "block", marginTop: "4px" }}>
+															{rowFeedbackState.error}
+														</Typography>
+													) : null}
+												</Box>
+											);
+										})}
 									</Box>
 								))}
 

@@ -180,6 +180,7 @@ export default function FilePreview() {
 										</Box>
 										<PreviewDrawerRight
 											annotations={publicationData.annotations}
+											publication={publicationData.publication}
 											metadata={RCTmetadata}
 										/>
 									</Box>
