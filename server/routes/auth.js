@@ -3,6 +3,7 @@ const fetch = require("node-fetch");
 var express = require('express');
 var passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
+var db = require('../sessiondb');
 
 
 const CIlogon_idp = [
