@@ -35,4 +35,5 @@ RUN npm rebuild sqlite3 --build-from-source
 COPY --from=consort-build /usr/src/app/dist/ /dist
 COPY src/public /dist/public
 COPY server/ /app/
-CMD ["npm", "run", "start"]
+RUN chmod +x /app/docker-entrypoint.sh
+CMD ["/app/docker-entrypoint.sh"]
