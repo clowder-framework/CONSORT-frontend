@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import file from "./file";
 import datasetReducer from "./dataset";
 import pdfpreview from "./pdfpreview";
-import { statement, userCategory, authentication } from "./dashboard";
+import { statement, userCategory, authentication, user } from "./dashboard";
 
 const rootReducer = combineReducers({
 	file: file,
@@ -10,7 +10,8 @@ const rootReducer = combineReducers({
 	pdfpreview: pdfpreview,
 	statement,
 	userCategory,
-	authentication
+	authentication,
+	user
 });
 
 export default rootReducer;

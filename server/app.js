@@ -19,10 +19,39 @@ var SQLiteStore = require('connect-sqlite3')(session);
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var rctdbRouter = require('./routes/rctdb');
 var clowderRouter = require('./routes/clowder');
+
+// Import database connection and migration functions
+var { rctdbTestConnection } = require('./rctdb/connection');
+var { rctdbMigrate } = require('./rctdb/migrate');
 
 var app = express();
 
+// Database initialization function
+async function initializeDatabase() {
+  try {
+    console.log('🔍 Testing database connection...');
+    const isConnected = await rctdbTestConnection();
+    
+    if (!isConnected) {
+      throw new Error('Database connection failed');
+    }
+    
+    console.log('🚀 Running database migrations...');
+    await rctdbMigrate();
+    console.log('✅ Database initialized successfully');
+    
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error.message);
+    console.error('Application will continue but database features may not work properly');
+    // Don't exit the process - let the app start even if DB fails
+    // This allows for graceful degradation
+  }
+}
+
+// Initialize database on startup
+initializeDatabase();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -105,14 +134,8 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 app.use('/', authRouter);
 app.use('/', clowderRouter);
+app.use('/api/rctdb', rctdbRouter);
 
-// redirect any other route back to home route /
-// app.use((req,res,next)=>{
-// 	res.redirect('/');
-// });
-
-// Serve static files from the public folder with the base URL
-//app.use(baseUrl, express.static('public'));
 app.use('/home',express.static('../dist'));
 app.use('/public',express.static('../dist/public'));
 app.use('/public', express.static('public'));

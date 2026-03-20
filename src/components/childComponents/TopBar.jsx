@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {checkAuthenticationStatus} from '../../actions/dashboard';
 import { theme } from '../../theme';
 
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,

@@ -13,7 +13,8 @@ export default {
 	mode: "production",
 	resolve: {
 		modules: ["node_modules", "src"],
-		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
+		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+		fullySpecified: false
 	},
 	devtool: "source-map", // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
 	entry: [
@@ -88,6 +89,12 @@ export default {
 	],
 	module: {
 		rules: [
+			{
+				test: /\.m?js$/,
+				resolve: {
+					fullySpecified: false
+				}
+			},
 			{
 				test: /\.[tj]sx?$/,
 				exclude: /node_modules/,

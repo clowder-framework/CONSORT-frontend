@@ -29,7 +29,7 @@ export default function PreviewDrawerLeft(props) {
 	const statementType = useSelector((state) => state.statement.statementType);
 	const statementString = statementType.toUpperCase();
 
-	const {metadata} = props;
+	const {metadata, publication = {}} = props;
 	const [extractor, setExtractor] = useState("");
 	const [content, setContent] = useState({});
 	const [itemsMissed, setItemsMissed] = useState('');
@@ -115,16 +115,16 @@ export default function PreviewDrawerLeft(props) {
 			const content = metadata;
 			setContent(content);
 			setExtractor(content["extractor"]);
-			setItemsMissed(content["items_missed"]);
+			setItemsMissed(publication["nummissed"]);
 			setChecklist(content["checklist"]);
-			setReportFileID(content["extracted_files"][1]["file_id"])
-			setReportFilename(content["extracted_files"][1]["filename"])
+			setReportFileID(publication["reportpdffileid"])
+			setReportFilename(publication["reportpdffilename"])
 			setItemFoundPages(get_item_found_pages(content["checklist"]))
 		}
 		if (metadata === undefined){
 			// console.log("Error metadata undefined");
 		}
-	},[]);
+	}, [metadata, publication]);
 
 
 
