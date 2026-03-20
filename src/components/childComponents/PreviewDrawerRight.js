@@ -4,13 +4,17 @@ import { useSelector } from "react-redux";
 import { Box, Typography } from "@material-ui/core";
 import Drawer from "@mui/material/Drawer";
 import { Button, Chip, Divider } from "@mui/material";
+import ThumbDown from "@mui/icons-material/ThumbDown";
+import ThumbDownOutlined from "@mui/icons-material/ThumbDownOutlined";
+import ThumbUp from "@mui/icons-material/ThumbUp";
+import ThumbUpOutlined from "@mui/icons-material/ThumbUpOutlined";
 
 import { theme } from "../../theme";
 import { rctdbClient } from "../../utils/rctdb-client";
 
 const drawerWidth = 420;
 const DEFAULT_SECTION_NAME = "Unspecified Section";
-const DEFAULT_TOPIC_NAME = "Unspecified Topic";
+const DEFAULT_TOPIC_NAME = "Unspecified Checklist Item";
 const DEFAULT_LABEL_NAME = "Unlabeled";
 
 function parsePagesFromCoordinates(coordinates) {
@@ -304,21 +308,33 @@ export default function PreviewDrawerRight(props) {
 													<Box style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 														<Button
 															size="small"
+															color="primary"
 															variant={rowFeedbackState.selected === "positive" ? "contained" : "outlined"}
 															disabled={rowFeedbackState.submitting}
 															onClick={() => handleFeedbackClick(sentenceRow, rowKey, "positive")}
-															style={{ minWidth: "96px" }}
+															aria-label="Positive feedback"
+															sx={{ minWidth: 40, px: 1 }}
 														>
-															Thumbs Up
+															{rowFeedbackState.selected === "positive" ? (
+																<ThumbUp fontSize="small" />
+															) : (
+																<ThumbUpOutlined fontSize="small" />
+															)}
 														</Button>
 														<Button
 															size="small"
+															color="secondary"
 															variant={rowFeedbackState.selected === "negative" ? "contained" : "outlined"}
 															disabled={rowFeedbackState.submitting}
 															onClick={() => handleFeedbackClick(sentenceRow, rowKey, "negative")}
-															style={{ minWidth: "96px" }}
+															aria-label="Negative feedback"
+															sx={{ minWidth: 40, px: 1 }}
 														>
-															Thumbs Down
+															{rowFeedbackState.selected === "negative" ? (
+																<ThumbDown fontSize="small" />
+															) : (
+																<ThumbDownOutlined fontSize="small" />
+															)}
 														</Button>
 														{rowFeedbackState.submitting ? (
 															<Typography variant="caption" style={{ color: theme.palette.text.secondary }}>
