@@ -177,12 +177,12 @@ class RCTDBClient {
   // ============ FEEDBACK METHODS ============
 
   /**
-   * Create feedback for an annotation
-   * @param {Object} feedbackData - Feedback data object
-   * @returns {Promise<Object>} Created feedback object
+   * Save feedback for an annotation (updates existing row for the same user/annotation/publication, else inserts).
+   * @param {Object} feedbackData - Must include annuuid, publicationuuid, useruuid, and feedback fields
+   * @returns {Promise<Object>} Persisted feedback row
    */
-  async createFeedback(feedbackData) {
-    const response = await this.client.post('/feedback', feedbackData);
+  async updateFeedback(feedbackData) {
+    const response = await this.client.put('/feedback', feedbackData);
     return response.data;
   }
 

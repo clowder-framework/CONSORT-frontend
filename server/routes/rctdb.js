@@ -182,16 +182,20 @@ router.put('/annotations/:uuid', async (req, res) => {
 });
 
 // Feedback routes
-router.post('/feedback', async (req, res) => {
+router.put('/feedback', async (req, res) => {
   try {
-    const feedback = await feedbackQueries.createFeedback({
+    const rows = await feedbackQueries.updateFeedback({
       ...req.body,
       time: new Date()
     });
-    res.status(201).json(feedback[0]);
+    const saved = rows[0];
+    if (!saved) {
+      return res.status(500).json({ error: 'Feedback save returned no row' });
+    }
+    res.json(saved);
   } catch (error) {
-    console.error('Error creating feedback:', error);
-    res.status(500).json({ error: 'Failed to create feedback' });
+    console.error('Error saving feedback:', error);
+    res.status(500).json({ error: 'Failed to save feedback' });
   }
 });
 

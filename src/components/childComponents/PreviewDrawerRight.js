@@ -183,7 +183,7 @@ export default function PreviewDrawerRight(props) {
 			try {
 				await Promise.all(
 					targets.map((target) =>
-						rctdbClient.createFeedback({
+						rctdbClient.updateFeedback({
 							annuuid: target.annuuid,
 							publicationuuid: target.publicationuuid,
 							useruuid: userUuid,

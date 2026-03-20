@@ -170,8 +170,35 @@ const annotationQueries = {
 
 // Feedback operations
 const feedbackQueries = {
-  // Create feedback
-  async createFeedback(feedbackData) {
+  /** Update row matching annuuid + publicationuuid + useruuid, or insert if none exists. */
+  async updateFeedback(feedbackData) {
+    const existing = await rctdb
+      .select()
+      .from(annotationFeedback)
+      .where(
+        and(
+          eq(annotationFeedback.annuuid, feedbackData.annuuid),
+          eq(annotationFeedback.publicationuuid, feedbackData.publicationuuid),
+          eq(annotationFeedback.useruuid, feedbackData.useruuid)
+        )
+      )
+      .limit(1);
+
+    if (existing.length > 0) {
+      const { annuuid, publicationuuid, useruuid, ...updates } = feedbackData;
+      return await rctdb
+        .update(annotationFeedback)
+        .set(updates)
+        .where(
+          and(
+            eq(annotationFeedback.annuuid, annuuid),
+            eq(annotationFeedback.publicationuuid, publicationuuid),
+            eq(annotationFeedback.useruuid, useruuid)
+          )
+        )
+        .returning();
+    }
+
     return await rctdb.insert(annotationFeedback).values(feedbackData).returning();
   },
 
