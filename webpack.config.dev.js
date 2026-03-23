@@ -11,7 +11,8 @@ export default {
 	mode: "development",
 	resolve: {
 		modules: ["node_modules", "src"],
-		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
+		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+		fullySpecified: false
 	},
 	devtool: "source-map",
 	entry: [

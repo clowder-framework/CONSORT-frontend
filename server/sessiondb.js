@@ -3,10 +3,10 @@ var mkdirp = require('mkdirp');
 
 mkdirp.sync('./var/db');
 
-var db = new sqlite3.Database('./var/db/sessions.db');
+var sessiondb = new sqlite3.Database('./var/db/sessions.db');
 
-db.serialize(function() {
-  db.run("CREATE TABLE IF NOT EXISTS users ( \
+sessiondb.serialize(function() {
+  sessiondb.run("CREATE TABLE IF NOT EXISTS users ( \
     id INTEGER PRIMARY KEY, \
     username TEXT UNIQUE, \
     hashed_password BLOB, \
@@ -14,7 +14,7 @@ db.serialize(function() {
     name TEXT \
   )");
 
-  db.run("CREATE TABLE IF NOT EXISTS federated_credentials ( \
+  sessiondb.run("CREATE TABLE IF NOT EXISTS federated_credentials ( \
     id INTEGER PRIMARY KEY, \
     user_id INTEGER NOT NULL, \
     provider TEXT NOT NULL, \
@@ -24,4 +24,4 @@ db.serialize(function() {
 
 });
 
-module.exports = db;
+module.exports = sessiondb;

@@ -3,6 +3,7 @@ import {
 	RECEIVE_DATASET_ABOUT, SET_DATASET_METADATA,
 	RECEIVE_DATASETS, DELETE_DATASET,
 	CREATE_DATASETS, ADD_FILE_TO_DATASET,
+	UPDATE_DATASET_STATUS,
 	RESET_DATASET_TO_DEFAULT
 } from "../actions/dataset";
 import {DELETE_FILE} from "../actions/file";
@@ -49,7 +50,7 @@ const datasetReducer = (state=defaultState, action) => {
 			return Object.assign({}, state, {metadata: action.metadata});
 		case "RESET_DATASET_METADATA":
 			return Object.assign({}, state, {metadata: {}});
-		case "UPDATE_DATASET_STATUS":
+		case UPDATE_DATASET_STATUS:
 			return Object.assign({}, state, {
 				datasets: state.datasets.map(dataset => 
 					dataset.id === action.datasetId 

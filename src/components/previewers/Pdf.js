@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import {useDispatch, useSelector} from "react-redux";
 import { pdfjs , Document, Page } from "react-pdf";
-import "react-pdf/dist/esm/Page/TextLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 import {SET_PAGE_NUMBER, setPageNumber} from "../../actions/pdfpreview";
 import { 
     consort_highlight_color, 
@@ -11,7 +11,10 @@ import {
     spirit_label_color 
 } from '../styledComponents/HighlightColors';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+	"pdfjs-dist/build/pdf.worker.min.mjs",
+	import.meta.url
+).toString();
 
 
 export default function Pdf(props) {
