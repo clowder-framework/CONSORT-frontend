@@ -5,3 +5,7 @@ UI_URL=
 CLOWDER_PREFIX=''
 CLOWDER_REMOTE_HOSTNAME=
 APIKEY=
+# Clowder API version: 'v2' for Clowder2, 'v1' or unset for Clowder v1
+CLOWDER_API_VERSION=v2
+# Required for Clowder2 when creating datasets (license_id query param)
+CLOWDER_DEFAULT_LICENSE_ID=

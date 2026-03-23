@@ -16,7 +16,7 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 	else{
 		body = {"extractor": extractor_name};
 	}
-	
+
 	const extraction_response = await extractionRequest(file_id, body);
 	console.log("Extraction response for extractor ", extractor_name, extraction_response);
 	if (extraction_response !== null && extraction_response.status === "OK") {
@@ -50,18 +50,15 @@ async function extractionRequest(file_id, body_data) {
 		//const extraction_response_text = await response.text();
 		//console.log(extraction_response_text);
 		if (response.status === 200) {
-			// return {"status":"OK","job_id":"string"}
+			return { status: "OK", job_id: extraction_response };
 		} else if (response.status === 409){
 			// TODO handle error
 			await sleep(30000);
 			await extractionRequest_loop();
-		}
-		else {
+		}  else {
 			// TODO handle error
-			extraction_response.status = "FAIL";
+			return { status: "FAIL", job_id: extraction_response };
 		}
-		return extraction_response;
-
 	};
 
 	extraction_response = await extractionRequest_loop();
@@ -243,7 +240,7 @@ export async function getPreviewResources(fileId, preview) {
 	const preview_config = {};
 	//console.log(preview); {p_id:"HTML", p_main:"html-iframe.js", p_path:"/assets/javascripts/previewers/html", pv_contenttype:"text/html", pv_id:"64ac2c9ae4b024bdd77bbfb1",pv_length:"52434",pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"}
 	//{"pv_route": "/clowder/api/previews/67224c2ae4b095dc59cb5fde","p_main": "thumbnail-previewer.js","pv_id": "67224c2ae4b095dc59cb5fde","p_path": "/clowder/assets/javascripts/previewers/thumbnail","p_id": "Thumbnail","pv_length": "157049","pv_contenttype": "image/png"}
-	
+
 	preview_config.previewType = preview["p_id"].replace(" ", "-").toLowerCase(); // html
 
 	if (preview_config.previewType === "thumbnail") {
@@ -276,7 +273,7 @@ export async function getPreviewResources(fileId, preview) {
 		preview_config.fileid = preview["pv_id"];
 		preview_config.previewer = `/public${preview["p_path"]}/`;
 		preview_config.fileType = preview["pv_contenttype"];
-		
+
 		// Handle preview resource URL
 		let pv_routes = preview["pv_route"];   // pv_route:"/files/64ac2c9ae4b024bdd77bbfb1/blob"
 		if (!pv_routes.includes("/api/")) {
