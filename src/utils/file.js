@@ -19,7 +19,7 @@ export async function submitForExtraction(file_id, extractor_name, statementType
 
 	const extraction_response = await extractionRequest(file_id, body);
 	console.log("Extraction response for extractor ", extractor_name, extraction_response);
-	if (extraction_response !== null && extraction_response.status === "OK") {
+	if (extraction_response != null && extraction_response.status === "OK") {
 		return true;
 	}
 	else {
@@ -54,7 +54,7 @@ async function extractionRequest(file_id, body_data) {
 		} else if (response.status === 409){
 			// TODO handle error
 			await sleep(30000);
-			await extractionRequest_loop();
+			return await extractionRequest_loop();
 		}  else {
 			// TODO handle error
 			return { status: "FAIL", job_id: extraction_response };
