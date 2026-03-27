@@ -153,6 +153,8 @@ export default function PreviewDrawerRight(props) {
 	const pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
 	const userUuidFromStore = useSelector((state) => state.user.userUuid);
 	const [feedbackStateByRow, setFeedbackStateByRow] = useState({});
+	const statementType = useSelector((state) => state.statement.statementType);
+	const statementString = statementType.toUpperCase();
 
 	const handleFeedbackClick = useCallback(
 		async (sentenceRow, rowKey, feedbackType) => {
@@ -245,10 +247,13 @@ export default function PreviewDrawerRight(props) {
 			>
 				<Box style={{ padding: "16px", borderBottom: "1px solid #e0e0e0", backgroundColor: theme.palette.grey[50] }}>
 					<Typography variant="h6" style={{ color: theme.palette.primary.dark, fontWeight: "bold" }}>
-						Page {pageNumber} Annotations
+						{statementString} Items Found on Page {pageNumber}
 					</Typography>
 					<Typography variant="body2" style={{ color: theme.palette.primary.main, marginTop: "6px" }}>
 						{pageRows.length} sentence{pageRows.length === 1 ? "" : "s"} on this page
+					</Typography>
+					<Typography variant="caption" style={{ color: theme.palette.text.secondary, marginTop: "4px", display: "block" }}>
+						Optional: Use the thumbs up/down buttons to tell us if the system correctly classified the text. Your feedback helps improve future results.
 					</Typography>
 				</Box>
 
