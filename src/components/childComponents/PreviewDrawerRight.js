@@ -231,7 +231,7 @@ export default function PreviewDrawerRight(props) {
 	const groupedRows = useMemo(() => groupRowsBySectionAndTopic(pageRows), [pageRows]);
 
 	return (
-		<Box sx={{ display: "flex" }}>
+		<Box sx={{ display: "flex", width: drawerWidth, flexShrink: 0 }}>
 			<Drawer
 				sx={{
 					width: drawerWidth,

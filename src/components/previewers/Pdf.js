@@ -27,6 +27,7 @@ export default function Pdf(props) {
 	const [allSentences, setAllSentences] = useState([]); // [{label: "label", sentences: [{coords: "coords", text: "text"}]}]
 
 	const highlightCanvasRef = useRef();
+	const wrapperRef = useRef(null);
 	const [numPages, setNumPages] = useState(null);
 	const pageNumber = useSelector((state) => state.pdfpreview.pageNumber);
 	const dispatchPageNumber = (number) => dispatch(setPageNumber(SET_PAGE_NUMBER, number));
@@ -39,7 +40,7 @@ export default function Pdf(props) {
 	const [isRendered, setIsRendered] = useState(false);
 	const [scale_x, setScaleX] = useState(1);
 	const [scale_y, setScaleY] = useState(1);
-	const pdf_render_scale = 1.5;
+	const [pdf_render_scale, setPdfRenderScale] = useState(1.5);
 
 	// Cleanup effect when component unmounts
 	useEffect(() => {
@@ -90,6 +91,24 @@ export default function Pdf(props) {
 		// Delay slightly to allow PDF page to render first if needed
 		//setTimeout(renderHighlights, 100);
 	}, [pageNumber]);
+
+	// Fit canvas width to the available wrapper width
+	useEffect(() => {
+		if (!wrapperRef.current || !pageWidth) return;
+
+		const updateScale = () => {
+			const availableWidth = wrapperRef.current?.offsetWidth;
+			if (!availableWidth) return;
+			const newScale = (availableWidth - 3 * marginWidth) / pageWidth;
+			if (newScale > 0) setPdfRenderScale(newScale);
+		};
+
+		updateScale();
+		const resizeObserver = new ResizeObserver(updateScale);
+		resizeObserver.observe(wrapperRef.current);
+
+		return () => resizeObserver.disconnect();
+	}, [pageWidth]);
 
 	// // Effect to render highlights when relevant data changes
 	// useEffect(() => {
@@ -357,7 +376,8 @@ export default function Pdf(props) {
 
 			// Calculate initial proposed label position based on highlight box position (drawX)
 			let proposedLabelX;
-			if (drawX < canvas_width / 2) { 
+			const pdfMidpoint = scaledPdfWidth / 2;
+			if (drawX < pdfMidpoint) { 
 				// Position near left margin
 				proposedLabelX = textPadding + offset_x; // Position from the left edge + padding
 			} else {
@@ -457,9 +477,9 @@ export default function Pdf(props) {
 
 
 	return (
-		<>
+		<div ref={wrapperRef} style={{ width: '100%' }}>
 			{/* PDF Rendering Area and Navigation Container */}
-			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}> 
+			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
 				{/* Page Navigation Controls - Moved Here and Centered */}
 				<div style={{display: "flex", alignItems: "center", marginBottom: "20px"}}> {/* Added marginBottom, removed marginRight */}
 					{/* Page Navigation Controls */}
@@ -528,7 +548,7 @@ export default function Pdf(props) {
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 
 }
