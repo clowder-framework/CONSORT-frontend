@@ -129,7 +129,7 @@ export default function PreviewDrawerLeft(props) {
 
 
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<Box sx={{ display: 'flex', width: drawerWidth, flexShrink: 0 }}>
 			<Drawer
 				sx={{
 					paddingTop: "30px",

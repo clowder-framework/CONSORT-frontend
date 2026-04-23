@@ -175,7 +175,7 @@ export default function FilePreview() {
 											annotations={publicationData.annotations}
 										/>
 										{/* Main content area for PDF, allows it to grow and centers the PDF viewer */}
-										<Box sx={{ flexGrow: 1, overflow: "auto", p: 1, display: "flex", justifyContent: "center" }}>
+										<Box sx={{ flexGrow: 1, minWidth: 0, overflow: "auto", p: 1, display: "flex", justifyContent: "center" }}>
 											<Pdf fileId={preview["fileid"]} pdfSrc={preview["resource"]} metadata={RCTmetadata}/>
 										</Box>
 										<PreviewDrawerRight
