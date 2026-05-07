@@ -509,7 +509,7 @@ export default function Pdf(props) {
 				{/* Relative positioning container for PDF and overlay canvas with scrollable content */}
 				<div style={{ 
 					position: 'relative', 
-					width: `${(pageWidth * pdf_render_scale) + (3 * marginWidth)}px`, 
+					width: `${(pageWidth * pdf_render_scale) + (3 * marginWidth)}px`,
 					maxHeight: '80vh', // Limit height to 80% of viewport height
 					overflowY: 'scroll', // Add vertical scrollbar when content exceeds maxHeight
 					border: '1px solid #ccc' // Optional: add border to visualize the scrollable area

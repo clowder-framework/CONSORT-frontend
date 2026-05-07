@@ -136,9 +136,11 @@ app.use('/', authRouter);
 app.use('/', clowderRouter);
 app.use('/api/rctdb', rctdbRouter);
 
-app.use('/home',express.static('../dist'));
-app.use('/public',express.static('../dist/public'));
-app.use('/public', express.static('public'));
+// Serve built assets from root so relative-path bundle references work on any page
+app.use(express.static(path.join(__dirname, '../dist')));
+app.use('/home',express.static(path.join(__dirname, '../dist')));
+app.use('/public',express.static(path.join(__dirname, '../dist/public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 app.get('/client',ensureLoggedIn, function (req, res, next){
@@ -159,7 +161,25 @@ app.get('/home', ensureLoggedIn, function (req, res, next){
 	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
-// catch 404 and forward to error handler
+app.get('/preview', ensureLoggedIn, function (req, res, next){
+	res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
+// SPA fallback: serve React app for any unmatched non-API, non-asset route so
+// that client-side routes (React Router) work on direct navigation / refresh.
+// Requests with a file extension (JS, CSS, images, etc.) are NOT intercepted —
+// those should 404 rather than receiving index.html (which causes "Unexpected token '<'").
+app.use(function(req, res, next) {
+  if (req.path.startsWith('/api/')) {
+    return next(createError(404));
+  }
+  if (path.extname(req.path)) {
+    return next(createError(404));
+  }
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
+// catch 404 and forward to error handler (API routes only reach here)
 app.use(function(req, res, next) {
   next(createError(404));
 });
