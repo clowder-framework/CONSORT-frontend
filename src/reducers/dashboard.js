@@ -8,7 +8,7 @@ import {
 export const ANONYMOUS_USER = { userName: "anonymous", userUuid: null, userEmail: "anonymous@example.com", userRole: "author" };
 
 const initialState = {
-	statementType: "spirit",
+	statementType: "consort",
 	userCategory: ANONYMOUS_USER.userRole,
 	isAuthenticated: false,
 	authenticationLoading: false,

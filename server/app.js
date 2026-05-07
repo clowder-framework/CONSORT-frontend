@@ -137,6 +137,7 @@ app.use('/', clowderRouter);
 app.use('/api/rctdb', rctdbRouter);
 
 app.use('/home',express.static('../dist'));
+app.use('/preview',express.static('../dist'));
 app.use('/public',express.static('../dist/public'));
 app.use('/public', express.static('public'));
 
