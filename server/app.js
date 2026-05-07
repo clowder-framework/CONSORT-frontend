@@ -139,6 +139,7 @@ app.use('/api/rctdb', rctdbRouter);
 // Serve built assets from root so relative-path bundle references work on any page
 app.use(express.static(path.join(__dirname, '../dist')));
 app.use('/home',express.static(path.join(__dirname, '../dist')));
+app.use('/preview',express.static(path.join(__dirname, '../dist')));
 app.use('/public',express.static(path.join(__dirname, '../dist/public')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
