@@ -284,16 +284,16 @@ export default function CreateAndUpload() {
 					Select Guideline
 				</Typography>
 				<FormControlLabel
-					value="spirit"
-					control={<Radio checked={statementType === "spirit"} onChange={handleStatementChange} />}
-					label="SPIRIT"
+					value="consort"
+					control={<Radio checked={statementType === "consort"} onChange={handleStatementChange} />}
+					label="CONSORT"
 					style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
 					disabled={loading}
 				/>
 				<FormControlLabel
-					value="consort"
-					control={<Radio checked={statementType === "consort"} onChange={handleStatementChange} />}
-					label="CONSORT"
+					value="spirit"
+					control={<Radio checked={statementType === "spirit"} onChange={handleStatementChange} />}
+					label="SPIRIT"
 					style={{ fontFamily: theme.typography.fontFamily, margin: 0 }}
 					disabled={loading}
 				/>

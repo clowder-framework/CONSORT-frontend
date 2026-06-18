@@ -1,23 +1,40 @@
 // File drag and drop
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 // Import the useDropzone hooks from react-dropzone
 import { useDropzone } from "react-dropzone";
 import { theme } from "../../theme";
 
 const Dropfile = ({ onDrop, accept, message }) => {
 	const [files, setFiles] = useState([]);
+	const fileInputRef = useRef(null);
+	const isDisabled = !message || message.includes("Please select a statement type");
+	const inputAccept = Object.entries(accept || {})
+		.reduce((acceptTypes, [mimeType, extensions]) => acceptTypes.concat(mimeType, extensions), [])
+		.join(",");
 	
 	// Initializing useDropzone hooks with options
-	const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject, open } = useDropzone({
+	const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
 		accept,
+		noClick: true,
 		// Disable dropping if there's no statement type selected
-		noClick: !message || message.includes("Please select a statement type"),
-		noDrop: !message || message.includes("Please select a statement type"),
-		onDrop: (acceptedFiles, rejectedFiles) => {
+		noDrop: isDisabled,
+		onDrop: (acceptedFiles) => {
 			setFiles(acceptedFiles);
 		}
 	});
+
+	const handleBrowseClick = (e) => {
+		e.stopPropagation();
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
+			fileInputRef.current.click();
+		}
+	};
+
+	const handleFileInputChange = (e) => {
+		setFiles(Array.from(e.target.files || []));
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -27,11 +44,16 @@ const Dropfile = ({ onDrop, accept, message }) => {
 		}
 	};
 
-	const isDisabled = !message || message.includes("Please select a statement type");
-
 	return (
 		<form onSubmit={handleSubmit}>
-			<div className="dropzone-div" {...getRootProps({ onClick: (e) => e.preventDefault() })}>
+			<input
+				ref={fileInputRef}
+				type="file"
+				accept={inputAccept}
+				onChange={handleFileInputChange}
+				style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+			/>
+			<div className="dropzone-div" {...getRootProps()}>
 				<input className="dropzone-input" {...getInputProps()} />
 				<div className="text-center" style={{ marginTop: '2rem' }}>
 					{!isDragActive && (<p className="dropzone-content">{message || "Drag and drop some files here"}</p>)}
@@ -45,7 +67,7 @@ const Dropfile = ({ onDrop, accept, message }) => {
 				<button 
 					variant="contained" 
 					type="button" 
-					onClick={open}
+					onClick={handleBrowseClick}
 					disabled={isDisabled}
 					style={{ 
 						marginTop: '2rem',
