@@ -7,7 +7,7 @@ import autoprefixer from "autoprefixer";
 import path from "path";
 import TerserPlugin from "terser-webpack-plugin";
 
-const PUBLIC_PATH = '';
+const PUBLIC_PATH = '/';
 
 export default {
 	mode: "production",
