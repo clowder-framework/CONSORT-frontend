@@ -2,7 +2,8 @@
 
 import {useEffect, useMemo, useState, useRef} from "react";
 import {useSelector} from "react-redux";
-import {Box} from "@material-ui/core";
+import {Box, Button, Typography} from "@material-ui/core";
+import HomeIcon from "@material-ui/icons/Home";
 
 import Pdf from "../previewers/Pdf";
 import Html from "../previewers/Html";
@@ -20,6 +21,7 @@ export default function FilePreview() {
 
 	const filePreviews = useSelector((state) => state.file.previews);
 	const [previews, setPreviews] = useState([]); // state for file previews
+	const hasPreviewSelection = Boolean(filePreviews?.[0]?.[0]?.previews?.length);
 	const datasets = useSelector((state) => state.dataset.datasets); // [{id: '68adf5f9e4b04fc9ce8e5811', status: 'csv-completed'}]
 	const datasetId = datasets?.[0]?.id;
 
@@ -137,6 +139,34 @@ export default function FilePreview() {
 			isActive = false;
 		};
 	}, [filePreviews]);
+
+	if (!hasPreviewSelection) {
+		return (
+			<Box
+				className="filepreview"
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				justifyContent="center"
+				style={{ minHeight: "60vh", padding: "20px" }}
+			>
+				<Typography variant="h6" align="center" gutterBottom>
+					No file selected for preview.
+				</Typography>
+				<Typography variant="body2" align="center" color="textSecondary" gutterBottom>
+					Refreshing this page clears the selected file. Go back to the home page and select a file to preview.
+				</Typography>
+				<Button
+					variant="contained"
+					color="primary"
+					startIcon={<HomeIcon />}
+					onClick={() => window.location.assign("/home/")}
+				>
+					Go to Home
+				</Button>
+			</Box>
+		);
+	}
 
 	return (
 		<>
