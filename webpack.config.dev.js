@@ -5,7 +5,7 @@ import path from "path";
 import ESLintPlugin from "eslint-webpack-plugin";
 
 
-const PUBLIC_PATH = '';
+const PUBLIC_PATH = '/';
 
 export default {
 	mode: "development",
@@ -27,7 +27,7 @@ export default {
 	target: "web",
 	output: {
 		path: path.resolve(__dirname, "dist"),
-		publicPath: PUBLIC_PATH, // Empty string means root path
+		publicPath: PUBLIC_PATH,
 		filename: "bundle.js",
 		// Ensure clean output
 		clean: false // Don't clean in dev mode - webpack-dev-middleware serves from memory
