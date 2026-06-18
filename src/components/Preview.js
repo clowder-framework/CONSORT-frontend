@@ -1,39 +1,15 @@
-import React, { useState, useEffect } from "react";
-import {Box, Typography} from "@material-ui/core";
+import React from "react";
+import {Box} from "@material-ui/core";
 import FilePreview from "./childComponents/FilePreview";
 import TopBar from "./childComponents/TopBar";
 
 function Preview() {
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
-	
-	useEffect(() => {
-		const checkAuthStatus = async () => {
-			try {
-				const response = await fetch("/isAuthenticated", {
-					method: "GET",
-					credentials: "include",
-				});
-				const data = await response.json();
-				setIsAuthenticated(data.isAuthenticated);
-			} catch (error) {
-				// console.error("Error checking authentication status:", error);
-			}
-		};
-		checkAuthStatus();
-	}, []);
-	
 	return (
 		<>
 			<TopBar/>
 			<div className="outer-container">
 				<Box className="filePreview">
-					{isAuthenticated ? (
-						<FilePreview />
-					) : (
-						<Typography variant="h6" align="center" style={{ padding: "20px" }}>
-							Please login to use this feature
-						</Typography>
-					)}
+					<FilePreview />
 				</Box>
 			</div>
 		</>
