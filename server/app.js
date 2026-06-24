@@ -133,8 +133,9 @@ app.use(function(req, res, next) {
 //const baseUrl = process.env.BASE_URL;
 app.use('/', indexRouter);
 app.use('/', authRouter);
-app.use('/', clowderRouter);
+// Before clowderRouter's /api/* proxy (which would send /api/rctdb to Clowder).
 app.use('/api/rctdb', rctdbRouter);
+app.use('/', clowderRouter);
 
 // Serve built assets from root so relative-path bundle references work on any page
 app.use(express.static(path.join(__dirname, '../dist')));

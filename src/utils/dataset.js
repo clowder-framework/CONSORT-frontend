@@ -11,31 +11,31 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export function getServerUrl(relativePath) {
 	const serverUrl = process.env.SERVER_URL || "";
 	const serverPort = process.env.SERVER_PORT || "";
-	
+
 	// If no server URL is configured, return relative path (works when frontend and backend are on same origin)
 	// This is the preferred approach for development when both run on the same port or when using a proxy
 	if (!serverUrl || serverUrl.trim() === "") {
 		return relativePath;
 	}
-	
+
 	// Construct base URL
 	let baseUrl = serverUrl.trim();
-	
+
 	// Add protocol if missing
 	if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
 		baseUrl = `http://${baseUrl}`;
 	}
-	
+
 	// Add port if specified and not already in URL
 	if (serverPort && serverPort.trim() !== "" && !baseUrl.includes(`:${serverPort.trim()}`) && !baseUrl.match(/:\d+$/)) {
 		// Remove trailing slash from baseUrl before appending port
 		baseUrl = baseUrl.replace(/\/$/, "");
 		baseUrl = `${baseUrl}:${serverPort.trim()}`;
 	}
-	
+
 	// Ensure relativePath starts with /
 	const path = relativePath.startsWith("/") ? relativePath : `/${relativePath}`;
-	
+
 	return `${baseUrl}${path}`;
 }
 
