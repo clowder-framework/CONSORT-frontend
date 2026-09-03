@@ -41,6 +41,11 @@ export default function Pdf(props) {
 	const [scale_x, setScaleX] = useState(1);
 	const [scale_y, setScaleY] = useState(1);
 	const [pdf_render_scale, setPdfRenderScale] = useState(1.5);
+	// Size (in css px) the page currently displayed actually renders at. Pages within a
+	// document can differ in size/orientation (e.g. a landscape page), so this cannot be
+	// derived from the document level page_dimensions in the metadata.
+	const [renderedPageWidth, setRenderedPageWidth] = useState(null);
+	const [renderedPageHeight, setRenderedPageHeight] = useState(null);
 
 	// Cleanup effect when component unmounts
 	useEffect(() => {
@@ -54,6 +59,8 @@ export default function Pdf(props) {
 			setPageHeight(799);
 			setScaleX(1);
 			setScaleY(1);
+			setRenderedPageWidth(null);
+			setRenderedPageHeight(null);
 			
 			// Reset page number in Redux
 			dispatchPageNumber(1);
@@ -125,8 +132,13 @@ export default function Pdf(props) {
 		setNumPages(numPages);
 	}
 
-	function onPageLoadSuccess(){
-		// pass
+	function onPageLoadSuccess(page){
+		// react-pdf hands back the page it loaded, including the size it renders at
+		// (page.width/page.height) and its intrinsic size (page.originalWidth/Height).
+		if (page) {
+			setRenderedPageWidth(page.width);
+			setRenderedPageHeight(page.height);
+		}
 	}
 
 	function onPageChange(event) {
@@ -267,7 +279,8 @@ export default function Pdf(props) {
 	}
 
 
-	function renderHighlights() {
+	// `page` is supplied by react-pdf's onRenderSuccess callback
+	function renderHighlights(page) {
 		// Use the dedicated highlight canvas
 		const canvas = highlightCanvasRef.current;
 		if (!canvas) {
@@ -286,9 +299,17 @@ export default function Pdf(props) {
 		// let scale_x = canvas_width / pageWidth;
 		// let scale_y = canvas_height / pageHeight; // reverse of what is there in prev code in main branch
 
-		// Calculate scaled dimensions for PDF rendering area
-		const scaledPdfWidth = pageWidth * pdf_render_scale;
-		const scaledPdfHeight = pageHeight * pdf_render_scale;
+		// The metadata reports a single page size for the whole document, but a document can
+		// mix page sizes/orientations. react-pdf renders every page to the same css width
+		// (pageWidth * pdf_render_scale), so on a page whose intrinsic size differs from
+		// page_dimensions the scale it renders at is not pdf_render_scale. Derive the scale
+		// that maps pdf coordinates to canvas pixels from the page that was actually
+		// rendered, otherwise highlights are drawn offset from the text they belong to.
+		const scaledPdfWidth = (page && page.width) || renderedPageWidth || pageWidth * pdf_render_scale;
+		const scaledPdfHeight = (page && page.height) || renderedPageHeight || pageHeight * pdf_render_scale;
+		const page_render_scale = (page && page.originalWidth)
+			? page.width / page.originalWidth
+			: pdf_render_scale;
 
 		// Set the overlay canvas dimensions to be wider for margins
 		const context = canvas.getContext('2d');
@@ -302,8 +323,8 @@ export default function Pdf(props) {
 		// // Scale the canvas to 2x while keeping PDF at 1.5x
 		// let scale_x = (canvas_height / pageHeight) * (canvas_render_scale/pdf_render_scale);
 		// let scale_y = (canvas_width / pageWidth) * (canvas_render_scale/pdf_render_scale);
-		const scale_x = pdf_render_scale; // Match PDF render scale
-		const scale_y = pdf_render_scale;
+		const scale_x = page_render_scale; // Match the scale this page rendered at
+		const scale_y = page_render_scale;
 		const offset_x = marginWidth;
 
 		const pageHighlights = getPageHighlights();
@@ -517,7 +538,7 @@ export default function Pdf(props) {
 					{/* Inner container to set the full height for scrolling content */}
 					<div style={{ 
 						position: 'relative', 
-						height: `${pageHeight * pdf_render_scale}px`, 
+						height: `${renderedPageHeight || pageHeight * pdf_render_scale}px`, 
 						width: '100%' 
 					}}>
 						{/* PDF Document Rendering */}
@@ -543,7 +564,7 @@ export default function Pdf(props) {
 							// Width should match the scrollable container's width, not just the PDF area + margins
 							width={pageWidth * pdf_render_scale + 3 * marginWidth} 
 							// Height should match the inner container's height (full PDF scaled height)
-							height={pageHeight * pdf_render_scale} 
+							height={renderedPageHeight || pageHeight * pdf_render_scale} 
 						/>
 					</div>
 				</div>
