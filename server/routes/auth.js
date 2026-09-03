@@ -11,7 +11,8 @@ const CIlogon_idp = [
 	{"EntityID":"urn:mace:incommon:uiuc.edu","OrganizationName":"University of Illinois at Urbana-Champaign","DisplayName":"University of Illinois Urbana-Champaign","RandS":true},
 	{"EntityID":"urn:mace:incommon:unc.edu","OrganizationName":"University of North Carolina at Chapel Hill","DisplayName":"University of North Carolina at Chapel Hill","RandS":true},
 	{"EntityID":"https://idp.uark.edu/idp/shibboleth","OrganizationName":"University of Arkansas","DisplayName":"University of Arkansas","RandS":true},
-	{"EntityID":"https://idp.login.iu.edu/idp/shibboleth","OrganizationName":"Indiana University","DisplayName":"Indiana University","RandS":true}
+	{"EntityID":"https://idp.login.iu.edu/idp/shibboleth","OrganizationName":"Indiana University","DisplayName":"Indiana University","RandS":true},
+	{"EntityID":"https://idcs-6dfbdd810afa4d509f6cfc191d612acd.identity.oraclecloud.com:443/fed","OrganizationName":"University of Colorado Denver","DisplayName":"University of Colorado Denver","RandS":true}
 ]
 const encodedEntityIDs = CIlogon_idp.map(item => encodeURIComponent(item.EntityID));
 const concatenatedEntityIDs = encodedEntityIDs.join(',');
